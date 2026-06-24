@@ -44,14 +44,14 @@ h.Parent=g
 local i=Instance.new"Frame"
 i.AnchorPoint=Vector2.new(1,0.5)
 i.Position=UDim2.new(1,-8,0.5,0)
-i.Size=UDim2.fromOffset(18,18)
+i.Size=UDim2.fromOffset(36,18)
 i.BorderSizePixel=0
 i.Parent=g
 
 local j=Instance.new"Frame"
-j.AnchorPoint=Vector2.new(0.5,0.5)
-j.Position=UDim2.fromScale(0.5,0.5)
-j.Size=UDim2.fromOffset(10,10)
+j.AnchorPoint=Vector2.new(0,0.5)
+j.Position=UDim2.fromOffset(2,9)
+j.Size=UDim2.fromOffset(14,14)
 j.BorderSizePixel=0
 j.Parent=i
 
@@ -80,7 +80,7 @@ c:Create(e.Track,d,{
 BackgroundColor3=if f then Color3.fromRGB(88,130,255)else Color3.fromRGB(61,65,76),
 }):Play()
 c:Create(e.Knob,d,{
-Size=if f then UDim2.fromOffset(10,10)else UDim2.fromOffset(0,0),
+Position=if f then UDim2.fromOffset(20,9)else UDim2.fromOffset(2,9),
 }):Play()
 
 if not g and type(e.Callback)=="function"then

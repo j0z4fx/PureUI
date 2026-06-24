@@ -29,14 +29,14 @@ function Toggle.new(parent, config)
 	local track = Instance.new("Frame")
 	track.AnchorPoint = Vector2.new(1, 0.5)
 	track.Position = UDim2.new(1, -8, 0.5, 0)
-	track.Size = UDim2.fromOffset(18, 18)
+	track.Size = UDim2.fromOffset(36, 18)
 	track.BorderSizePixel = 0
 	track.Parent = row
 
 	local knob = Instance.new("Frame")
-	knob.AnchorPoint = Vector2.new(0.5, 0.5)
-	knob.Position = UDim2.fromScale(0.5, 0.5)
-	knob.Size = UDim2.fromOffset(10, 10)
+	knob.AnchorPoint = Vector2.new(0, 0.5)
+	knob.Position = UDim2.fromOffset(2, 9)
+	knob.Size = UDim2.fromOffset(14, 14)
 	knob.BorderSizePixel = 0
 	knob.Parent = track
 
@@ -65,7 +65,7 @@ function Toggle:SetValue(value, silent)
 		BackgroundColor3 = if value then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(61, 65, 76),
 	}):Play()
 	TweenService:Create(self.Knob, TWEEN, {
-		Size = if value then UDim2.fromOffset(10, 10) else UDim2.fromOffset(0, 0),
+		Position = if value then UDim2.fromOffset(20, 9) else UDim2.fromOffset(2, 9),
 	}):Play()
 
 	if not silent and type(self.Callback) == "function" then
