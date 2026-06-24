@@ -125,7 +125,7 @@ n.Y.Offset+q.Y
 end))
 
 table.insert(j,d.RenderStepped:Connect(function(p)
-g.Position=g.Position:Lerp(o,1-math.exp(-6*p))
+g.Position=g.Position:Lerp(o,1-math.exp(-8*p))
 end))
 
 f.Parent=getParent()

@@ -95,7 +95,7 @@ function Window.new()
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
-		panel.Position = panel.Position:Lerp(targetPosition, 1 - math.exp(-6 * deltaTime))
+		panel.Position = panel.Position:Lerp(targetPosition, 1 - math.exp(-8 * deltaTime))
 	end))
 
 	screenGui.Parent = getParent()
