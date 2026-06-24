@@ -11,7 +11,8 @@ local PureUI = loadstring(game:HttpGet("RAW_URL"))()
 ## `PureUI:CreateWindow(config)`
 
 Creates a centered `800 × 450` square-cornered background panel with a
-`30px` draggable titlebar and centered `Pure` title.
+`30px` draggable titlebar and centered `Pure` title. Dragging is clamped so
+the window remains on screen.
 
 ```lua
 local Window = PureUI:CreateWindow({})

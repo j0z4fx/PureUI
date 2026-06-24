@@ -53,6 +53,20 @@ function Window.new()
 	local startPosition
 	local targetPosition = panel.Position
 
+	local function clampToScreen(position)
+		local viewport = screenGui.AbsoluteSize
+		local size = panel.AbsoluteSize
+		local halfWidth = size.X * panel.AnchorPoint.X
+		local halfHeight = size.Y * panel.AnchorPoint.Y
+		local x = position.X.Offset + viewport.X * position.X.Scale
+		local y = position.Y.Offset + viewport.Y * position.Y.Scale
+
+		return UDim2.fromOffset(
+			if size.X > viewport.X then viewport.X / 2 else math.clamp(x, halfWidth, viewport.X - (size.X - halfWidth)),
+			if size.Y > viewport.Y then viewport.Y / 2 else math.clamp(y, halfHeight, viewport.Y - (size.Y - halfHeight))
+		)
+	end
+
 	table.insert(connections, titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType ~= Enum.UserInputType.MouseButton1
 			and input.UserInputType ~= Enum.UserInputType.Touch
@@ -90,15 +104,16 @@ function Window.new()
 		end
 
 		local delta = input.Position - dragStart
-		targetPosition = UDim2.new(
+		targetPosition = clampToScreen(UDim2.new(
 			startPosition.X.Scale,
 			startPosition.X.Offset + delta.X,
 			startPosition.Y.Scale,
 			startPosition.Y.Offset + delta.Y
-		)
+		))
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
+		targetPosition = clampToScreen(targetPosition)
 		local x = targetPosition.X.Offset - panel.Position.X.Offset
 		local y = targetPosition.Y.Offset - panel.Position.Y.Offset
 		if x * x + y * y < 0.25 then

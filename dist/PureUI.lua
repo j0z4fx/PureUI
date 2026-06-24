@@ -83,6 +83,20 @@ local m
 local n
 local o=g.Position
 
+local function clampToScreen(p)
+local q=f.AbsoluteSize
+local r=g.AbsoluteSize
+local s=r.X*g.AnchorPoint.X
+local t=r.Y*g.AnchorPoint.Y
+local u=p.X.Offset+q.X*p.X.Scale
+local v=p.Y.Offset+q.Y*p.Y.Scale
+
+return UDim2.fromOffset(
+if r.X>q.X then q.X/2 else math.clamp(u,s,q.X-(r.X-s)),
+if r.Y>q.Y then q.Y/2 else math.clamp(v,t,q.Y-(r.Y-t))
+)
+end
+
 table.insert(j,h.InputBegan:Connect(function(p)
 if p.UserInputType~=Enum.UserInputType.MouseButton1
 and p.UserInputType~=Enum.UserInputType.Touch
@@ -120,15 +134,16 @@ return
 end
 
 local q=p.Position-m
-o=UDim2.new(
+o=clampToScreen(UDim2.new(
 n.X.Scale,
 n.X.Offset+q.X,
 n.Y.Scale,
 n.Y.Offset+q.Y
-)
+))
 end))
 
 table.insert(j,d.RenderStepped:Connect(function(p)
+o=clampToScreen(o)
 local q=o.X.Offset-g.Position.X.Offset
 local r=o.Y.Offset-g.Position.Y.Offset
 if q*q+r*r<0.25 then
