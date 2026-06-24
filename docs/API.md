@@ -12,7 +12,8 @@ local PureUI = loadstring(game:HttpGet("RAW_URL"))()
 
 Creates a centered `800 × 450` square-cornered background panel with a
 `30px` draggable titlebar and centered `Pure` title. Dragging is clamped so
-the window remains on screen.
+the window remains on screen. Current development build includes two demo
+tabs.
 
 ```lua
 local Window = PureUI:CreateWindow({})
@@ -23,10 +24,12 @@ Destroy it with `Window:Destroy()`, or destroy every PureUI window with
 
 ## `Window:CreateTab(config)`
 
-Creates a tab object.
+Creates a working tab button and content frame. First tab is selected
+automatically.
 
 ```lua
-local Tab = Window:CreateTab({})
+local First = Window:CreateTab({ Name = "Demo 1" })
+local Second = Window:CreateTab({ Name = "Demo 2" })
 ```
 
 ## `Tab:CreateButton(config)`

@@ -46,6 +46,19 @@ function Window.new()
 	title.TextSize = 14
 	title.Parent = titleBar
 
+	local tabBar = Instance.new("Frame")
+	tabBar.Name = "TabBar"
+	tabBar.Position = UDim2.fromOffset(0, 30)
+	tabBar.Size = UDim2.new(1, 0, 0, 30)
+	tabBar.BackgroundColor3 = Color3.fromRGB(24, 26, 32)
+	tabBar.BorderSizePixel = 0
+	tabBar.Parent = panel
+
+	local tabLayout = Instance.new("UIListLayout")
+	tabLayout.FillDirection = Enum.FillDirection.Horizontal
+	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	tabLayout.Parent = tabBar
+
 	local connections = {}
 	local dragging = false
 	local dragInput
@@ -126,17 +139,31 @@ function Window.new()
 
 	screenGui.Parent = getParent()
 
-	return setmetatable({
+	local window = setmetatable({
 		ScreenGui = screenGui,
 		Panel = panel,
 		TitleBar = titleBar,
 		Title = title,
+		TabBar = tabBar,
+		Tabs = {},
 		Connections = connections,
 	}, Window)
+
+	Tab.new(window, { Name = "Demo 1" })
+	Tab.new(window, { Name = "Demo 2" })
+
+	return window
 end
 
-function Window:CreateTab(_config)
-	return Tab.new()
+function Window:CreateTab(config)
+	return Tab.new(self, config)
+end
+
+function Window:SelectTab(selected)
+	for _, tab in ipairs(self.Tabs) do
+		tab:SetActive(tab == selected)
+	end
+	self.SelectedTab = selected
 end
 
 function Window:Destroy()
@@ -145,12 +172,19 @@ function Window:Destroy()
 	end
 	table.clear(self.Connections)
 
+	for _, tab in ipairs(self.Tabs) do
+		tab:Destroy()
+	end
+	table.clear(self.Tabs)
+
 	if self.ScreenGui then
 		self.ScreenGui:Destroy()
 		self.ScreenGui = nil
 		self.Panel = nil
 		self.TitleBar = nil
 		self.Title = nil
+		self.TabBar = nil
+		self.SelectedTab = nil
 	end
 end
 

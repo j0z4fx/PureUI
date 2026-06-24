@@ -18,12 +18,62 @@ local b=a.b()
 local c={}
 c.__index=c
 
-function c.new()
-return setmetatable({},c)
+function c.new(d,e)
+e=e or{}
+
+local f=Instance.new"TextButton"
+f.Name=e.Name or"Tab"
+f.Size=UDim2.fromOffset(100,30)
+f.BackgroundColor3=Color3.fromRGB(31,34,41)
+f.BorderSizePixel=0
+f.AutoButtonColor=false
+f.Font=Enum.Font.GothamMedium
+f.Text=e.Name or"Tab"
+f.TextColor3=Color3.fromRGB(145,149,160)
+f.TextSize=13
+f.Parent=d.TabBar
+
+local g=Instance.new"Frame"
+g.Name=f.Name.."Content"
+g.Position=UDim2.fromOffset(0,60)
+g.Size=UDim2.new(1,0,1,-60)
+g.BackgroundTransparency=1
+g.Visible=false
+g.Parent=d.Panel
+
+local h=setmetatable({
+Window=d,
+Button=f,
+Content=g,
+Connection=nil,
+},c)
+
+h.Connection=f.MouseButton1Click:Connect(function()
+d:SelectTab(h)
+end)
+
+table.insert(d.Tabs,h)
+if#d.Tabs==1 then
+d:SelectTab(h)
+end
+
+return h
 end
 
 function c.CreateButton(d,e)
 return b.new()
+end
+
+function c.SetActive(d,e)
+d.Content.Visible=e
+d.Button.BackgroundColor3=if e then Color3.fromRGB(42,46,55)else Color3.fromRGB(31,34,41)
+d.Button.TextColor3=if e then Color3.fromRGB(240,242,245)else Color3.fromRGB(145,149,160)
+end
+
+function c.Destroy(d)
+d.Connection:Disconnect()
+d.Button:Destroy()
+d.Content:Destroy()
 end
 
 return c end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
@@ -76,97 +126,124 @@ i.TextColor3=Color3.fromRGB(235,237,240)
 i.TextSize=14
 i.Parent=h
 
-local j={}
-local k=false
-local l
-local m
-local n
-local o=g.Position
+local j=Instance.new"Frame"
+j.Name="TabBar"
+j.Position=UDim2.fromOffset(0,30)
+j.Size=UDim2.new(1,0,0,30)
+j.BackgroundColor3=Color3.fromRGB(24,26,32)
+j.BorderSizePixel=0
+j.Parent=g
 
-local function clampToScreen(p)
-local q=f.AbsoluteSize
-local r=g.AbsoluteSize
-local s=r.X*g.AnchorPoint.X
-local t=r.Y*g.AnchorPoint.Y
-local u=p.X.Offset+q.X*p.X.Scale
-local v=p.Y.Offset+q.Y*p.Y.Scale
+local k=Instance.new"UIListLayout"
+k.FillDirection=Enum.FillDirection.Horizontal
+k.SortOrder=Enum.SortOrder.LayoutOrder
+k.Parent=j
+
+local l={}
+local m=false
+local n
+local o
+local p
+local q=g.Position
+
+local function clampToScreen(r)
+local s=f.AbsoluteSize
+local t=g.AbsoluteSize
+local u=t.X*g.AnchorPoint.X
+local v=t.Y*g.AnchorPoint.Y
+local w=r.X.Offset+s.X*r.X.Scale
+local x=r.Y.Offset+s.Y*r.Y.Scale
 
 return UDim2.fromOffset(
-if r.X>q.X then q.X/2 else math.clamp(u,s,q.X-(r.X-s)),
-if r.Y>q.Y then q.Y/2 else math.clamp(v,t,q.Y-(r.Y-t))
+if t.X>s.X then s.X/2 else math.clamp(w,u,s.X-(t.X-u)),
+if t.Y>s.Y then s.Y/2 else math.clamp(x,v,s.Y-(t.Y-v))
 )
 end
 
-table.insert(j,h.InputBegan:Connect(function(p)
-if p.UserInputType~=Enum.UserInputType.MouseButton1
-and p.UserInputType~=Enum.UserInputType.Touch
+table.insert(l,h.InputBegan:Connect(function(r)
+if r.UserInputType~=Enum.UserInputType.MouseButton1
+and r.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
-k=true
-m=p.Position
-n=g.Position
-o=g.Position
+m=true
+o=r.Position
+p=g.Position
+q=g.Position
 end))
 
-table.insert(j,c.InputEnded:Connect(function(p)
-if k
-and(p.UserInputType==Enum.UserInputType.MouseButton1
-or p.UserInputType==Enum.UserInputType.Touch)
+table.insert(l,c.InputEnded:Connect(function(r)
+if m
+and(r.UserInputType==Enum.UserInputType.MouseButton1
+or r.UserInputType==Enum.UserInputType.Touch)
 then
-k=false
-o=g.Position
+m=false
+q=g.Position
 end
 end))
 
-table.insert(j,h.InputChanged:Connect(function(p)
-if p.UserInputType==Enum.UserInputType.MouseMovement
-or p.UserInputType==Enum.UserInputType.Touch
+table.insert(l,h.InputChanged:Connect(function(r)
+if r.UserInputType==Enum.UserInputType.MouseMovement
+or r.UserInputType==Enum.UserInputType.Touch
 then
-l=p
+n=r
 end
 end))
 
-table.insert(j,c.InputChanged:Connect(function(p)
-if not k or p~=l then
+table.insert(l,c.InputChanged:Connect(function(r)
+if not m or r~=n then
 return
 end
 
-local q=p.Position-m
-o=clampToScreen(UDim2.new(
-n.X.Scale,
-n.X.Offset+q.X,
-n.Y.Scale,
-n.Y.Offset+q.Y
+local s=r.Position-o
+q=clampToScreen(UDim2.new(
+p.X.Scale,
+p.X.Offset+s.X,
+p.Y.Scale,
+p.Y.Offset+s.Y
 ))
 end))
 
-table.insert(j,d.RenderStepped:Connect(function(p)
-o=clampToScreen(o)
-local q=o.X.Offset-g.Position.X.Offset
-local r=o.Y.Offset-g.Position.Y.Offset
-if q*q+r*r<0.25 then
-g.Position=o
+table.insert(l,d.RenderStepped:Connect(function(r)
+q=clampToScreen(q)
+local s=q.X.Offset-g.Position.X.Offset
+local t=q.Y.Offset-g.Position.Y.Offset
+if s*s+t*t<0.25 then
+g.Position=q
 return
 end
 
-g.Position=g.Position:Lerp(o,1-math.exp(-6*p))
+g.Position=g.Position:Lerp(q,1-math.exp(-6*r))
 end))
 
 f.Parent=getParent()
 
-return setmetatable({
+local r=setmetatable({
 ScreenGui=f,
 Panel=g,
 TitleBar=h,
 Title=i,
-Connections=j,
+TabBar=j,
+Tabs={},
+Connections=l,
 },e)
+
+b.new(r,{Name="Demo 1"})
+b.new(r,{Name="Demo 2"})
+
+return r
 end
 
 function e.CreateTab(f,g)
-return b.new()
+return b.new(f,g)
+end
+
+function e.SelectTab(f,g)
+for h,i in ipairs(f.Tabs)do
+i:SetActive(i==g)
+end
+f.SelectedTab=g
 end
 
 function e.Destroy(f)
@@ -175,12 +252,19 @@ h:Disconnect()
 end
 table.clear(f.Connections)
 
+for g,h in ipairs(f.Tabs)do
+h:Destroy()
+end
+table.clear(f.Tabs)
+
 if f.ScreenGui then
 f.ScreenGui:Destroy()
 f.ScreenGui=nil
 f.Panel=nil
 f.TitleBar=nil
 f.Title=nil
+f.TabBar=nil
+f.SelectedTab=nil
 end
 end
 

@@ -1,5 +1,3 @@
-local PureUI = loadstring(game:HttpGet("RAW_URL"))()
+local PureUI = loadstring(game:HttpGet("https://pureserver.vercel.app/PureUI.lua?t=" .. os.clock()))()
 
--- local Window = PureUI:CreateWindow({})
--- local Tab = Window:CreateTab({})
--- local Button = Tab:CreateButton({})
+local Window = PureUI:CreateWindow({})
