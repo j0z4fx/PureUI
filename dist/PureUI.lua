@@ -57,8 +57,11 @@ e.BackgroundColor3=Color3.fromRGB(20,22,27)
 e.BorderSizePixel=0
 e.Parent=d
 
-local f=Instance.new"UICorner"
-f.CornerRadius=UDim.new(0,10)
+local f=Instance.new"Frame"
+f.Name="TitleBar"
+f.Size=UDim2.new(1,0,0,40)
+f.BackgroundColor3=Color3.fromRGB(27,30,36)
+f.BorderSizePixel=0
 f.Parent=e
 
 d.Parent=getParent()
@@ -66,6 +69,7 @@ d.Parent=getParent()
 return setmetatable({
 ScreenGui=d,
 Panel=e,
+TitleBar=f,
 },c)
 end
 
@@ -78,6 +82,7 @@ if d.ScreenGui then
 d.ScreenGui:Destroy()
 d.ScreenGui=nil
 d.Panel=nil
+d.TitleBar=nil
 end
 end
 

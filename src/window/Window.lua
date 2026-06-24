@@ -27,15 +27,19 @@ function Window.new()
 	panel.BorderSizePixel = 0
 	panel.Parent = screenGui
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 10)
-	corner.Parent = panel
+	local titleBar = Instance.new("Frame")
+	titleBar.Name = "TitleBar"
+	titleBar.Size = UDim2.new(1, 0, 0, 40)
+	titleBar.BackgroundColor3 = Color3.fromRGB(27, 30, 36)
+	titleBar.BorderSizePixel = 0
+	titleBar.Parent = panel
 
 	screenGui.Parent = getParent()
 
 	return setmetatable({
 		ScreenGui = screenGui,
 		Panel = panel,
+		TitleBar = titleBar,
 	}, Window)
 end
 
@@ -48,6 +52,7 @@ function Window:Destroy()
 		self.ScreenGui:Destroy()
 		self.ScreenGui = nil
 		self.Panel = nil
+		self.TitleBar = nil
 	end
 end
 
