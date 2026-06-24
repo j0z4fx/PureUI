@@ -61,12 +61,37 @@ function Window.new()
 	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	tabLayout.Parent = tabBar
 
+	local bottomDragHandle = Instance.new("Frame")
+	bottomDragHandle.Name = "BottomDragHandle"
+	bottomDragHandle.AnchorPoint = Vector2.new(0.5, 0)
+	bottomDragHandle.Position = UDim2.new(0.5, 0, 1, 4)
+	bottomDragHandle.Size = UDim2.fromOffset(160, 4)
+	bottomDragHandle.BackgroundColor3 = Color3.fromRGB(120, 124, 136)
+	bottomDragHandle.BackgroundTransparency = 0.35
+	bottomDragHandle.BorderSizePixel = 0
+	bottomDragHandle.Active = true
+	bottomDragHandle.Parent = panel
+
+	local resizeHandle = Instance.new("Frame")
+	resizeHandle.Name = "ResizeHandle"
+	resizeHandle.AnchorPoint = Vector2.new(0.5, 0.5)
+	resizeHandle.Position = UDim2.fromScale(1, 1)
+	resizeHandle.Size = UDim2.fromOffset(14, 14)
+	resizeHandle.BackgroundColor3 = Color3.fromRGB(120, 124, 136)
+	resizeHandle.BackgroundTransparency = 0.35
+	resizeHandle.BorderSizePixel = 0
+	resizeHandle.Active = true
+	resizeHandle.ZIndex = 20
+	resizeHandle.Parent = panel
+
 	local connections = {}
 	local dragging = false
-	local dragInput
 	local dragStart
 	local startPosition
 	local targetPosition = panel.Position
+	local resizing = false
+	local resizeStart
+	local startSize
 
 	local function clampToScreen(position)
 		local viewport = screenGui.AbsoluteSize
@@ -82,7 +107,7 @@ function Window.new()
 		)
 	end
 
-	table.insert(connections, titleBar.InputBegan:Connect(function(input)
+	local function beginDrag(input)
 		if input.UserInputType ~= Enum.UserInputType.MouseButton1
 			and input.UserInputType ~= Enum.UserInputType.Touch
 		then
@@ -93,6 +118,20 @@ function Window.new()
 		dragStart = input.Position
 		startPosition = panel.Position
 		targetPosition = panel.Position
+	end
+
+	table.insert(connections, titleBar.InputBegan:Connect(beginDrag))
+	table.insert(connections, bottomDragHandle.InputBegan:Connect(beginDrag))
+	table.insert(connections, resizeHandle.InputBegan:Connect(function(input)
+		if input.UserInputType ~= Enum.UserInputType.MouseButton1
+			and input.UserInputType ~= Enum.UserInputType.Touch
+		then
+			return
+		end
+
+		resizing = true
+		resizeStart = input.Position
+		startSize = panel.Size
 	end))
 
 	table.insert(connections, UserInputService.InputEnded:Connect(function(input)
@@ -103,28 +142,42 @@ function Window.new()
 			dragging = false
 			targetPosition = panel.Position
 		end
-	end))
-
-	table.insert(connections, titleBar.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement
-			or input.UserInputType == Enum.UserInputType.Touch
+		if resizing
+			and (input.UserInputType == Enum.UserInputType.MouseButton1
+				or input.UserInputType == Enum.UserInputType.Touch)
 		then
-			dragInput = input
+			resizing = false
 		end
 	end))
 
 	table.insert(connections, UserInputService.InputChanged:Connect(function(input)
-		if not dragging or input ~= dragInput then
+		if input.UserInputType ~= Enum.UserInputType.MouseMovement
+			and input.UserInputType ~= Enum.UserInputType.Touch
+		then
 			return
 		end
 
-		local delta = input.Position - dragStart
-		targetPosition = clampToScreen(UDim2.new(
-			startPosition.X.Scale,
-			startPosition.X.Offset + delta.X,
-			startPosition.Y.Scale,
-			startPosition.Y.Offset + delta.Y
-		))
+		if dragging then
+			local delta = input.Position - dragStart
+			targetPosition = clampToScreen(UDim2.new(
+				startPosition.X.Scale,
+				startPosition.X.Offset + delta.X,
+				startPosition.Y.Scale,
+				startPosition.Y.Offset + delta.Y
+			))
+		end
+
+		if resizing then
+			local delta = input.Position - resizeStart
+			local viewport = screenGui.AbsoluteSize
+			local maxWidth = math.max(560, math.min(850, viewport.X))
+			local maxHeight = math.max(350, math.min(560, viewport.Y))
+			panel.Size = UDim2.fromOffset(
+				math.clamp(startSize.X.Offset + delta.X * 2, 560, maxWidth),
+				math.clamp(startSize.Y.Offset + delta.Y * 2, 350, maxHeight)
+			)
+			targetPosition = clampToScreen(panel.Position)
+		end
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
@@ -151,6 +204,8 @@ function Window.new()
 		TitleBar = titleBar,
 		Title = title,
 		TabBar = tabBar,
+		BottomDragHandle = bottomDragHandle,
+		ResizeHandle = resizeHandle,
 		Tabs = {},
 		Connections = connections,
 	}, Window)
@@ -203,6 +258,8 @@ function Window:Destroy()
 		self.TitleBar = nil
 		self.Title = nil
 		self.TabBar = nil
+		self.BottomDragHandle = nil
+		self.ResizeHandle = nil
 		self.SelectedTab = nil
 	end
 end
