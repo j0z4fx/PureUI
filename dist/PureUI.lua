@@ -132,7 +132,8 @@ local f=Instance.new"TextButton"
 f.Name="Keypicker"
 f.AnchorPoint=Vector2.new(1,0.5)
 f.Position=UDim2.new(1,-52,0.5,0)
-f.Size=UDim2.fromOffset(38,18)
+f.AutomaticSize=Enum.AutomaticSize.X
+f.Size=UDim2.fromOffset(0,18)
 f.BackgroundColor3=Color3.fromRGB(45,48,57)
 f.BorderSizePixel=0
 f.AutoButtonColor=false
@@ -141,33 +142,38 @@ f.TextColor3=Color3.fromRGB(220,223,228)
 f.TextSize=11
 f.Parent=d.Row
 
-local g=setmetatable({
+local g=Instance.new"UIPadding"
+g.PaddingLeft=UDim.new(0,8)
+g.PaddingRight=UDim.new(0,8)
+g.Parent=f
+
+local h=setmetatable({
 Button=f,
 Key=e.Default or"None",
 Callback=e.Callback,
 Listening=false,
 },c)
 
-g:SetKey(g.Key,true)
-g.PressConnection=f.MouseButton1Down:Connect(function()
+h:SetKey(h.Key,true)
+h.PressConnection=f.MouseButton1Down:Connect(function()
 d.SuppressClick=true
 task.defer(function()
 d.SuppressClick=false
 end)
 end)
-g.ClickConnection=f.MouseButton1Click:Connect(function()
-g.Listening=true
+h.ClickConnection=f.MouseButton1Click:Connect(function()
+h.Listening=true
 f.Text="..."
 end)
-g.InputConnection=b.InputBegan:Connect(function(h)
-if not g.Listening then
+h.InputConnection=b.InputBegan:Connect(function(i)
+if not h.Listening then
 return
 end
-g.Listening=false
-g:SetKey(inputName(h))
+h.Listening=false
+h:SetKey(inputName(i))
 end)
 
-return g
+return h
 end
 
 function c.SetKey(d,e,f)

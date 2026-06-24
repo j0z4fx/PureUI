@@ -17,7 +17,8 @@ function Keypicker.new(toggle, config)
 	button.Name = "Keypicker"
 	button.AnchorPoint = Vector2.new(1, 0.5)
 	button.Position = UDim2.new(1, -52, 0.5, 0)
-	button.Size = UDim2.fromOffset(38, 18)
+	button.AutomaticSize = Enum.AutomaticSize.X
+	button.Size = UDim2.fromOffset(0, 18)
 	button.BackgroundColor3 = Color3.fromRGB(45, 48, 57)
 	button.BorderSizePixel = 0
 	button.AutoButtonColor = false
@@ -25,6 +26,11 @@ function Keypicker.new(toggle, config)
 	button.TextColor3 = Color3.fromRGB(220, 223, 228)
 	button.TextSize = 11
 	button.Parent = toggle.Row
+
+	local padding = Instance.new("UIPadding")
+	padding.PaddingLeft = UDim.new(0, 8)
+	padding.PaddingRight = UDim.new(0, 8)
+	padding.Parent = button
 
 	local picker = setmetatable({
 		Button = button,
