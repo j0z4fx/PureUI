@@ -25,10 +25,36 @@ function Tab.new(window, config)
 	content.Visible = false
 	content.Parent = window.Panel
 
+	local padding = Instance.new("UIPadding")
+	padding.PaddingTop = UDim.new(0, 8)
+	padding.PaddingBottom = UDim.new(0, 8)
+	padding.PaddingLeft = UDim.new(0, 8)
+	padding.PaddingRight = UDim.new(0, 8)
+	padding.Parent = content
+
+	local layout = Instance.new("UIGridLayout")
+	layout.CellPadding = UDim2.fromOffset(8, 0)
+	layout.CellSize = UDim2.new(1 / 3, -16 / 3, 1, 0)
+	layout.FillDirectionMaxCells = 3
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Parent = content
+
+	local columns = {}
+	for index = 1, 3 do
+		local column = Instance.new("Frame")
+		column.Name = "Column" .. index
+		column.LayoutOrder = index
+		column.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		column.BorderSizePixel = 0
+		column.Parent = content
+		columns[index] = column
+	end
+
 	local tab = setmetatable({
 		Window = window,
 		Button = button,
 		Content = content,
+		Columns = columns,
 		Connection = nil,
 	}, Tab)
 

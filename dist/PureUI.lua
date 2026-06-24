@@ -40,23 +40,49 @@ g.BackgroundTransparency=1
 g.Visible=false
 g.Parent=d.Panel
 
-local h=setmetatable({
+local h=Instance.new"UIPadding"
+h.PaddingTop=UDim.new(0,8)
+h.PaddingBottom=UDim.new(0,8)
+h.PaddingLeft=UDim.new(0,8)
+h.PaddingRight=UDim.new(0,8)
+h.Parent=g
+
+local i=Instance.new"UIGridLayout"
+i.CellPadding=UDim2.fromOffset(8,0)
+i.CellSize=UDim2.new(0.3333333333333333,-5.333333333333333,1,0)
+i.FillDirectionMaxCells=3
+i.SortOrder=Enum.SortOrder.LayoutOrder
+i.Parent=g
+
+local j={}
+for k=1,3 do
+local l=Instance.new"Frame"
+l.Name="Column"..k
+l.LayoutOrder=k
+l.BackgroundColor3=Color3.fromRGB(255,0,0)
+l.BorderSizePixel=0
+l.Parent=g
+j[k]=l
+end
+
+local k=setmetatable({
 Window=d,
 Button=f,
 Content=g,
+Columns=j,
 Connection=nil,
 },c)
 
-h.Connection=f.MouseButton1Click:Connect(function()
-d:SelectTab(h)
+k.Connection=f.MouseButton1Click:Connect(function()
+d:SelectTab(k)
 end)
 
-table.insert(d.Tabs,h)
+table.insert(d.Tabs,k)
 if#d.Tabs==1 then
-d:SelectTab(h)
+d:SelectTab(k)
 end
 
-return h
+return k
 end
 
 function c.CreateButton(d,e)
