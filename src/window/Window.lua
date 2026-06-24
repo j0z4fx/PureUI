@@ -64,12 +64,16 @@ function Window.new()
 		dragStart = input.Position
 		startPosition = panel.Position
 		targetPosition = panel.Position
+	end))
 
-		table.insert(connections, input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end))
+	table.insert(connections, UserInputService.InputEnded:Connect(function(input)
+		if dragging
+			and (input.UserInputType == Enum.UserInputType.MouseButton1
+				or input.UserInputType == Enum.UserInputType.Touch)
+		then
+			dragging = false
+			targetPosition = panel.Position
+		end
 	end))
 
 	table.insert(connections, titleBar.InputChanged:Connect(function(input)

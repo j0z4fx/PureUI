@@ -94,12 +94,16 @@ k=true
 m=p.Position
 n=g.Position
 o=g.Position
-
-table.insert(j,p.Changed:Connect(function()
-if p.UserInputState==Enum.UserInputState.End then
-k=false
-end
 end))
+
+table.insert(j,c.InputEnded:Connect(function(p)
+if k
+and(p.UserInputType==Enum.UserInputType.MouseButton1
+or p.UserInputType==Enum.UserInputType.Touch)
+then
+k=false
+o=g.Position
+end
 end))
 
 table.insert(j,h.InputChanged:Connect(function(p)
