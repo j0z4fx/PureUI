@@ -1043,14 +1043,14 @@ m.Parent=l
 local n=c.GetAsset"chevron-down"
 local o=Instance.new"ImageLabel"
 o.AnchorPoint=Vector2.new(1,0.5)
-o.Position=UDim2.new(1,-7,0.5,0)
+o.Position=UDim2.new(1,-15,0,19)
 o.Size=UDim2.fromOffset(12,12)
 o.BackgroundTransparency=1
 o.Image=n.Url
 o.ImageRectOffset=n.ImageRectOffset
 o.ImageRectSize=n.ImageRectSize
 o.ImageColor3=Color3.fromRGB(155,160,172)
-o.Parent=l
+o.Parent=j
 
 local p=Instance.new"ScrollingFrame"
 p.Position=UDim2.fromOffset(8,38)

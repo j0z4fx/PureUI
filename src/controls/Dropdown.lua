@@ -49,14 +49,14 @@ function Dropdown.new(parent, config)
 	local arrowAsset = Lucide.GetAsset("chevron-down")
 	local arrow = Instance.new("ImageLabel")
 	arrow.AnchorPoint = Vector2.new(1, 0.5)
-	arrow.Position = UDim2.new(1, -7, 0.5, 0)
+	arrow.Position = UDim2.new(1, -15, 0, 19)
 	arrow.Size = UDim2.fromOffset(12, 12)
 	arrow.BackgroundTransparency = 1
 	arrow.Image = arrowAsset.Url
 	arrow.ImageRectOffset = arrowAsset.ImageRectOffset
 	arrow.ImageRectSize = arrowAsset.ImageRectSize
 	arrow.ImageColor3 = Color3.fromRGB(155, 160, 172)
-	arrow.Parent = selectButton
+	arrow.Parent = root
 
 	local list = Instance.new("ScrollingFrame")
 	list.Position = UDim2.fromOffset(8, 38)
