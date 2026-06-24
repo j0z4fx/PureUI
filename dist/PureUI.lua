@@ -29,9 +29,10 @@ end
 return c end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
 
 local b=a.c()
+local c=game:GetService"UserInputService"
 
-local c={}
-c.__index=c
+local d={}
+d.__index=d
 
 local function getParent()
 if type(gethui)=="function"then
@@ -41,64 +42,116 @@ end
 return game:GetService"CoreGui"
 end
 
-function c.new()
-local d=Instance.new"ScreenGui"
-d.Name="PureUI"
-d.IgnoreGuiInset=true
-d.ResetOnSpawn=false
-d.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-
-local e=Instance.new"Frame"
-e.Name="Background"
-e.AnchorPoint=Vector2.new(0.5,0.5)
-e.Position=UDim2.fromScale(0.5,0.5)
-e.Size=UDim2.fromOffset(800,450)
-e.BackgroundColor3=Color3.fromRGB(20,22,27)
-e.BorderSizePixel=0
-e.Parent=d
+function d.new()
+local e=Instance.new"ScreenGui"
+e.Name="PureUI"
+e.IgnoreGuiInset=true
+e.ResetOnSpawn=false
+e.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 
 local f=Instance.new"Frame"
-f.Name="TitleBar"
-f.Size=UDim2.new(1,0,0,30)
-f.BackgroundColor3=Color3.fromRGB(27,30,36)
+f.Name="Background"
+f.AnchorPoint=Vector2.new(0.5,0.5)
+f.Position=UDim2.fromScale(0.5,0.5)
+f.Size=UDim2.fromOffset(800,450)
+f.BackgroundColor3=Color3.fromRGB(20,22,27)
 f.BorderSizePixel=0
 f.Parent=e
 
-local g=Instance.new"TextLabel"
-g.Name="Title"
-g.Size=UDim2.fromScale(1,1)
-g.BackgroundTransparency=1
-g.Font=Enum.Font.GothamMedium
-g.Text="Pure"
-g.TextColor3=Color3.fromRGB(235,237,240)
-g.TextSize=14
+local g=Instance.new"Frame"
+g.Name="TitleBar"
+g.Size=UDim2.new(1,0,0,30)
+g.BackgroundColor3=Color3.fromRGB(27,30,36)
+g.BorderSizePixel=0
 g.Parent=f
 
-d.Parent=getParent()
+local h=Instance.new"TextLabel"
+h.Name="Title"
+h.Size=UDim2.fromScale(1,1)
+h.BackgroundTransparency=1
+h.Font=Enum.Font.GothamMedium
+h.Text="Pure"
+h.TextColor3=Color3.fromRGB(235,237,240)
+h.TextSize=14
+h.Parent=g
 
-return setmetatable({
-ScreenGui=d,
-Panel=e,
-TitleBar=f,
-Title=g,
-},c)
+local i={}
+local j=false
+local k
+local l
+local m
+
+table.insert(i,g.InputBegan:Connect(function(n)
+if n.UserInputType~=Enum.UserInputType.MouseButton1
+and n.UserInputType~=Enum.UserInputType.Touch
+then
+return
 end
 
-function c.CreateTab(d,e)
+j=true
+l=n.Position
+m=f.Position
+
+table.insert(i,n.Changed:Connect(function()
+if n.UserInputState==Enum.UserInputState.End then
+j=false
+end
+end))
+end))
+
+table.insert(i,g.InputChanged:Connect(function(n)
+if n.UserInputType==Enum.UserInputType.MouseMovement
+or n.UserInputType==Enum.UserInputType.Touch
+then
+k=n
+end
+end))
+
+table.insert(i,c.InputChanged:Connect(function(n)
+if not j or n~=k then
+return
+end
+
+local o=n.Position-l
+f.Position=UDim2.new(
+m.X.Scale,
+m.X.Offset+o.X,
+m.Y.Scale,
+m.Y.Offset+o.Y
+)
+end))
+
+e.Parent=getParent()
+
+return setmetatable({
+ScreenGui=e,
+Panel=f,
+TitleBar=g,
+Title=h,
+Connections=i,
+},d)
+end
+
+function d.CreateTab(e,f)
 return b.new()
 end
 
-function c.Destroy(d)
-if d.ScreenGui then
-d.ScreenGui:Destroy()
-d.ScreenGui=nil
-d.Panel=nil
-d.TitleBar=nil
-d.Title=nil
+function d.Destroy(e)
+for f,g in ipairs(e.Connections)do
+g:Disconnect()
+end
+table.clear(e.Connections)
+
+if e.ScreenGui then
+e.ScreenGui:Destroy()
+e.ScreenGui=nil
+e.Panel=nil
+e.TitleBar=nil
+e.Title=nil
 end
 end
 
-return c end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 

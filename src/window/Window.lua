@@ -1,4 +1,5 @@
 local Tab = require("../containers/Tab")
+local UserInputService = game:GetService("UserInputService")
 
 local Window = {}
 Window.__index = Window
@@ -44,6 +45,52 @@ function Window.new()
 	title.TextSize = 14
 	title.Parent = titleBar
 
+	local connections = {}
+	local dragging = false
+	local dragInput
+	local dragStart
+	local startPosition
+
+	table.insert(connections, titleBar.InputBegan:Connect(function(input)
+		if input.UserInputType ~= Enum.UserInputType.MouseButton1
+			and input.UserInputType ~= Enum.UserInputType.Touch
+		then
+			return
+		end
+
+		dragging = true
+		dragStart = input.Position
+		startPosition = panel.Position
+
+		table.insert(connections, input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end))
+	end))
+
+	table.insert(connections, titleBar.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement
+			or input.UserInputType == Enum.UserInputType.Touch
+		then
+			dragInput = input
+		end
+	end))
+
+	table.insert(connections, UserInputService.InputChanged:Connect(function(input)
+		if not dragging or input ~= dragInput then
+			return
+		end
+
+		local delta = input.Position - dragStart
+		panel.Position = UDim2.new(
+			startPosition.X.Scale,
+			startPosition.X.Offset + delta.X,
+			startPosition.Y.Scale,
+			startPosition.Y.Offset + delta.Y
+		)
+	end))
+
 	screenGui.Parent = getParent()
 
 	return setmetatable({
@@ -51,6 +98,7 @@ function Window.new()
 		Panel = panel,
 		TitleBar = titleBar,
 		Title = title,
+		Connections = connections,
 	}, Window)
 end
 
@@ -59,6 +107,11 @@ function Window:CreateTab(_config)
 end
 
 function Window:Destroy()
+	for _, connection in ipairs(self.Connections) do
+		connection:Disconnect()
+	end
+	table.clear(self.Connections)
+
 	if self.ScreenGui then
 		self.ScreenGui:Destroy()
 		self.ScreenGui = nil
