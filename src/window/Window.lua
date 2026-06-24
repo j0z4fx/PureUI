@@ -29,10 +29,20 @@ function Window.new()
 
 	local titleBar = Instance.new("Frame")
 	titleBar.Name = "TitleBar"
-	titleBar.Size = UDim2.new(1, 0, 0, 20)
+	titleBar.Size = UDim2.new(1, 0, 0, 30)
 	titleBar.BackgroundColor3 = Color3.fromRGB(27, 30, 36)
 	titleBar.BorderSizePixel = 0
 	titleBar.Parent = panel
+
+	local title = Instance.new("TextLabel")
+	title.Name = "Title"
+	title.Size = UDim2.fromScale(1, 1)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamMedium
+	title.Text = "Pure"
+	title.TextColor3 = Color3.fromRGB(235, 237, 240)
+	title.TextSize = 14
+	title.Parent = titleBar
 
 	screenGui.Parent = getParent()
 
@@ -40,6 +50,7 @@ function Window.new()
 		ScreenGui = screenGui,
 		Panel = panel,
 		TitleBar = titleBar,
+		Title = title,
 	}, Window)
 end
 
@@ -53,6 +64,7 @@ function Window:Destroy()
 		self.ScreenGui = nil
 		self.Panel = nil
 		self.TitleBar = nil
+		self.Title = nil
 	end
 end
 

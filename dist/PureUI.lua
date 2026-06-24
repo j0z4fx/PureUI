@@ -59,10 +59,20 @@ e.Parent=d
 
 local f=Instance.new"Frame"
 f.Name="TitleBar"
-f.Size=UDim2.new(1,0,0,20)
+f.Size=UDim2.new(1,0,0,30)
 f.BackgroundColor3=Color3.fromRGB(27,30,36)
 f.BorderSizePixel=0
 f.Parent=e
+
+local g=Instance.new"TextLabel"
+g.Name="Title"
+g.Size=UDim2.fromScale(1,1)
+g.BackgroundTransparency=1
+g.Font=Enum.Font.GothamMedium
+g.Text="Pure"
+g.TextColor3=Color3.fromRGB(235,237,240)
+g.TextSize=14
+g.Parent=f
 
 d.Parent=getParent()
 
@@ -70,6 +80,7 @@ return setmetatable({
 ScreenGui=d,
 Panel=e,
 TitleBar=f,
+Title=g,
 },c)
 end
 
@@ -83,6 +94,7 @@ d.ScreenGui:Destroy()
 d.ScreenGui=nil
 d.Panel=nil
 d.TitleBar=nil
+d.Title=nil
 end
 end
 
