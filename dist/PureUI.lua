@@ -238,87 +238,421 @@ end
 
 return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
-local b=a.c()
-local c=a.d()
+local b=game:GetService"UserInputService"
+local c=game:GetService"TweenService"
 
 local d={}
 d.__index=d
+local e=TweenInfo.new(0.12,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
 
-function d.new(e,f)
-f=f or{}
+function d.new(f,g)
+g=g or{}
+local h=g.Min or 0
+local i=g.Max or 100
+local j=g.Step or 1
+assert(i>h,"PureUI slider Max must be greater than Min")
+assert(j>0,"PureUI slider Step must be positive")
 
-local g=Instance.new"Frame"
-g.Name=f.Name or"Groupbox"
-g.Size=UDim2.new(1,0,0,f.Height or 120)
-g.BackgroundColor3=Color3.fromRGB(27,30,36)
-g.BorderSizePixel=0
-g.Parent=e
+local k=Instance.new"Frame"
+k.Name=g.Name or"Slider"
+k.Size=UDim2.new(1,0,0,46)
+k.BackgroundTransparency=1
+k.Parent=f
 
-local h=Instance.new"Frame"
-h.Name="TitleBar"
-h.Size=UDim2.new(1,0,0,25)
-h.BackgroundColor3=Color3.fromRGB(37,40,48)
-h.BorderSizePixel=0
-h.Parent=g
+local l=Instance.new"TextLabel"
+l.Position=UDim2.fromOffset(8,0)
+l.Size=UDim2.new(1,-56,0,24)
+l.BackgroundTransparency=1
+l.Font=Enum.Font.Gotham
+l.Text=g.Name or"Slider"
+l.TextColor3=Color3.fromRGB(220,223,228)
+l.TextSize=13
+l.TextXAlignment=Enum.TextXAlignment.Left
+l.Parent=k
 
-local i=Instance.new"TextLabel"
-i.Name="Title"
-i.Size=UDim2.new(1,-16,1,0)
-i.Position=UDim2.fromOffset(8,0)
-i.BackgroundTransparency=1
-i.Font=Enum.Font.GothamMedium
-i.Text=f.Name or"Groupbox"
-i.TextColor3=Color3.fromRGB(235,237,240)
-i.TextSize=13
-i.TextXAlignment=Enum.TextXAlignment.Left
-i.Parent=h
+local m=Instance.new"TextLabel"
+m.AnchorPoint=Vector2.new(1,0)
+m.Position=UDim2.new(1,-8,0,0)
+m.Size=UDim2.fromOffset(44,24)
+m.BackgroundTransparency=1
+m.Font=Enum.Font.GothamMedium
+m.TextColor3=Color3.fromRGB(155,160,172)
+m.TextSize=12
+m.TextXAlignment=Enum.TextXAlignment.Right
+m.Parent=k
 
-local j=Instance.new"Frame"
-j.Name="Content"
-j.Position=UDim2.fromOffset(0,25)
-j.Size=UDim2.new(1,0,1,-25)
-j.BackgroundTransparency=1
-j.Parent=g
+local n=Instance.new"TextButton"
+n.Position=UDim2.fromOffset(8,28)
+n.Size=UDim2.new(1,-16,0,8)
+n.BackgroundColor3=Color3.fromRGB(45,48,57)
+n.BorderSizePixel=0
+n.AutoButtonColor=false
+n.Text=""
+n.Parent=k
 
-local k=Instance.new"UIPadding"
-k.PaddingTop=UDim.new(0,4)
-k.PaddingBottom=UDim.new(0,4)
-k.Parent=j
+local o=Instance.new"Frame"
+o.Size=UDim2.fromScale(0,1)
+o.BackgroundColor3=Color3.fromRGB(88,130,255)
+o.BorderSizePixel=0
+o.Parent=n
 
-local l=Instance.new"UIListLayout"
-l.SortOrder=Enum.SortOrder.LayoutOrder
-l.Parent=j
-
-return setmetatable({
-Frame=g,
-TitleBar=h,
-Title=i,
-Content=j,
-Toggles={},
+local p=setmetatable({
+Row=k,
+Track=n,
+Fill=o,
+ValueLabel=m,
+Min=h,
+Max=i,
+Step=j,
+Value=h,
+Callback=g.Callback,
+Dragging=false,
 },d)
+
+local function update(q)
+local r=math.clamp((q.Position.X-n.AbsolutePosition.X)/n.AbsoluteSize.X,0,1)
+p:SetValue(h+(i-h)*r)
 end
 
-function d.CreateToggle(e,f)
-local g=b.new(e.Content,f)
-e.Toggles[f.Name or"Toggle"]=g
-return g
+p.BeginConnection=n.InputBegan:Connect(function(q)
+if q.UserInputType==Enum.UserInputType.MouseButton1
+or q.UserInputType==Enum.UserInputType.Touch
+then
+p.Dragging=true
+p.DragInput=q.UserInputType==Enum.UserInputType.Touch and q or nil
+update(q)
+end
+end)
+p.ChangeConnection=b.InputChanged:Connect(function(q)
+if p.Dragging
+and((p.DragInput and q==p.DragInput)
+or(not p.DragInput and q.UserInputType==Enum.UserInputType.MouseMovement))
+then
+update(q)
+end
+end)
+p.EndConnection=b.InputEnded:Connect(function(q)
+if p.Dragging
+and((p.DragInput and q==p.DragInput)
+or(not p.DragInput and q.UserInputType==Enum.UserInputType.MouseButton1))
+then
+p.Dragging=false
+p.DragInput=nil
+end
+end)
+
+p:SetValue(g.Default or h,true,true)
+return p
 end
 
-function d.CreateKeypicker(e,f)
-f=f or{}
-local g=e.Toggles[f.Toggle]
-assert(g,"PureUI keypicker Toggle must name an existing toggle in this groupbox")
-return c.new(g,f)
+function d.SetValue(f,g,h,i)
+g=math.clamp(f.Min+math.round((g-f.Min)/f.Step)*f.Step,f.Min,f.Max)
+f.Value=g
+f.ValueLabel.Text=tostring(g)
+local j=UDim2.fromScale((g-f.Min)/(f.Max-f.Min),1)
+
+if i then
+f.Fill.Size=j
+else
+c:Create(f.Fill,e,{Size=j}):Play()
 end
 
-function d.Destroy(e)
-e.Frame:Destroy()
+if not h and type(f.Callback)=="function"then
+task.spawn(f.Callback,g)
+end
+return f
+end
+
+function d.GetValue(f)
+return f.Value
+end
+
+function d.Destroy(f)
+f.BeginConnection:Disconnect()
+f.ChangeConnection:Disconnect()
+f.EndConnection:Disconnect()
+f.Row:Destroy()
 end
 
 return d end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
 
+local b=game:GetService"TweenService"
+
+local c={}
+c.__index=c
+local d=TweenInfo.new(0.14,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+
+function c.new(e,f)
+f=f or{}
+
+local g=Instance.new"Frame"
+g.Name=f.Name or"Input"
+g.Size=UDim2.new(1,0,0,38)
+g.BackgroundTransparency=1
+g.Parent=e
+
+local h=Instance.new"TextLabel"
+h.Position=UDim2.fromOffset(8,0)
+h.Size=UDim2.new(0.4,-8,1,0)
+h.BackgroundTransparency=1
+h.Font=Enum.Font.Gotham
+h.Text=f.Name or"Input"
+h.TextColor3=Color3.fromRGB(220,223,228)
+h.TextSize=13
+h.TextXAlignment=Enum.TextXAlignment.Left
+h.Parent=g
+
+local i=Instance.new"TextBox"
+i.AnchorPoint=Vector2.new(1,0.5)
+i.Position=UDim2.new(1,-8,0.5,0)
+i.Size=UDim2.new(0.6,-8,0,24)
+i.BackgroundColor3=Color3.fromRGB(45,48,57)
+i.BorderSizePixel=0
+i.ClearTextOnFocus=false
+i.Font=Enum.Font.Gotham
+i.PlaceholderText=f.Placeholder or""
+i.PlaceholderColor3=Color3.fromRGB(125,130,142)
+i.Text=f.Default or""
+i.TextColor3=Color3.fromRGB(235,237,240)
+i.TextSize=12
+i.TextXAlignment=Enum.TextXAlignment.Left
+i.Parent=g
+
+local j=Instance.new"UIPadding"
+j.PaddingLeft=UDim.new(0,7)
+j.PaddingRight=UDim.new(0,7)
+j.Parent=i
+
+local k=setmetatable({
+Row=g,
+Box=i,
+Value=i.Text,
+Callback=f.Callback,
+},c)
+
+k.FocusConnection=i.Focused:Connect(function()
+b:Create(i,d,{BackgroundColor3=Color3.fromRGB(58,62,73)}):Play()
+end)
+k.LostConnection=i.FocusLost:Connect(function()
+b:Create(i,d,{BackgroundColor3=Color3.fromRGB(45,48,57)}):Play()
+k:SetValue(i.Text)
+end)
+
+return k
+end
+
+function c.SetValue(e,f,g)
+f=tostring(f)
+e.Value=f
+e.Box.Text=f
+if not g and type(e.Callback)=="function"then
+task.spawn(e.Callback,f)
+end
+return e
+end
+
+function c.GetValue(e)
+return e.Value
+end
+
+function c.Destroy(e)
+e.FocusConnection:Disconnect()
+e.LostConnection:Disconnect()
+e.Row:Destroy()
+end
+
+return c end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
+
+local b=game:GetService"TweenService"
+
+local c={}
+c.__index=c
+local d=TweenInfo.new(0.14,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+
+local function createButton(e,f,g,h)
+local i=Instance.new"TextButton"
+i.Name=f
+i.LayoutOrder=h
+i.Size=UDim2.new(0.5,-4,1,0)
+i.BackgroundColor3=if g then Color3.fromRGB(88,130,255)else Color3.fromRGB(45,48,57)
+i.BorderSizePixel=0
+i.AutoButtonColor=false
+i.Font=Enum.Font.GothamMedium
+i.Text=f
+i.TextColor3=Color3.fromRGB(240,242,245)
+i.TextSize=12
+i.Parent=e
+return i
+end
+
+function c.new(e,f)
+f=f or{}
+local g=f.Accent
+
+local h=Instance.new"Frame"
+h.Name=f.Name or"DoubleButton"
+h.Size=UDim2.new(1,0,0,36)
+h.BackgroundTransparency=1
+h.Parent=e
+
+local i=Instance.new"UIPadding"
+i.PaddingLeft=UDim.new(0,8)
+i.PaddingRight=UDim.new(0,8)
+i.PaddingTop=UDim.new(0,4)
+i.PaddingBottom=UDim.new(0,4)
+i.Parent=h
+
+local j=Instance.new"UIListLayout"
+j.FillDirection=Enum.FillDirection.Horizontal
+j.Padding=UDim.new(0,8)
+j.SortOrder=Enum.SortOrder.LayoutOrder
+j.Parent=h
+
+local k=createButton(h,f.Left or"Left",g=="Left",1)
+local l=createButton(h,f.Right or"Right",g=="Right",2)
+local m=setmetatable({Row=h,Left=k,Right=l,Connections={}},c)
+
+local function wire(n,o,p)
+table.insert(m.Connections,n.MouseEnter:Connect(function()
+b:Create(n,d,{
+BackgroundColor3=if p then Color3.fromRGB(105,143,255)else Color3.fromRGB(58,62,73),
+}):Play()
+end))
+table.insert(m.Connections,n.MouseLeave:Connect(function()
+b:Create(n,d,{
+BackgroundColor3=if p then Color3.fromRGB(88,130,255)else Color3.fromRGB(45,48,57),
+}):Play()
+end))
+table.insert(m.Connections,n.MouseButton1Click:Connect(function()
+if type(o)=="function"then
+task.spawn(o)
+end
+end))
+end
+
+wire(k,f.LeftCallback,g=="Left")
+wire(l,f.RightCallback,g=="Right")
+return m
+end
+
+function c.Destroy(e)
+for f,g in ipairs(e.Connections)do
+g:Disconnect()
+end
+e.Row:Destroy()
+end
+
+return c end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+
+local b=a.c()
+local c=a.d()
+local d=a.e()
+local e=a.f()
+local f=a.g()
+
+local g={}
+g.__index=g
+
+function g.new(h,i)
+i=i or{}
+
+local j=Instance.new"Frame"
+j.Name=i.Name or"Groupbox"
+j.Size=UDim2.new(1,0,0,i.Height or 120)
+j.BackgroundColor3=Color3.fromRGB(27,30,36)
+j.BorderSizePixel=0
+j.Parent=h
+
+local k=Instance.new"Frame"
+k.Name="TitleBar"
+k.Size=UDim2.new(1,0,0,25)
+k.BackgroundColor3=Color3.fromRGB(37,40,48)
+k.BorderSizePixel=0
+k.Parent=j
+
+local l=Instance.new"TextLabel"
+l.Name="Title"
+l.Size=UDim2.new(1,-16,1,0)
+l.Position=UDim2.fromOffset(8,0)
+l.BackgroundTransparency=1
+l.Font=Enum.Font.GothamMedium
+l.Text=i.Name or"Groupbox"
+l.TextColor3=Color3.fromRGB(235,237,240)
+l.TextSize=13
+l.TextXAlignment=Enum.TextXAlignment.Left
+l.Parent=k
+
+local m=Instance.new"Frame"
+m.Name="Content"
+m.Position=UDim2.fromOffset(0,25)
+m.Size=UDim2.new(1,0,1,-25)
+m.BackgroundTransparency=1
+m.Parent=j
+
+local n=Instance.new"UIPadding"
+n.PaddingTop=UDim.new(0,4)
+n.PaddingBottom=UDim.new(0,4)
+n.Parent=m
+
+local o=Instance.new"UIListLayout"
+o.SortOrder=Enum.SortOrder.LayoutOrder
+o.Parent=m
+
+return setmetatable({
+Frame=j,
+TitleBar=k,
+Title=l,
+Content=m,
+Toggles={},
+Controls={},
+},g)
+end
+
+function g.CreateToggle(h,i)
+local j=b.new(h.Content,i)
+h.Toggles[i.Name or"Toggle"]=j
+table.insert(h.Controls,j)
+return j
+end
+
+function g.CreateKeypicker(h,i)
+i=i or{}
+local j=h.Toggles[i.Toggle]
+assert(j,"PureUI keypicker Toggle must name an existing toggle in this groupbox")
+local k=c.new(j,i)
+table.insert(h.Controls,k)
+return k
+end
+
+function g.CreateSlider(h,i)
+local j=d.new(h.Content,i)
+table.insert(h.Controls,j)
+return j
+end
+
+function g.CreateInput(h,i)
+local j=e.new(h.Content,i)
+table.insert(h.Controls,j)
+return j
+end
+
+function g.CreateDoubleButton(h,i)
+local j=f.new(h.Content,i)
+table.insert(h.Controls,j)
+return j
+end
+
+function g.Destroy(h)
+for i,j in ipairs(h.Controls)do
+j:Destroy()
+end
+h.Frame:Destroy()
+end
+
+return g end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
+
 local b=a.b()
-local c=a.e()
+local c=a.h()
 
 local d={}
 d.__index=d
@@ -388,6 +722,7 @@ Window=e,
 Button=g,
 Content=h,
 Columns=k,
+Groupboxes={},
 Connection=nil,
 },d)
 
@@ -411,7 +746,9 @@ function d.CreateGroupbox(e,f)
 f=f or{}
 local g=e.Columns[f.Column or"Left"]
 assert(g,"PureUI groupbox Column must be Left, Center, or Right")
-return c.new(g,f)
+local h=c.new(g,f)
+table.insert(e.Groupboxes,h)
+return h
 end
 
 function d.SetActive(e,f)
@@ -421,14 +758,17 @@ e.Button.TextColor3=if f then Color3.fromRGB(240,242,245)else Color3.fromRGB(145
 end
 
 function d.Destroy(e)
+for f,g in ipairs(e.Groupboxes)do
+g:Destroy()
+end
 e.Connection:Disconnect()
 e.Button:Destroy()
 e.Content:Destroy()
 end
 
-return d end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
+return d end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
 
-local b=a.f()
+local b=a.i()
 local c=game:GetService"UserInputService"
 local d=game:GetService"RunService"
 local e=game:GetService"TweenService"
@@ -707,9 +1047,12 @@ b.new(A,{Name="Demo 1"})
 b.new(A,{Name="Demo 2"})
 A:UpdateTabLayout()
 
-local B=A.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
+local B=A.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=230}
 B:CreateToggle{Name="Demo Toggle"}
 B:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
+B:CreateSlider{Name="Demo Slider",Min=0,Max=100,Default=50}
+B:CreateInput{Name="Demo Input",Placeholder="Text"}
+B:CreateDoubleButton{Left="Cancel",Right="Apply",Accent="Right"}
 
 return A
 end
@@ -756,7 +1099,7 @@ g.SelectedTab=nil
 end
 end
 
-return f end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+return f end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 
@@ -902,7 +1245,7 @@ delfile(d.Path)
 end)
 end
 
-return c end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
+return c end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -983,7 +1326,7 @@ end
 return nil
 end
 
-return b end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
+return b end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -1056,12 +1399,12 @@ end)
 return h
 end
 
-return b end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
+return b end function a.m():typeof(__modImpl())local b=a.cache.m if not b then b={c=__modImpl()}a.cache.m=b end return b.c end end do local function __modImpl()
 
-local b=a.g()
-local c=a.h()
-local d=a.i()
-local e=a.j()
+local b=a.j()
+local c=a.k()
+local d=a.l()
+local e=a.m()
 
 local f={}
 f.__index=f
@@ -1094,8 +1437,8 @@ end
 
 f.Icons=d.Icons
 
-return setmetatable({},f)end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end end
+return setmetatable({},f)end function a.n():typeof(__modImpl())local b=a.cache.n if not b then b={c=__modImpl()}a.cache.n=b end return b.c end end end
 
-local b=a.k()
+local b=a.n()
 
 return b

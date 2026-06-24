@@ -1,5 +1,8 @@
 local Toggle = require("../controls/Toggle")
 local Keypicker = require("../controls/Keypicker")
+local Slider = require("../controls/Slider")
+local Input = require("../controls/Input")
+local DoubleButton = require("../controls/DoubleButton")
 
 local Groupbox = {}
 Groupbox.__index = Groupbox
@@ -55,12 +58,14 @@ function Groupbox.new(parent, config)
 		Title = title,
 		Content = content,
 		Toggles = {},
+		Controls = {},
 	}, Groupbox)
 end
 
 function Groupbox:CreateToggle(config)
 	local toggle = Toggle.new(self.Content, config)
 	self.Toggles[config.Name or "Toggle"] = toggle
+	table.insert(self.Controls, toggle)
 	return toggle
 end
 
@@ -68,10 +73,33 @@ function Groupbox:CreateKeypicker(config)
 	config = config or {}
 	local toggle = self.Toggles[config.Toggle]
 	assert(toggle, "PureUI keypicker Toggle must name an existing toggle in this groupbox")
-	return Keypicker.new(toggle, config)
+	local keypicker = Keypicker.new(toggle, config)
+	table.insert(self.Controls, keypicker)
+	return keypicker
+end
+
+function Groupbox:CreateSlider(config)
+	local slider = Slider.new(self.Content, config)
+	table.insert(self.Controls, slider)
+	return slider
+end
+
+function Groupbox:CreateInput(config)
+	local input = Input.new(self.Content, config)
+	table.insert(self.Controls, input)
+	return input
+end
+
+function Groupbox:CreateDoubleButton(config)
+	local buttons = DoubleButton.new(self.Content, config)
+	table.insert(self.Controls, buttons)
+	return buttons
 end
 
 function Groupbox:Destroy()
+	for _, control in ipairs(self.Controls) do
+		control:Destroy()
+	end
 	self.Frame:Destroy()
 end
 

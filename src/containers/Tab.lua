@@ -69,6 +69,7 @@ function Tab.new(window, config)
 		Button = button,
 		Content = content,
 		Columns = columns,
+		Groupboxes = {},
 		Connection = nil,
 	}, Tab)
 
@@ -92,7 +93,9 @@ function Tab:CreateGroupbox(config)
 	config = config or {}
 	local column = self.Columns[config.Column or "Left"]
 	assert(column, "PureUI groupbox Column must be Left, Center, or Right")
-	return Groupbox.new(column, config)
+	local groupbox = Groupbox.new(column, config)
+	table.insert(self.Groupboxes, groupbox)
+	return groupbox
 end
 
 function Tab:SetActive(active)
@@ -102,6 +105,9 @@ function Tab:SetActive(active)
 end
 
 function Tab:Destroy()
+	for _, groupbox in ipairs(self.Groupboxes) do
+		groupbox:Destroy()
+	end
 	self.Connection:Disconnect()
 	self.Button:Destroy()
 	self.Content:Destroy()

@@ -94,6 +94,50 @@ Keypicker:SetKey("RightShift")
 print(Keypicker:GetKey())
 ```
 
+## `Groupbox:CreateSlider(config)`
+
+```lua
+local Slider = Groupbox:CreateSlider({
+	Name = "Speed",
+	Min = 0,
+	Max = 100,
+	Step = 1,
+	Default = 50,
+	Callback = function(value) print(value) end,
+})
+
+Slider:SetValue(75)
+print(Slider:GetValue())
+```
+
+## `Groupbox:CreateInput(config)`
+
+```lua
+local Input = Groupbox:CreateInput({
+	Name = "Message",
+	Placeholder = "Enter text",
+	Default = "",
+	Callback = function(text) print(text) end,
+})
+
+Input:SetValue("Hello")
+print(Input:GetValue())
+```
+
+## `Groupbox:CreateDoubleButton(config)`
+
+Creates two equal buttons in one row. `Accent` accepts `"Left"` or `"Right"`.
+
+```lua
+Groupbox:CreateDoubleButton({
+	Left = "Cancel",
+	Right = "Apply",
+	Accent = "Right",
+	LeftCallback = function() end,
+	RightCallback = function() end,
+})
+```
+
 ## `Tab:CreateButton(config)`
 
 Reserved for button creation. Currently raises a not-implemented error.

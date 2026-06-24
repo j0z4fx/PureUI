@@ -277,9 +277,12 @@ function Window.new()
 	Tab.new(window, { Name = "Demo 2" })
 	window:UpdateTabLayout()
 
-	local controls = window.Tabs[1]:CreateGroupbox({ Name = "Controls", Column = "Left", Height = 70 })
+	local controls = window.Tabs[1]:CreateGroupbox({ Name = "Controls", Column = "Left", Height = 230 })
 	controls:CreateToggle({ Name = "Demo Toggle" })
 	controls:CreateKeypicker({ Toggle = "Demo Toggle", Default = "K" })
+	controls:CreateSlider({ Name = "Demo Slider", Min = 0, Max = 100, Default = 50 })
+	controls:CreateInput({ Name = "Demo Input", Placeholder = "Text" })
+	controls:CreateDoubleButton({ Left = "Cancel", Right = "Apply", Accent = "Right" })
 
 	return window
 end
