@@ -110,6 +110,9 @@ Slider:SetValue(75)
 print(Slider:GetValue())
 ```
 
+Slider movement uses heavy smoothing while its stored value and callback stay
+current.
+
 ## `Groupbox:CreateInput(config)`
 
 ```lua
@@ -127,6 +130,7 @@ print(Input:GetValue())
 ## `Groupbox:CreateDoubleButton(config)`
 
 Creates two equal buttons in one row. `Accent` accepts `"Left"` or `"Right"`.
+Both buttons animate on press.
 
 ```lua
 Groupbox:CreateDoubleButton({

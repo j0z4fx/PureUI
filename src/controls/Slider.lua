@@ -1,9 +1,8 @@
 local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 local Slider = {}
 Slider.__index = Slider
-local TWEEN = TweenInfo.new(0.12, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 function Slider.new(parent, config)
 	config = config or {}
@@ -65,6 +64,8 @@ function Slider.new(parent, config)
 		Max = maximum,
 		Step = step,
 		Value = minimum,
+		TargetValue = minimum,
+		DisplayValue = minimum,
 		Callback = config.Callback,
 		Dragging = false,
 	}, Slider)
@@ -100,6 +101,18 @@ function Slider.new(parent, config)
 			slider.DragInput = nil
 		end
 	end)
+	slider.RenderConnection = RunService.RenderStepped:Connect(function(deltaTime)
+		local difference = slider.TargetValue - slider.DisplayValue
+		if math.abs(difference) < slider.Step * 0.01 then
+			slider.DisplayValue = slider.TargetValue
+		else
+			slider.DisplayValue += difference * (1 - math.exp(-4 * deltaTime))
+		end
+
+		local ratio = (slider.DisplayValue - minimum) / (maximum - minimum)
+		slider.Fill.Size = UDim2.fromScale(ratio, 1)
+		slider.ValueLabel.Text = tostring(math.round(slider.DisplayValue / step) * step)
+	end)
 
 	slider:SetValue(config.Default or minimum, true, true)
 	return slider
@@ -108,13 +121,11 @@ end
 function Slider:SetValue(value, silent, instant)
 	value = math.clamp(self.Min + math.round((value - self.Min) / self.Step) * self.Step, self.Min, self.Max)
 	self.Value = value
-	self.ValueLabel.Text = tostring(value)
-	local size = UDim2.fromScale((value - self.Min) / (self.Max - self.Min), 1)
-
+	self.TargetValue = value
 	if instant then
-		self.Fill.Size = size
-	else
-		TweenService:Create(self.Fill, TWEEN, { Size = size }):Play()
+		self.DisplayValue = value
+		self.Fill.Size = UDim2.fromScale((value - self.Min) / (self.Max - self.Min), 1)
+		self.ValueLabel.Text = tostring(value)
 	end
 
 	if not silent and type(self.Callback) == "function" then
@@ -131,6 +142,7 @@ function Slider:Destroy()
 	self.BeginConnection:Disconnect()
 	self.ChangeConnection:Disconnect()
 	self.EndConnection:Disconnect()
+	self.RenderConnection:Disconnect()
 	self.Row:Destroy()
 end
 

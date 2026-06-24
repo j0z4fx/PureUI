@@ -239,139 +239,151 @@ end
 return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"UserInputService"
-local c=game:GetService"TweenService"
+local c=game:GetService"RunService"
 
 local d={}
 d.__index=d
-local e=TweenInfo.new(0.12,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
 
-function d.new(f,g)
-g=g or{}
-local h=g.Min or 0
-local i=g.Max or 100
-local j=g.Step or 1
-assert(i>h,"PureUI slider Max must be greater than Min")
-assert(j>0,"PureUI slider Step must be positive")
+function d.new(e,f)
+f=f or{}
+local g=f.Min or 0
+local h=f.Max or 100
+local i=f.Step or 1
+assert(h>g,"PureUI slider Max must be greater than Min")
+assert(i>0,"PureUI slider Step must be positive")
 
-local k=Instance.new"Frame"
-k.Name=g.Name or"Slider"
-k.Size=UDim2.new(1,0,0,46)
+local j=Instance.new"Frame"
+j.Name=f.Name or"Slider"
+j.Size=UDim2.new(1,0,0,46)
+j.BackgroundTransparency=1
+j.Parent=e
+
+local k=Instance.new"TextLabel"
+k.Position=UDim2.fromOffset(8,0)
+k.Size=UDim2.new(1,-56,0,24)
 k.BackgroundTransparency=1
-k.Parent=f
+k.Font=Enum.Font.Gotham
+k.Text=f.Name or"Slider"
+k.TextColor3=Color3.fromRGB(220,223,228)
+k.TextSize=13
+k.TextXAlignment=Enum.TextXAlignment.Left
+k.Parent=j
 
 local l=Instance.new"TextLabel"
-l.Position=UDim2.fromOffset(8,0)
-l.Size=UDim2.new(1,-56,0,24)
+l.AnchorPoint=Vector2.new(1,0)
+l.Position=UDim2.new(1,-8,0,0)
+l.Size=UDim2.fromOffset(44,24)
 l.BackgroundTransparency=1
-l.Font=Enum.Font.Gotham
-l.Text=g.Name or"Slider"
-l.TextColor3=Color3.fromRGB(220,223,228)
-l.TextSize=13
-l.TextXAlignment=Enum.TextXAlignment.Left
-l.Parent=k
+l.Font=Enum.Font.GothamMedium
+l.TextColor3=Color3.fromRGB(155,160,172)
+l.TextSize=12
+l.TextXAlignment=Enum.TextXAlignment.Right
+l.Parent=j
 
-local m=Instance.new"TextLabel"
-m.AnchorPoint=Vector2.new(1,0)
-m.Position=UDim2.new(1,-8,0,0)
-m.Size=UDim2.fromOffset(44,24)
-m.BackgroundTransparency=1
-m.Font=Enum.Font.GothamMedium
-m.TextColor3=Color3.fromRGB(155,160,172)
-m.TextSize=12
-m.TextXAlignment=Enum.TextXAlignment.Right
-m.Parent=k
+local m=Instance.new"TextButton"
+m.Position=UDim2.fromOffset(8,28)
+m.Size=UDim2.new(1,-16,0,8)
+m.BackgroundColor3=Color3.fromRGB(45,48,57)
+m.BorderSizePixel=0
+m.AutoButtonColor=false
+m.Text=""
+m.Parent=j
 
-local n=Instance.new"TextButton"
-n.Position=UDim2.fromOffset(8,28)
-n.Size=UDim2.new(1,-16,0,8)
-n.BackgroundColor3=Color3.fromRGB(45,48,57)
+local n=Instance.new"Frame"
+n.Size=UDim2.fromScale(0,1)
+n.BackgroundColor3=Color3.fromRGB(88,130,255)
 n.BorderSizePixel=0
-n.AutoButtonColor=false
-n.Text=""
-n.Parent=k
+n.Parent=m
 
-local o=Instance.new"Frame"
-o.Size=UDim2.fromScale(0,1)
-o.BackgroundColor3=Color3.fromRGB(88,130,255)
-o.BorderSizePixel=0
-o.Parent=n
-
-local p=setmetatable({
-Row=k,
-Track=n,
-Fill=o,
-ValueLabel=m,
-Min=h,
-Max=i,
-Step=j,
-Value=h,
-Callback=g.Callback,
+local o=setmetatable({
+Row=j,
+Track=m,
+Fill=n,
+ValueLabel=l,
+Min=g,
+Max=h,
+Step=i,
+Value=g,
+TargetValue=g,
+DisplayValue=g,
+Callback=f.Callback,
 Dragging=false,
 },d)
 
-local function update(q)
-local r=math.clamp((q.Position.X-n.AbsolutePosition.X)/n.AbsoluteSize.X,0,1)
-p:SetValue(h+(i-h)*r)
+local function update(p)
+local q=math.clamp((p.Position.X-m.AbsolutePosition.X)/m.AbsoluteSize.X,0,1)
+o:SetValue(g+(h-g)*q)
 end
 
-p.BeginConnection=n.InputBegan:Connect(function(q)
-if q.UserInputType==Enum.UserInputType.MouseButton1
-or q.UserInputType==Enum.UserInputType.Touch
+o.BeginConnection=m.InputBegan:Connect(function(p)
+if p.UserInputType==Enum.UserInputType.MouseButton1
+or p.UserInputType==Enum.UserInputType.Touch
 then
-p.Dragging=true
-p.DragInput=q.UserInputType==Enum.UserInputType.Touch and q or nil
-update(q)
+o.Dragging=true
+o.DragInput=p.UserInputType==Enum.UserInputType.Touch and p or nil
+update(p)
 end
 end)
-p.ChangeConnection=b.InputChanged:Connect(function(q)
-if p.Dragging
-and((p.DragInput and q==p.DragInput)
-or(not p.DragInput and q.UserInputType==Enum.UserInputType.MouseMovement))
+o.ChangeConnection=b.InputChanged:Connect(function(p)
+if o.Dragging
+and((o.DragInput and p==o.DragInput)
+or(not o.DragInput and p.UserInputType==Enum.UserInputType.MouseMovement))
 then
-update(q)
+update(p)
 end
 end)
-p.EndConnection=b.InputEnded:Connect(function(q)
-if p.Dragging
-and((p.DragInput and q==p.DragInput)
-or(not p.DragInput and q.UserInputType==Enum.UserInputType.MouseButton1))
+o.EndConnection=b.InputEnded:Connect(function(p)
+if o.Dragging
+and((o.DragInput and p==o.DragInput)
+or(not o.DragInput and p.UserInputType==Enum.UserInputType.MouseButton1))
 then
-p.Dragging=false
-p.DragInput=nil
+o.Dragging=false
+o.DragInput=nil
 end
 end)
-
-p:SetValue(g.Default or h,true,true)
-return p
-end
-
-function d.SetValue(f,g,h,i)
-g=math.clamp(f.Min+math.round((g-f.Min)/f.Step)*f.Step,f.Min,f.Max)
-f.Value=g
-f.ValueLabel.Text=tostring(g)
-local j=UDim2.fromScale((g-f.Min)/(f.Max-f.Min),1)
-
-if i then
-f.Fill.Size=j
+o.RenderConnection=c.RenderStepped:Connect(function(p)
+local q=o.TargetValue-o.DisplayValue
+if math.abs(q)<o.Step*0.01 then
+o.DisplayValue=o.TargetValue
 else
-c:Create(f.Fill,e,{Size=j}):Play()
+o.DisplayValue+=q*(1-math.exp(-4*p))
 end
 
-if not h and type(f.Callback)=="function"then
-task.spawn(f.Callback,g)
-end
-return f
+local r=(o.DisplayValue-g)/(h-g)
+o.Fill.Size=UDim2.fromScale(r,1)
+o.ValueLabel.Text=tostring(math.round(o.DisplayValue/i)*i)
+end)
+
+o:SetValue(f.Default or g,true,true)
+return o
 end
 
-function d.GetValue(f)
-return f.Value
+function d.SetValue(e,f,g,h)
+f=math.clamp(e.Min+math.round((f-e.Min)/e.Step)*e.Step,e.Min,e.Max)
+e.Value=f
+e.TargetValue=f
+if h then
+e.DisplayValue=f
+e.Fill.Size=UDim2.fromScale((f-e.Min)/(e.Max-e.Min),1)
+e.ValueLabel.Text=tostring(f)
 end
 
-function d.Destroy(f)
-f.BeginConnection:Disconnect()
-f.ChangeConnection:Disconnect()
-f.EndConnection:Disconnect()
-f.Row:Destroy()
+if not g and type(e.Callback)=="function"then
+task.spawn(e.Callback,f)
+end
+return e
+end
+
+function d.GetValue(e)
+return e.Value
+end
+
+function d.Destroy(e)
+e.BeginConnection:Disconnect()
+e.ChangeConnection:Disconnect()
+e.EndConnection:Disconnect()
+e.RenderConnection:Disconnect()
+e.Row:Destroy()
 end
 
 return d end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
@@ -513,14 +525,27 @@ local l=createButton(h,f.Right or"Right",g=="Right",2)
 local m=setmetatable({Row=h,Left=k,Right=l,Connections={}},c)
 
 local function wire(n,o,p)
+local q=if p then Color3.fromRGB(88,130,255)else Color3.fromRGB(45,48,57)
+local r=if p then Color3.fromRGB(105,143,255)else Color3.fromRGB(58,62,73)
 table.insert(m.Connections,n.MouseEnter:Connect(function()
-b:Create(n,d,{
-BackgroundColor3=if p then Color3.fromRGB(105,143,255)else Color3.fromRGB(58,62,73),
-}):Play()
+b:Create(n,d,{BackgroundColor3=r}):Play()
 end))
 table.insert(m.Connections,n.MouseLeave:Connect(function()
 b:Create(n,d,{
-BackgroundColor3=if p then Color3.fromRGB(88,130,255)else Color3.fromRGB(45,48,57),
+BackgroundColor3=q,
+Size=UDim2.new(0.5,-4,1,0),
+}):Play()
+end))
+table.insert(m.Connections,n.MouseButton1Down:Connect(function()
+b:Create(n,TweenInfo.new(0.06,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
+BackgroundColor3=if p then Color3.fromRGB(68,108,225)else Color3.fromRGB(35,38,46),
+Size=UDim2.new(0.5,-6,1,-2),
+}):Play()
+end))
+table.insert(m.Connections,n.MouseButton1Up:Connect(function()
+b:Create(n,d,{
+BackgroundColor3=r,
+Size=UDim2.new(0.5,-4,1,0),
 }):Play()
 end))
 table.insert(m.Connections,n.MouseButton1Click:Connect(function()

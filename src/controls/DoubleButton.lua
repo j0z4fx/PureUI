@@ -48,14 +48,27 @@ function DoubleButton.new(parent, config)
 	local control = setmetatable({ Row = row, Left = left, Right = right, Connections = {} }, DoubleButton)
 
 	local function wire(button, callback, isAccent)
+		local normal = if isAccent then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(45, 48, 57)
+		local hover = if isAccent then Color3.fromRGB(105, 143, 255) else Color3.fromRGB(58, 62, 73)
 		table.insert(control.Connections, button.MouseEnter:Connect(function()
-			TweenService:Create(button, TWEEN, {
-				BackgroundColor3 = if isAccent then Color3.fromRGB(105, 143, 255) else Color3.fromRGB(58, 62, 73),
-			}):Play()
+			TweenService:Create(button, TWEEN, { BackgroundColor3 = hover }):Play()
 		end))
 		table.insert(control.Connections, button.MouseLeave:Connect(function()
 			TweenService:Create(button, TWEEN, {
-				BackgroundColor3 = if isAccent then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(45, 48, 57),
+				BackgroundColor3 = normal,
+				Size = UDim2.new(0.5, -4, 1, 0),
+			}):Play()
+		end))
+		table.insert(control.Connections, button.MouseButton1Down:Connect(function()
+			TweenService:Create(button, TweenInfo.new(0.06, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+				BackgroundColor3 = if isAccent then Color3.fromRGB(68, 108, 225) else Color3.fromRGB(35, 38, 46),
+				Size = UDim2.new(0.5, -6, 1, -2),
+			}):Play()
+		end))
+		table.insert(control.Connections, button.MouseButton1Up:Connect(function()
+			TweenService:Create(button, TWEEN, {
+				BackgroundColor3 = hover,
+				Size = UDim2.new(0.5, -4, 1, 0),
 			}):Play()
 		end))
 		table.insert(control.Connections, button.MouseButton1Click:Connect(function()
