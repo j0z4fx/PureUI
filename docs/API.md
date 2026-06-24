@@ -10,11 +10,14 @@ local PureUI = loadstring(game:HttpGet("RAW_URL"))()
 
 ## `PureUI:CreateWindow(config)`
 
-Creates a window object.
+Creates a centered `800 × 450` background panel.
 
 ```lua
 local Window = PureUI:CreateWindow({})
 ```
+
+Destroy it with `Window:Destroy()`, or destroy every PureUI window with
+`PureUI:Destroy()`.
 
 ## `Window:CreateTab(config)`
 
@@ -94,3 +97,26 @@ local deleted, deleteError = Config:Delete()
 Files are stored at `<Folder>/configs/<Name>.json`. Methods return
 `false, errorMessage` when filesystem access, JSON conversion, or a binding
 fails.
+
+## Development bridge
+
+Upload `Server/` through Vercel Drop, then start the opt-in bridge:
+
+```lua
+local Bridge = PureUI:StartDevBridge({
+	Interval = 2,
+	OnReload = function(NewPureUI)
+		PureUI = NewPureUI
+	end,
+})
+```
+
+The default server is `https://pureserver.vercel.app`. Pass `BaseUrl` to
+override it.
+
+Each build copies `dist/PureUI.lua` into `Server/` and updates
+`Server/version.txt`. The bridge bypasses HTTP caches, destroys the old library
+when a new valid bundle loads, and places the replacement in
+`getgenv().PureUI`.
+
+Stop polling with `Bridge:Stop()`. This API is development-only.

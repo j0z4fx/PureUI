@@ -33,12 +33,52 @@ local b=a.c()
 local c={}
 c.__index=c
 
+local function getParent()
+if type(gethui)=="function"then
+return gethui()
+end
+
+return game:GetService"CoreGui"
+end
+
 function c.new()
-return setmetatable({},c)
+local d=Instance.new"ScreenGui"
+d.Name="PureUI"
+d.IgnoreGuiInset=true
+d.ResetOnSpawn=false
+d.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
+
+local e=Instance.new"Frame"
+e.Name="Background"
+e.AnchorPoint=Vector2.new(0.5,0.5)
+e.Position=UDim2.fromScale(0.5,0.5)
+e.Size=UDim2.fromOffset(800,450)
+e.BackgroundColor3=Color3.fromRGB(20,22,27)
+e.BorderSizePixel=0
+e.Parent=d
+
+local f=Instance.new"UICorner"
+f.CornerRadius=UDim.new(0,10)
+f.Parent=e
+
+d.Parent=getParent()
+
+return setmetatable({
+ScreenGui=d,
+Panel=e,
+},c)
 end
 
 function c.CreateTab(d,e)
 return b.new()
+end
+
+function c.Destroy(d)
+if d.ScreenGui then
+d.ScreenGui:Destroy()
+d.ScreenGui=nil
+d.Panel=nil
+end
 end
 
 return c end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
@@ -270,29 +310,117 @@ end
 
 return b end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
 
+local b={}
+
+local function fetch(c)
+return game:HttpGet(c.."?t="..tostring(os.clock()))
+end
+
+function b.start(c,d)
+d=d or{}
+
+local e=(d.BaseUrl or"https://pureserver.vercel.app"):gsub("/+$","")
+assert(e:match"^https://","PureUI dev bridge BaseUrl must use HTTPS")
+
+local f=getgenv and getgenv()or _G
+local g=f.__PUREUI_DEV_BRIDGE
+if g then
+g:Stop()
+end
+
+local h={
+Current=c,
+Running=true,
+Version=nil,
+}
+
+function h.Stop(i)
+i.Running=false
+if f.__PUREUI_DEV_BRIDGE==i then
+f.__PUREUI_DEV_BRIDGE=nil
+end
+end
+
+f.__PUREUI_DEV_BRIDGE=h
+
+task.spawn(function()
+while h.Running do
+local i,j=pcall(fetch,e.."/version.txt")
+if i and j~=h.Version then
+local k,l=pcall(fetch,e.."/PureUI.lua")
+if k then
+local m,n=loadstring(l,"@PureUI-dev")
+if m then
+local o,p=pcall(m)
+if o and type(p)=="table"then
+local q=h.Current
+if type(q.Destroy)=="function"then
+pcall(q.Destroy,q)
+end
+
+h.Current=p
+h.Version=j
+f.PureUI=p
+
+if type(d.OnReload)=="function"then
+task.spawn(d.OnReload,p)
+end
+else
+warn("[PureUI] dev reload failed: "..tostring(p))
+end
+else
+warn("[PureUI] dev compile failed: "..tostring(n))
+end
+end
+end
+
+task.wait(d.Interval or 2)
+end
+end)
+
+return h
+end
+
+return b end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+
 local b=a.d()
 local c=a.e()
 local d=a.f()
+local e=a.g()
 
-local e={}
-e.__index=e
+local f={}
+f.__index=f
+f.Windows={}
 
-function e.CreateWindow(f,g)
-return b.new()
+function f.CreateWindow(g,h)
+local i=b.new()
+table.insert(g.Windows,i)
+return i
 end
 
-function e.CreateConfig(f,g)
-return c.new(g)
+function f.CreateConfig(g,h)
+return c.new(h)
 end
 
-function e.GetIcon(f,g)
-return d.GetAsset(g)
+function f.GetIcon(g,h)
+return d.GetAsset(h)
 end
 
-e.Icons=d.Icons
+function f.StartDevBridge(g,h)
+return e.start(g,h)
+end
 
-return setmetatable({},e)end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end end
+function f.Destroy(g)
+for h,i in ipairs(g.Windows)do
+i:Destroy()
+end
+table.clear(g.Windows)
+end
 
-local b=a.g()
+f.Icons=d.Icons
+
+return setmetatable({},f)end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end end
+
+local b=a.h()
 
 return b
