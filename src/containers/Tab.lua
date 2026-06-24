@@ -1,4 +1,5 @@
 local Button = require("../controls/Button")
+local Groupbox = require("./Groupbox")
 
 local Tab = {}
 Tab.__index = Tab
@@ -39,15 +40,26 @@ function Tab.new(window, config)
 	layout.Parent = content
 
 	local columns = {}
+	local names = { "Left", "Center", "Right" }
 	for index = 1, 3 do
-		local column = Instance.new("Frame")
-		column.Name = "Column" .. index
+		local column = Instance.new("ScrollingFrame")
+		column.Name = names[index]
 		column.LayoutOrder = index
 		column.Size = UDim2.new(1 / 3, -16 / 3, 1, 0)
-		column.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		column.BackgroundTransparency = 1
 		column.BorderSizePixel = 0
+		column.AutomaticCanvasSize = Enum.AutomaticSize.Y
+		column.CanvasSize = UDim2.fromOffset(0, 0)
+		column.ScrollBarThickness = 3
+		column.ScrollBarImageColor3 = Color3.fromRGB(80, 84, 96)
 		column.Parent = content
-		columns[index] = column
+
+		local columnLayout = Instance.new("UIListLayout")
+		columnLayout.Padding = UDim.new(0, 8)
+		columnLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		columnLayout.Parent = column
+
+		columns[names[index]] = column
 	end
 
 	local tab = setmetatable({
@@ -72,6 +84,13 @@ end
 
 function Tab:CreateButton(_config)
 	return Button.new()
+end
+
+function Tab:CreateGroupbox(config)
+	config = config or {}
+	local column = self.Columns[config.Column or "Left"]
+	assert(column, "PureUI groupbox Column must be Left, Center, or Right")
+	return Groupbox.new(column, config)
 end
 
 function Tab:SetActive(active)

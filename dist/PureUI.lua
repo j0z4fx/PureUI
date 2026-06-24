@@ -13,97 +13,169 @@ end
 
 return c end function a.b():typeof(__modImpl())local b=a.cache.b if not b then b={c=__modImpl()}a.cache.b=b end return b.c end end do local function __modImpl()
 
-local b=a.b()
+local b={}
+b.__index=b
 
-local c={}
-c.__index=c
+function b.new(c,d)
+d=d or{}
 
-function c.new(d,e)
-e=e or{}
+local e=Instance.new"Frame"
+e.Name=d.Name or"Groupbox"
+e.Size=UDim2.new(1,0,0,d.Height or 120)
+e.BackgroundColor3=Color3.fromRGB(27,30,36)
+e.BorderSizePixel=0
+e.Parent=c
 
-local f=Instance.new"TextButton"
-f.Name=e.Name or"Tab"
-f.BackgroundColor3=Color3.fromRGB(31,34,41)
+local f=Instance.new"Frame"
+f.Name="TitleBar"
+f.Size=UDim2.new(1,0,0,25)
+f.BackgroundColor3=Color3.fromRGB(37,40,48)
 f.BorderSizePixel=0
-f.AutoButtonColor=false
-f.Font=Enum.Font.GothamMedium
-f.Text=e.Name or"Tab"
-f.TextColor3=Color3.fromRGB(145,149,160)
-f.TextSize=13
-f.Parent=d.TabBar
+f.Parent=e
 
-local g=Instance.new"Frame"
-g.Name=f.Name.."Content"
-g.Position=UDim2.fromOffset(0,60)
-g.Size=UDim2.new(1,0,1,-60)
+local g=Instance.new"TextLabel"
+g.Name="Title"
+g.Size=UDim2.new(1,-16,1,0)
+g.Position=UDim2.fromOffset(8,0)
 g.BackgroundTransparency=1
-g.Visible=false
-g.Parent=d.Panel
+g.Font=Enum.Font.GothamMedium
+g.Text=d.Name or"Groupbox"
+g.TextColor3=Color3.fromRGB(235,237,240)
+g.TextSize=13
+g.TextXAlignment=Enum.TextXAlignment.Left
+g.Parent=f
 
-local h=Instance.new"UIPadding"
-h.PaddingTop=UDim.new(0,8)
-h.PaddingBottom=UDim.new(0,8)
-h.PaddingLeft=UDim.new(0,8)
-h.PaddingRight=UDim.new(0,8)
-h.Parent=g
+local h=Instance.new"Frame"
+h.Name="Content"
+h.Position=UDim2.fromOffset(0,25)
+h.Size=UDim2.new(1,0,1,-25)
+h.BackgroundTransparency=1
+h.Parent=e
 
-local i=Instance.new"UIListLayout"
-i.FillDirection=Enum.FillDirection.Horizontal
-i.Padding=UDim.new(0,8)
-i.SortOrder=Enum.SortOrder.LayoutOrder
-i.Parent=g
-
-local j={}
-for k=1,3 do
-local l=Instance.new"Frame"
-l.Name="Column"..k
-l.LayoutOrder=k
-l.Size=UDim2.new(0.3333333333333333,-5.333333333333333,1,0)
-l.BackgroundColor3=Color3.fromRGB(255,0,0)
-l.BorderSizePixel=0
-l.Parent=g
-j[k]=l
+return setmetatable({
+Frame=e,
+TitleBar=f,
+Title=g,
+Content=h,
+},b)
 end
 
-local k=setmetatable({
-Window=d,
-Button=f,
-Content=g,
-Columns=j,
-Connection=nil,
-},c)
+function b.Destroy(c)
+c.Frame:Destroy()
+end
 
-k.Connection=f.MouseButton1Click:Connect(function()
-d:SelectTab(k)
+return b end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
+
+local b=a.b()
+local c=a.c()
+
+local d={}
+d.__index=d
+
+function d.new(e,f)
+f=f or{}
+
+local g=Instance.new"TextButton"
+g.Name=f.Name or"Tab"
+g.BackgroundColor3=Color3.fromRGB(31,34,41)
+g.BorderSizePixel=0
+g.AutoButtonColor=false
+g.Font=Enum.Font.GothamMedium
+g.Text=f.Name or"Tab"
+g.TextColor3=Color3.fromRGB(145,149,160)
+g.TextSize=13
+g.Parent=e.TabBar
+
+local h=Instance.new"Frame"
+h.Name=g.Name.."Content"
+h.Position=UDim2.fromOffset(0,60)
+h.Size=UDim2.new(1,0,1,-60)
+h.BackgroundTransparency=1
+h.Visible=false
+h.Parent=e.Panel
+
+local i=Instance.new"UIPadding"
+i.PaddingTop=UDim.new(0,8)
+i.PaddingBottom=UDim.new(0,8)
+i.PaddingLeft=UDim.new(0,8)
+i.PaddingRight=UDim.new(0,8)
+i.Parent=h
+
+local j=Instance.new"UIListLayout"
+j.FillDirection=Enum.FillDirection.Horizontal
+j.Padding=UDim.new(0,8)
+j.SortOrder=Enum.SortOrder.LayoutOrder
+j.Parent=h
+
+local k={}
+local l={"Left","Center","Right"}
+for m=1,3 do
+local n=Instance.new"ScrollingFrame"
+n.Name=l[m]
+n.LayoutOrder=m
+n.Size=UDim2.new(0.3333333333333333,-5.333333333333333,1,0)
+n.BackgroundTransparency=1
+n.BorderSizePixel=0
+n.AutomaticCanvasSize=Enum.AutomaticSize.Y
+n.CanvasSize=UDim2.fromOffset(0,0)
+n.ScrollBarThickness=3
+n.ScrollBarImageColor3=Color3.fromRGB(80,84,96)
+n.Parent=h
+
+local o=Instance.new"UIListLayout"
+o.Padding=UDim.new(0,8)
+o.SortOrder=Enum.SortOrder.LayoutOrder
+o.Parent=n
+
+k[l[m] ]=n
+end
+
+local m=setmetatable({
+Window=e,
+Button=g,
+Content=h,
+Columns=k,
+Connection=nil,
+},d)
+
+m.Connection=g.MouseButton1Click:Connect(function()
+e:SelectTab(m)
 end)
 
-table.insert(d.Tabs,k)
-if#d.Tabs==1 then
-d:SelectTab(k)
+table.insert(e.Tabs,m)
+if#e.Tabs==1 then
+e:SelectTab(m)
 end
 
-return k
+return m
 end
 
-function c.CreateButton(d,e)
+function d.CreateButton(e,f)
 return b.new()
 end
 
-function c.SetActive(d,e)
-d.Content.Visible=e
-d.Button.BackgroundColor3=if e then Color3.fromRGB(42,46,55)else Color3.fromRGB(31,34,41)
-d.Button.TextColor3=if e then Color3.fromRGB(240,242,245)else Color3.fromRGB(145,149,160)
+function d.CreateGroupbox(e,f)
+f=f or{}
+local g=e.Columns[f.Column or"Left"]
+assert(g,"PureUI groupbox Column must be Left, Center, or Right")
+return c.new(g,f)
 end
 
-function c.Destroy(d)
-d.Connection:Disconnect()
-d.Button:Destroy()
-d.Content:Destroy()
+function d.SetActive(e,f)
+e.Content.Visible=f
+e.Button.BackgroundColor3=if f then Color3.fromRGB(42,46,55)else Color3.fromRGB(31,34,41)
+e.Button.TextColor3=if f then Color3.fromRGB(240,242,245)else Color3.fromRGB(145,149,160)
 end
 
-return c end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
+function d.Destroy(e)
+e.Connection:Disconnect()
+e.Button:Destroy()
+e.Content:Destroy()
+end
 
-local b=a.c()
+return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+
+local b=a.d()
 local c=game:GetService"UserInputService"
 local d=game:GetService"RunService"
 
@@ -260,6 +332,10 @@ b.new(r,{Name="Demo 1"})
 b.new(r,{Name="Demo 2"})
 r:UpdateTabLayout()
 
+r.Tabs[1]:CreateGroupbox{Name="Left Group",Column="Left",Height=150}
+r.Tabs[1]:CreateGroupbox{Name="Center Group",Column="Center",Height=200}
+r.Tabs[1]:CreateGroupbox{Name="Right Group",Column="Right",Height=120}
+
 return r
 end
 
@@ -304,7 +380,7 @@ f.SelectedTab=nil
 end
 end
 
-return e end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+return e end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 
@@ -450,7 +526,7 @@ delfile(d.Path)
 end)
 end
 
-return c end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
+return c end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -531,7 +607,7 @@ end
 return nil
 end
 
-return b end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
+return b end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -604,12 +680,12 @@ end)
 return h
 end
 
-return b end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+return b end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
 
-local b=a.d()
-local c=a.e()
-local d=a.f()
-local e=a.g()
+local b=a.e()
+local c=a.f()
+local d=a.g()
+local e=a.h()
 
 local f={}
 f.__index=f
@@ -642,8 +718,8 @@ end
 
 f.Icons=d.Icons
 
-return setmetatable({},f)end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end end
+return setmetatable({},f)end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end end
 
-local b=a.h()
+local b=a.i()
 
 return b

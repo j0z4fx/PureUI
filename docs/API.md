@@ -26,13 +26,35 @@ Destroy it with `Window:Destroy()`, or destroy every PureUI window with
 
 Creates a working tab button and content frame. First tab is selected
 automatically. Tabs divide the full width equally. Each tab contains three
-equal columns with 8px outer padding and gaps. Columns are temporarily red
-for layout debugging.
+equal scrolling columns with 8px outer padding and gaps:
+
+```lua
+Tab.Columns.Left
+Tab.Columns.Center
+Tab.Columns.Right
+```
+
+Scrollbars appear only when column content overflows.
 
 ```lua
 local First = Window:CreateTab({ Name = "Demo 1" })
 local Second = Window:CreateTab({ Name = "Demo 2" })
 ```
+
+## `Tab:CreateGroupbox(config)`
+
+Creates a full-column-width groupbox. Groupboxes stack with an 8px vertical
+gap and have a separate 25px titlebar.
+
+```lua
+local Groupbox = Tab:CreateGroupbox({
+	Name = "Player",
+	Column = "Left",
+	Height = 120,
+})
+```
+
+`Column` must be `Left`, `Center`, or `Right`.
 
 ## `Tab:CreateButton(config)`
 
