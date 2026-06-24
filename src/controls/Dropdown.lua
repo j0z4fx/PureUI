@@ -1,4 +1,5 @@
 local TweenService = game:GetService("TweenService")
+local Lucide = require("../icons/Lucide")
 
 local Dropdown = {}
 Dropdown.__index = Dropdown
@@ -30,7 +31,7 @@ function Dropdown.new(parent, config)
 	local selectButton = Instance.new("TextButton")
 	selectButton.AnchorPoint = Vector2.new(1, 0)
 	selectButton.Position = UDim2.new(1, -8, 0, 7)
-	selectButton.Size = UDim2.new(0.6, -8, 0, 24)
+	selectButton.Size = UDim2.new(0.45, -8, 0, 24)
 	selectButton.BackgroundColor3 = Color3.fromRGB(45, 48, 57)
 	selectButton.BorderSizePixel = 0
 	selectButton.AutoButtonColor = false
@@ -45,15 +46,16 @@ function Dropdown.new(parent, config)
 	buttonPadding.PaddingRight = UDim.new(0, 22)
 	buttonPadding.Parent = selectButton
 
-	local arrow = Instance.new("TextLabel")
+	local arrowAsset = Lucide.GetAsset("chevron-down")
+	local arrow = Instance.new("ImageLabel")
 	arrow.AnchorPoint = Vector2.new(1, 0.5)
 	arrow.Position = UDim2.new(1, -7, 0.5, 0)
 	arrow.Size = UDim2.fromOffset(12, 12)
 	arrow.BackgroundTransparency = 1
-	arrow.Font = Enum.Font.GothamMedium
-	arrow.Text = "v"
-	arrow.TextColor3 = Color3.fromRGB(155, 160, 172)
-	arrow.TextSize = 11
+	arrow.Image = arrowAsset.Url
+	arrow.ImageRectOffset = arrowAsset.ImageRectOffset
+	arrow.ImageRectSize = arrowAsset.ImageRectSize
+	arrow.ImageColor3 = Color3.fromRGB(155, 160, 172)
 	arrow.Parent = selectButton
 
 	local list = Instance.new("ScrollingFrame")
