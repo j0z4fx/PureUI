@@ -125,6 +125,13 @@ n.Y.Offset+q.Y
 end))
 
 table.insert(j,d.RenderStepped:Connect(function(p)
+local q=o.X.Offset-g.Position.X.Offset
+local r=o.Y.Offset-g.Position.Y.Offset
+if q*q+r*r<0.25 then
+g.Position=o
+return
+end
+
 g.Position=g.Position:Lerp(o,1-math.exp(-8*p))
 end))
 

@@ -95,6 +95,13 @@ function Window.new()
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
+		local x = targetPosition.X.Offset - panel.Position.X.Offset
+		local y = targetPosition.Y.Offset - panel.Position.Y.Offset
+		if x * x + y * y < 0.25 then
+			panel.Position = targetPosition
+			return
+		end
+
 		panel.Position = panel.Position:Lerp(targetPosition, 1 - math.exp(-8 * deltaTime))
 	end))
 
