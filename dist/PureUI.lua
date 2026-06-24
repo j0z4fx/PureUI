@@ -59,7 +59,7 @@ e.Parent=d
 
 local f=Instance.new"Frame"
 f.Name="TitleBar"
-f.Size=UDim2.new(1,0,0,40)
+f.Size=UDim2.new(1,0,0,20)
 f.BackgroundColor3=Color3.fromRGB(27,30,36)
 f.BorderSizePixel=0
 f.Parent=e

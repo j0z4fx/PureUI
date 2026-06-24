@@ -29,7 +29,7 @@ function Window.new()
 
 	local titleBar = Instance.new("Frame")
 	titleBar.Name = "TitleBar"
-	titleBar.Size = UDim2.new(1, 0, 0, 40)
+	titleBar.Size = UDim2.new(1, 0, 0, 20)
 	titleBar.BackgroundColor3 = Color3.fromRGB(27, 30, 36)
 	titleBar.BorderSizePixel = 0
 	titleBar.Parent = panel

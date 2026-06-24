@@ -11,7 +11,7 @@ local PureUI = loadstring(game:HttpGet("RAW_URL"))()
 ## `PureUI:CreateWindow(config)`
 
 Creates a centered `800 × 450` square-cornered background panel with a
-`40px` titlebar.
+`20px` titlebar.
 
 ```lua
 local Window = PureUI:CreateWindow({})
