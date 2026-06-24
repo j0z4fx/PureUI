@@ -23,7 +23,6 @@ e=e or{}
 
 local f=Instance.new"TextButton"
 f.Name=e.Name or"Tab"
-f.Size=UDim2.fromOffset(100,30)
 f.BackgroundColor3=Color3.fromRGB(31,34,41)
 f.BorderSizePixel=0
 f.AutoButtonColor=false
@@ -134,8 +133,10 @@ j.BackgroundColor3=Color3.fromRGB(24,26,32)
 j.BorderSizePixel=0
 j.Parent=g
 
-local k=Instance.new"UIListLayout"
-k.FillDirection=Enum.FillDirection.Horizontal
+local k=Instance.new"UIGridLayout"
+k.CellPadding=UDim2.fromOffset(0,0)
+k.CellSize=UDim2.new(1,0,1,0)
+k.FillDirectionMaxCells=1
 k.SortOrder=Enum.SortOrder.LayoutOrder
 k.Parent=j
 
@@ -231,12 +232,21 @@ Connections=l,
 
 b.new(r,{Name="Demo 1"})
 b.new(r,{Name="Demo 2"})
+r:UpdateTabLayout()
 
 return r
 end
 
 function e.CreateTab(f,g)
-return b.new(f,g)
+local h=b.new(f,g)
+f:UpdateTabLayout()
+return h
+end
+
+function e.UpdateTabLayout(f)
+local g=#f.Tabs
+f.TabBar.UIGridLayout.FillDirectionMaxCells=g
+f.TabBar.UIGridLayout.CellSize=UDim2.new(1/g,0,1,0)
 end
 
 function e.SelectTab(f,g)

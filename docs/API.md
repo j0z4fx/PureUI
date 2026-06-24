@@ -25,7 +25,7 @@ Destroy it with `Window:Destroy()`, or destroy every PureUI window with
 ## `Window:CreateTab(config)`
 
 Creates a working tab button and content frame. First tab is selected
-automatically.
+automatically. Tabs divide the full width equally.
 
 ```lua
 local First = Window:CreateTab({ Name = "Demo 1" })

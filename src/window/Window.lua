@@ -54,8 +54,10 @@ function Window.new()
 	tabBar.BorderSizePixel = 0
 	tabBar.Parent = panel
 
-	local tabLayout = Instance.new("UIListLayout")
-	tabLayout.FillDirection = Enum.FillDirection.Horizontal
+	local tabLayout = Instance.new("UIGridLayout")
+	tabLayout.CellPadding = UDim2.fromOffset(0, 0)
+	tabLayout.CellSize = UDim2.new(1, 0, 1, 0)
+	tabLayout.FillDirectionMaxCells = 1
 	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	tabLayout.Parent = tabBar
 
@@ -151,12 +153,21 @@ function Window.new()
 
 	Tab.new(window, { Name = "Demo 1" })
 	Tab.new(window, { Name = "Demo 2" })
+	window:UpdateTabLayout()
 
 	return window
 end
 
 function Window:CreateTab(config)
-	return Tab.new(self, config)
+	local tab = Tab.new(self, config)
+	self:UpdateTabLayout()
+	return tab
+end
+
+function Window:UpdateTabLayout()
+	local count = #self.Tabs
+	self.TabBar.UIGridLayout.FillDirectionMaxCells = count
+	self.TabBar.UIGridLayout.CellSize = UDim2.new(1 / count, 0, 1, 0)
 end
 
 function Window:SelectTab(selected)

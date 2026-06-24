@@ -8,7 +8,6 @@ function Tab.new(window, config)
 
 	local button = Instance.new("TextButton")
 	button.Name = config.Name or "Tab"
-	button.Size = UDim2.fromOffset(100, 30)
 	button.BackgroundColor3 = Color3.fromRGB(31, 34, 41)
 	button.BorderSizePixel = 0
 	button.AutoButtonColor = false
