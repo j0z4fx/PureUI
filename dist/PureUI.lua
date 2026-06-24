@@ -47,10 +47,9 @@ h.PaddingLeft=UDim.new(0,8)
 h.PaddingRight=UDim.new(0,8)
 h.Parent=g
 
-local i=Instance.new"UIGridLayout"
-i.CellPadding=UDim2.fromOffset(8,0)
-i.CellSize=UDim2.new(0.3333333333333333,-5.333333333333333,1,0)
-i.FillDirectionMaxCells=3
+local i=Instance.new"UIListLayout"
+i.FillDirection=Enum.FillDirection.Horizontal
+i.Padding=UDim.new(0,8)
 i.SortOrder=Enum.SortOrder.LayoutOrder
 i.Parent=g
 
@@ -59,6 +58,7 @@ for k=1,3 do
 local l=Instance.new"Frame"
 l.Name="Column"..k
 l.LayoutOrder=k
+l.Size=UDim2.new(0.3333333333333333,-5.333333333333333,1,0)
 l.BackgroundColor3=Color3.fromRGB(255,0,0)
 l.BorderSizePixel=0
 l.Parent=g

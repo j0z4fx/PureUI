@@ -32,10 +32,9 @@ function Tab.new(window, config)
 	padding.PaddingRight = UDim.new(0, 8)
 	padding.Parent = content
 
-	local layout = Instance.new("UIGridLayout")
-	layout.CellPadding = UDim2.fromOffset(8, 0)
-	layout.CellSize = UDim2.new(1 / 3, -16 / 3, 1, 0)
-	layout.FillDirectionMaxCells = 3
+	local layout = Instance.new("UIListLayout")
+	layout.FillDirection = Enum.FillDirection.Horizontal
+	layout.Padding = UDim.new(0, 8)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 	layout.Parent = content
 
@@ -44,6 +43,7 @@ function Tab.new(window, config)
 		local column = Instance.new("Frame")
 		column.Name = "Column" .. index
 		column.LayoutOrder = index
+		column.Size = UDim2.new(1 / 3, -16 / 3, 1, 0)
 		column.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 		column.BorderSizePixel = 0
 		column.Parent = content
