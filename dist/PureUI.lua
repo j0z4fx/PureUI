@@ -431,9 +431,10 @@ return d end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b
 local b=a.f()
 local c=game:GetService"UserInputService"
 local d=game:GetService"RunService"
+local e=game:GetService"TweenService"
 
-local e={}
-e.__index=e
+local f={}
+f.__index=f
 
 local function getParent()
 if type(gethui)=="function"then
@@ -443,64 +444,53 @@ end
 return game:GetService"CoreGui"
 end
 
-function e.new()
-local f=Instance.new"ScreenGui"
-f.Name="PureUI"
-f.IgnoreGuiInset=true
-f.ResetOnSpawn=false
-f.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-
-local g=Instance.new"Frame"
-g.Name="Background"
-g.AnchorPoint=Vector2.new(0.5,0.5)
-g.Position=UDim2.fromScale(0.5,0.5)
-g.Size=UDim2.fromOffset(800,450)
-g.BackgroundColor3=Color3.fromRGB(20,22,27)
-g.BorderSizePixel=0
-g.Parent=f
+function f.new()
+local g=Instance.new"ScreenGui"
+g.Name="PureUI"
+g.IgnoreGuiInset=true
+g.ResetOnSpawn=false
+g.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 
 local h=Instance.new"Frame"
-h.Name="TitleBar"
-h.Size=UDim2.new(1,0,0,30)
-h.BackgroundColor3=Color3.fromRGB(27,30,36)
+h.Name="Background"
+h.AnchorPoint=Vector2.new(0.5,0.5)
+h.Position=UDim2.fromScale(0.5,0.5)
+h.Size=UDim2.fromOffset(800,450)
+h.BackgroundColor3=Color3.fromRGB(20,22,27)
 h.BorderSizePixel=0
 h.Parent=g
 
-local i=Instance.new"TextLabel"
-i.Name="Title"
-i.Size=UDim2.fromScale(1,1)
-i.BackgroundTransparency=1
-i.Font=Enum.Font.GothamMedium
-i.Text="Pure"
-i.TextColor3=Color3.fromRGB(235,237,240)
-i.TextSize=14
+local i=Instance.new"Frame"
+i.Name="TitleBar"
+i.Size=UDim2.new(1,0,0,30)
+i.BackgroundColor3=Color3.fromRGB(27,30,36)
+i.BorderSizePixel=0
 i.Parent=h
 
-local j=Instance.new"Frame"
-j.Name="TabBar"
-j.Position=UDim2.fromOffset(0,30)
-j.Size=UDim2.new(1,0,0,30)
-j.BackgroundColor3=Color3.fromRGB(24,26,32)
-j.BorderSizePixel=0
-j.Parent=g
+local j=Instance.new"TextLabel"
+j.Name="Title"
+j.Size=UDim2.fromScale(1,1)
+j.BackgroundTransparency=1
+j.Font=Enum.Font.GothamMedium
+j.Text="Pure"
+j.TextColor3=Color3.fromRGB(235,237,240)
+j.TextSize=14
+j.Parent=i
 
-local k=Instance.new"UIGridLayout"
-k.CellPadding=UDim2.fromOffset(0,0)
-k.CellSize=UDim2.new(1,0,1,0)
-k.FillDirectionMaxCells=1
-k.SortOrder=Enum.SortOrder.LayoutOrder
-k.Parent=j
+local k=Instance.new"Frame"
+k.Name="TabBar"
+k.Position=UDim2.fromOffset(0,30)
+k.Size=UDim2.new(1,0,0,30)
+k.BackgroundColor3=Color3.fromRGB(24,26,32)
+k.BorderSizePixel=0
+k.Parent=h
 
-local l=Instance.new"Frame"
-l.Name="BottomDragHandle"
-l.AnchorPoint=Vector2.new(0.5,0)
-l.Position=UDim2.new(0.5,0,1,4)
-l.Size=UDim2.fromOffset(160,4)
-l.BackgroundColor3=Color3.fromRGB(120,124,136)
-l.BackgroundTransparency=0.35
-l.BorderSizePixel=0
-l.Active=true
-l.Parent=g
+local l=Instance.new"UIGridLayout"
+l.CellPadding=UDim2.fromOffset(0,0)
+l.CellSize=UDim2.new(1,0,1,0)
+l.FillDirectionMaxCells=1
+l.SortOrder=Enum.SortOrder.LayoutOrder
+l.Parent=k
 
 local m=Instance.new"Frame"
 m.Name="ResizeHandle"
@@ -511,7 +501,7 @@ m.BackgroundTransparency=1
 m.BorderSizePixel=0
 m.Active=true
 m.ZIndex=20
-m.Parent=g
+m.Parent=h
 
 local n=Instance.new"Frame"
 n.AnchorPoint=Vector2.new(1,1)
@@ -531,20 +521,31 @@ o.BackgroundTransparency=0.35
 o.BorderSizePixel=0
 o.Parent=m
 
+local function setResizeHover(p)
+local q=if p then 0.05 else 0.35
+local r=if p then Color3.fromRGB(180,184,196)else Color3.fromRGB(120,124,136)
+for s,t in ipairs{n,o}do
+e:Create(t,TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
+BackgroundColor3=r,
+BackgroundTransparency=q,
+}):Play()
+end
+end
+
 local p={}
 local q=false
 local r
 local s
-local t=g.Position
+local t=h.Position
 local u=false
 local v
 local w
 
 local function clampToScreen(x)
-local y=f.AbsoluteSize
-local z=g.AbsoluteSize
-local A=z.X*g.AnchorPoint.X
-local B=z.Y*g.AnchorPoint.Y
+local y=g.AbsoluteSize
+local z=h.AbsoluteSize
+local A=z.X*h.AnchorPoint.X
+local B=z.Y*h.AnchorPoint.Y
 local C=x.X.Offset+y.X*x.X.Scale
 local D=x.Y.Offset+y.Y*x.Y.Scale
 
@@ -563,12 +564,11 @@ end
 
 q=true
 r=x.Position
-s=g.Position
-t=g.Position
+s=h.Position
+t=h.Position
 end
 
-table.insert(p,h.InputBegan:Connect(beginDrag))
-table.insert(p,l.InputBegan:Connect(beginDrag))
+table.insert(p,i.InputBegan:Connect(beginDrag))
 table.insert(p,m.InputBegan:Connect(function(x)
 if x.UserInputType~=Enum.UserInputType.MouseButton1
 and x.UserInputType~=Enum.UserInputType.Touch
@@ -577,8 +577,9 @@ return
 end
 
 u=true
+setResizeHover(true)
 v=x.Position
-w=g.Size
+w=h.Size
 end))
 
 table.insert(p,c.InputEnded:Connect(function(x)
@@ -587,13 +588,24 @@ and(x.UserInputType==Enum.UserInputType.MouseButton1
 or x.UserInputType==Enum.UserInputType.Touch)
 then
 q=false
-t=g.Position
+t=h.Position
 end
 if u
 and(x.UserInputType==Enum.UserInputType.MouseButton1
 or x.UserInputType==Enum.UserInputType.Touch)
 then
 u=false
+setResizeHover(false)
+end
+end))
+table.insert(p,m.MouseEnter:Connect(function()
+if not u then
+setResizeHover(true)
+end
+end))
+table.insert(p,m.MouseLeave:Connect(function()
+if not u then
+setResizeHover(false)
 end
 end))
 
@@ -616,14 +628,14 @@ end
 
 if u then
 local y=x.Position-v
-local z=f.AbsoluteSize
-local A=math.max(560,math.min(850,z.X))
-local B=math.max(350,math.min(560,z.Y))
-g.Size=UDim2.fromOffset(
+local z=g.AbsoluteSize
+local A=math.max(560,z.X)
+local B=math.max(350,z.Y)
+h.Size=UDim2.fromOffset(
 math.clamp(w.X.Offset+y.X*2,560,A),
 math.clamp(w.Y.Offset+y.Y*2,350,B)
 )
-t=clampToScreen(g.Position)
+t=clampToScreen(h.Position)
 end
 end))
 
@@ -633,29 +645,28 @@ return
 end
 
 t=clampToScreen(t)
-local y=t.X.Offset-g.Position.X.Offset
-local z=t.Y.Offset-g.Position.Y.Offset
+local y=t.X.Offset-h.Position.X.Offset
+local z=t.Y.Offset-h.Position.Y.Offset
 if y*y+z*z<0.25 then
-g.Position=t
+h.Position=t
 return
 end
 
-g.Position=g.Position:Lerp(t,1-math.exp(-6*x))
+h.Position=h.Position:Lerp(t,1-math.exp(-6*x))
 end))
 
-f.Parent=getParent()
+g.Parent=getParent()
 
 local x=setmetatable({
-ScreenGui=f,
-Panel=g,
-TitleBar=h,
-Title=i,
-TabBar=j,
-BottomDragHandle=l,
+ScreenGui=g,
+Panel=h,
+TitleBar=i,
+Title=j,
+TabBar=k,
 ResizeHandle=m,
 Tabs={},
 Connections=p,
-},e)
+},f)
 
 b.new(x,{Name="Demo 1"})
 b.new(x,{Name="Demo 2"})
@@ -668,50 +679,49 @@ y:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
 return x
 end
 
-function e.CreateTab(f,g)
-local h=b.new(f,g)
-f:UpdateTabLayout()
-return h
+function f.CreateTab(g,h)
+local i=b.new(g,h)
+g:UpdateTabLayout()
+return i
 end
 
-function e.UpdateTabLayout(f)
-local g=#f.Tabs
-f.TabBar.UIGridLayout.FillDirectionMaxCells=g
-f.TabBar.UIGridLayout.CellSize=UDim2.new(1/g,0,1,0)
+function f.UpdateTabLayout(g)
+local h=#g.Tabs
+g.TabBar.UIGridLayout.FillDirectionMaxCells=h
+g.TabBar.UIGridLayout.CellSize=UDim2.new(1/h,0,1,0)
 end
 
-function e.SelectTab(f,g)
-for h,i in ipairs(f.Tabs)do
-i:SetActive(i==g)
+function f.SelectTab(g,h)
+for i,j in ipairs(g.Tabs)do
+j:SetActive(j==h)
 end
-f.SelectedTab=g
-end
-
-function e.Destroy(f)
-for g,h in ipairs(f.Connections)do
-h:Disconnect()
-end
-table.clear(f.Connections)
-
-for g,h in ipairs(f.Tabs)do
-h:Destroy()
-end
-table.clear(f.Tabs)
-
-if f.ScreenGui then
-f.ScreenGui:Destroy()
-f.ScreenGui=nil
-f.Panel=nil
-f.TitleBar=nil
-f.Title=nil
-f.TabBar=nil
-f.BottomDragHandle=nil
-f.ResizeHandle=nil
-f.SelectedTab=nil
-end
+g.SelectedTab=h
 end
 
-return e end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+function f.Destroy(g)
+for h,i in ipairs(g.Connections)do
+i:Disconnect()
+end
+table.clear(g.Connections)
+
+for h,i in ipairs(g.Tabs)do
+i:Destroy()
+end
+table.clear(g.Tabs)
+
+if g.ScreenGui then
+g.ScreenGui:Destroy()
+g.ScreenGui=nil
+g.Panel=nil
+g.TitleBar=nil
+g.Title=nil
+g.TabBar=nil
+g.ResizeHandle=nil
+g.SelectedTab=nil
+end
+end
+
+return f end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 

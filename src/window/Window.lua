@@ -1,6 +1,7 @@
 local Tab = require("../containers/Tab")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local Window = {}
 Window.__index = Window
@@ -61,17 +62,6 @@ function Window.new()
 	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	tabLayout.Parent = tabBar
 
-	local bottomDragHandle = Instance.new("Frame")
-	bottomDragHandle.Name = "BottomDragHandle"
-	bottomDragHandle.AnchorPoint = Vector2.new(0.5, 0)
-	bottomDragHandle.Position = UDim2.new(0.5, 0, 1, 4)
-	bottomDragHandle.Size = UDim2.fromOffset(160, 4)
-	bottomDragHandle.BackgroundColor3 = Color3.fromRGB(120, 124, 136)
-	bottomDragHandle.BackgroundTransparency = 0.35
-	bottomDragHandle.BorderSizePixel = 0
-	bottomDragHandle.Active = true
-	bottomDragHandle.Parent = panel
-
 	local resizeHandle = Instance.new("Frame")
 	resizeHandle.Name = "ResizeHandle"
 	resizeHandle.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -100,6 +90,17 @@ function Window.new()
 	resizeVertical.BackgroundTransparency = 0.35
 	resizeVertical.BorderSizePixel = 0
 	resizeVertical.Parent = resizeHandle
+
+	local function setResizeHover(active)
+		local transparency = if active then 0.05 else 0.35
+		local color = if active then Color3.fromRGB(180, 184, 196) else Color3.fromRGB(120, 124, 136)
+		for _, line in ipairs({ resizeHorizontal, resizeVertical }) do
+			TweenService:Create(line, TweenInfo.new(0.16, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+				BackgroundColor3 = color,
+				BackgroundTransparency = transparency,
+			}):Play()
+		end
+	end
 
 	local connections = {}
 	local dragging = false
@@ -138,7 +139,6 @@ function Window.new()
 	end
 
 	table.insert(connections, titleBar.InputBegan:Connect(beginDrag))
-	table.insert(connections, bottomDragHandle.InputBegan:Connect(beginDrag))
 	table.insert(connections, resizeHandle.InputBegan:Connect(function(input)
 		if input.UserInputType ~= Enum.UserInputType.MouseButton1
 			and input.UserInputType ~= Enum.UserInputType.Touch
@@ -147,6 +147,7 @@ function Window.new()
 		end
 
 		resizing = true
+		setResizeHover(true)
 		resizeStart = input.Position
 		startSize = panel.Size
 	end))
@@ -164,6 +165,17 @@ function Window.new()
 				or input.UserInputType == Enum.UserInputType.Touch)
 		then
 			resizing = false
+			setResizeHover(false)
+		end
+	end))
+	table.insert(connections, resizeHandle.MouseEnter:Connect(function()
+		if not resizing then
+			setResizeHover(true)
+		end
+	end))
+	table.insert(connections, resizeHandle.MouseLeave:Connect(function()
+		if not resizing then
+			setResizeHover(false)
 		end
 	end))
 
@@ -187,8 +199,8 @@ function Window.new()
 		if resizing then
 			local delta = input.Position - resizeStart
 			local viewport = screenGui.AbsoluteSize
-			local maxWidth = math.max(560, math.min(850, viewport.X))
-			local maxHeight = math.max(350, math.min(560, viewport.Y))
+			local maxWidth = math.max(560, viewport.X)
+			local maxHeight = math.max(350, viewport.Y)
 			panel.Size = UDim2.fromOffset(
 				math.clamp(startSize.X.Offset + delta.X * 2, 560, maxWidth),
 				math.clamp(startSize.Y.Offset + delta.Y * 2, 350, maxHeight)
@@ -221,7 +233,6 @@ function Window.new()
 		TitleBar = titleBar,
 		Title = title,
 		TabBar = tabBar,
-		BottomDragHandle = bottomDragHandle,
 		ResizeHandle = resizeHandle,
 		Tabs = {},
 		Connections = connections,
@@ -275,7 +286,6 @@ function Window:Destroy()
 		self.TitleBar = nil
 		self.Title = nil
 		self.TabBar = nil
-		self.BottomDragHandle = nil
 		self.ResizeHandle = nil
 		self.SelectedTab = nil
 	end
