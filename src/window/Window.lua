@@ -286,10 +286,13 @@ function Window.new()
 	controls:CreateToggle({ Name = "Demo Toggle" })
 	controls:CreateKeypicker({ Toggle = "Demo Toggle", Default = "K" })
 	controls:CreateSlider({ Name = "Demo Slider", Min = 0, Max = 100, Default = 50 })
+	controls:CreateSlider({ Name = "Centered Slider", Variant = "Centered", Min = -100, Max = 100 })
+	controls:CreateSlider({ Name = "Range Slider", Variant = "Range", Min = 0, Max = 100, Default = { Min = 25, Max = 75 } })
 	controls:CreateInput({ Name = "Demo Input", Placeholder = "Text" })
 	controls:CreateDoubleButton({ Left = "Cancel", Right = "Apply", Accent = "Right" })
 	controls:CreateColorpicker({ Name = "Demo Color", Default = Color3.fromRGB(88, 130, 255) })
 	controls:CreateDropdown({ Name = "Demo Dropdown", Options = { "One", "Two", "Three" }, Default = "One" })
+	controls:CreateDropdown({ Name = "Multi Dropdown", Options = { "One", "Two", "Three" }, Multi = true, Default = { "One", "Three" } })
 
 	return window
 end

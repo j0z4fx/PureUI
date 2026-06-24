@@ -244,137 +244,246 @@ local c=game:GetService"RunService"
 local d={}
 d.__index=d
 
+local function quantize(e,f,g,h)
+return math.clamp(f+math.round((e-f)/h)*h,f,g)
+end
+
+local function approach(e,f,g)
+local h=f-e
+if math.abs(h)<0.01 then
+return f
+end
+return e+h*(1-math.exp(-4*g))
+end
+
 function d.new(e,f)
 f=f or{}
-local g=f.Min or 0
-local h=f.Max or 100
-local i=f.Step or 1
-assert(h>g,"PureUI slider Max must be greater than Min")
-assert(i>0,"PureUI slider Step must be positive")
+local g=f.Variant or"Default"
+assert(g=="Default"or g=="Centered"or g=="Range","PureUI slider Variant is invalid")
 
-local j=Instance.new"Frame"
-j.Name=f.Name or"Slider"
-j.Size=UDim2.new(1,0,0,46)
-j.BackgroundTransparency=1
-j.Parent=e
+local h=f.Min
+local i=f.Max
+if g=="Centered"then
+h=h or-100
+i=i or 100
+else
+h=h or 0
+i=i or 100
+end
+local j=f.Step or 1
+assert(i>h,"PureUI slider Max must be greater than Min")
+assert(j>0,"PureUI slider Step must be positive")
 
-local k=Instance.new"TextLabel"
-k.Position=UDim2.fromOffset(8,0)
-k.Size=UDim2.new(1,-56,0,24)
+local k=Instance.new"Frame"
+k.Name=f.Name or"Slider"
+k.Size=UDim2.new(1,0,0,46)
 k.BackgroundTransparency=1
-k.Font=Enum.Font.Gotham
-k.Text=f.Name or"Slider"
-k.TextColor3=Color3.fromRGB(220,223,228)
-k.TextSize=13
-k.TextXAlignment=Enum.TextXAlignment.Left
-k.Parent=j
+k.Parent=e
 
 local l=Instance.new"TextLabel"
-l.AnchorPoint=Vector2.new(1,0)
-l.Position=UDim2.new(1,-8,0,0)
-l.Size=UDim2.fromOffset(44,24)
+l.Position=UDim2.fromOffset(8,0)
+l.Size=UDim2.new(1,-88,0,24)
 l.BackgroundTransparency=1
-l.Font=Enum.Font.GothamMedium
-l.TextColor3=Color3.fromRGB(155,160,172)
-l.TextSize=12
-l.TextXAlignment=Enum.TextXAlignment.Right
-l.Parent=j
+l.Font=Enum.Font.Gotham
+l.Text=f.Name or"Slider"
+l.TextColor3=Color3.fromRGB(220,223,228)
+l.TextSize=13
+l.TextXAlignment=Enum.TextXAlignment.Left
+l.Parent=k
 
-local m=Instance.new"TextButton"
-m.Position=UDim2.fromOffset(8,28)
-m.Size=UDim2.new(1,-16,0,8)
-m.BackgroundColor3=Color3.fromRGB(45,48,57)
-m.BorderSizePixel=0
-m.AutoButtonColor=false
-m.Text=""
-m.Parent=j
+local m=Instance.new"TextLabel"
+m.AnchorPoint=Vector2.new(1,0)
+m.Position=UDim2.new(1,-8,0,0)
+m.Size=UDim2.fromOffset(76,24)
+m.BackgroundTransparency=1
+m.Font=Enum.Font.GothamMedium
+m.TextColor3=Color3.fromRGB(155,160,172)
+m.TextSize=12
+m.TextXAlignment=Enum.TextXAlignment.Right
+m.Parent=k
 
-local n=Instance.new"Frame"
-n.Size=UDim2.fromScale(0,1)
-n.BackgroundColor3=Color3.fromRGB(88,130,255)
+local n=Instance.new"TextButton"
+n.Position=UDim2.fromOffset(8,28)
+n.Size=UDim2.new(1,-16,0,8)
+n.BackgroundColor3=Color3.fromRGB(45,48,57)
 n.BorderSizePixel=0
-n.Parent=m
+n.AutoButtonColor=false
+n.Text=""
+n.Parent=k
 
-local o=setmetatable({
-Row=j,
-Track=m,
-Fill=n,
-ValueLabel=l,
-Min=g,
-Max=h,
-Step=i,
-Value=g,
-TargetValue=g,
-DisplayValue=g,
+local o=Instance.new"Frame"
+o.BackgroundColor3=Color3.fromRGB(88,130,255)
+o.BorderSizePixel=0
+o.Parent=n
+
+local p
+local q
+if g=="Range"then
+for r=1,2 do
+local s=Instance.new"Frame"
+s.Name=if r==1 then"Low"else"High"
+s.AnchorPoint=Vector2.new(0.5,0.5)
+s.Size=UDim2.fromOffset(6,14)
+s.BackgroundColor3=Color3.fromRGB(240,242,245)
+s.BorderSizePixel=0
+s.ZIndex=2
+s.Parent=n
+if r==1 then p=s else q=s end
+end
+end
+
+local r=setmetatable({
+Row=k,
+Track=n,
+Fill=o,
+LowKnob=p,
+HighKnob=q,
+ValueLabel=m,
+Variant=g,
+Min=h,
+Max=i,
+Step=j,
 Callback=f.Callback,
 Dragging=false,
 },d)
 
-local function update(p)
-local q=math.clamp((p.Position.X-m.AbsolutePosition.X)/m.AbsoluteSize.X,0,1)
-o:SetValue(g+(h-g)*q)
+local function ratioToValue(s)
+local t=math.clamp((s.Position.X-n.AbsolutePosition.X)/n.AbsoluteSize.X,0,1)
+return quantize(h+(i-h)*t,h,i,j)
 end
 
-o.BeginConnection=m.InputBegan:Connect(function(p)
-if p.UserInputType==Enum.UserInputType.MouseButton1
-or p.UserInputType==Enum.UserInputType.Touch
-then
-o.Dragging=true
-o.DragInput=p.UserInputType==Enum.UserInputType.Touch and p or nil
-update(p)
-end
-end)
-o.ChangeConnection=b.InputChanged:Connect(function(p)
-if o.Dragging
-and((o.DragInput and p==o.DragInput)
-or(not o.DragInput and p.UserInputType==Enum.UserInputType.MouseMovement))
-then
-update(p)
-end
-end)
-o.EndConnection=b.InputEnded:Connect(function(p)
-if o.Dragging
-and((o.DragInput and p==o.DragInput)
-or(not o.DragInput and p.UserInputType==Enum.UserInputType.MouseButton1))
-then
-o.Dragging=false
-o.DragInput=nil
-end
-end)
-o.RenderConnection=c.RenderStepped:Connect(function(p)
-local q=o.TargetValue-o.DisplayValue
-if math.abs(q)<o.Step*0.01 then
-o.DisplayValue=o.TargetValue
+local function update(s)
+local t=ratioToValue(s)
+if g=="Range"then
+if r.ActiveHandle=="Low"then
+r:SetValue{Min=math.min(t,r.High),Max=r.High}
 else
-o.DisplayValue+=q*(1-math.exp(-4*p))
+r:SetValue{Min=r.Low,Max=math.max(t,r.Low)}
+end
+else
+r:SetValue(t)
+end
 end
 
-local r=(o.DisplayValue-g)/(h-g)
-o.Fill.Size=UDim2.fromScale(r,1)
-o.ValueLabel.Text=tostring(math.round(o.DisplayValue/i)*i)
+r.BeginConnection=n.InputBegan:Connect(function(s)
+if s.UserInputType~=Enum.UserInputType.MouseButton1
+and s.UserInputType~=Enum.UserInputType.Touch
+then
+return
+end
+
+r.Dragging=true
+r.DragInput=s.UserInputType==Enum.UserInputType.Touch and s or nil
+if g=="Range"then
+local t=ratioToValue(s)
+r.ActiveHandle=if math.abs(t-r.Low)<=math.abs(t-r.High)then"Low"else"High"
+end
+update(s)
+end)
+r.ChangeConnection=b.InputChanged:Connect(function(s)
+if r.Dragging
+and((r.DragInput and s==r.DragInput)
+or(not r.DragInput and s.UserInputType==Enum.UserInputType.MouseMovement))
+then
+update(s)
+end
+end)
+r.EndConnection=b.InputEnded:Connect(function(s)
+if r.Dragging
+and((r.DragInput and s==r.DragInput)
+or(not r.DragInput and s.UserInputType==Enum.UserInputType.MouseButton1))
+then
+r.Dragging=false
+r.DragInput=nil
+r.ActiveHandle=nil
+end
+end)
+r.RenderConnection=c.RenderStepped:Connect(function(s)
+if g=="Range"then
+r.DisplayLow=approach(r.DisplayLow,r.Low,s)
+r.DisplayHigh=approach(r.DisplayHigh,r.High,s)
+local t=(r.DisplayLow-h)/(i-h)
+local u=(r.DisplayHigh-h)/(i-h)
+o.Position=UDim2.fromScale(t,0)
+o.Size=UDim2.fromScale(u-t,1)
+p.Position=UDim2.fromScale(t,0.5)
+q.Position=UDim2.fromScale(u,0.5)
+m.Text=("%s – %s"):format(r.Low,r.High)
+else
+r.DisplayValue=approach(r.DisplayValue,r.Value,s)
+local t=(r.DisplayValue-h)/(i-h)
+if g=="Centered"then
+local u=(0-h)/(i-h)
+o.Position=UDim2.fromScale(math.min(u,t),0)
+o.Size=UDim2.fromScale(math.abs(t-u),1)
+else
+o.Position=UDim2.fromScale(0,0)
+o.Size=UDim2.fromScale(t,1)
+end
+m.Text=tostring(r.Value)
+end
 end)
 
-o:SetValue(f.Default or g,true,true)
-return o
+if g=="Range"then
+local s=f.Default or{Min=h,Max=i}
+r:SetValue(s,true,true)
+else
+local s=f.Default
+if s==nil then s=if g=="Centered"then 0 else h end
+r:SetValue(s,true,true)
+end
+return r
 end
 
 function d.SetValue(e,f,g,h)
-f=math.clamp(e.Min+math.round((f-e.Min)/e.Step)*e.Step,e.Min,e.Max)
+if e.Variant=="Range"then
+assert(type(f)=="table","PureUI range slider value must be a table")
+local i=quantize(f.Min or f[1],e.Min,e.Max,e.Step)
+local j=quantize(f.Max or f[2],e.Min,e.Max,e.Step)
+assert(i<=j,"PureUI range slider Min cannot exceed Max")
+e.Low=i
+e.High=j
+if h then
+e.DisplayLow=i
+e.DisplayHigh=j
+local k=(i-e.Min)/(e.Max-e.Min)
+local l=(j-e.Min)/(e.Max-e.Min)
+e.Fill.Position=UDim2.fromScale(k,0)
+e.Fill.Size=UDim2.fromScale(l-k,1)
+e.LowKnob.Position=UDim2.fromScale(k,0.5)
+e.HighKnob.Position=UDim2.fromScale(l,0.5)
+e.ValueLabel.Text=("%s – %s"):format(i,j)
+end
+if not g and type(e.Callback)=="function"then
+task.spawn(e.Callback,{Min=i,Max=j})
+end
+else
+f=quantize(f,e.Min,e.Max,e.Step)
 e.Value=f
-e.TargetValue=f
 if h then
 e.DisplayValue=f
-e.Fill.Size=UDim2.fromScale((f-e.Min)/(e.Max-e.Min),1)
+local i=(f-e.Min)/(e.Max-e.Min)
+if e.Variant=="Centered"then
+local j=(0-e.Min)/(e.Max-e.Min)
+e.Fill.Position=UDim2.fromScale(math.min(j,i),0)
+e.Fill.Size=UDim2.fromScale(math.abs(i-j),1)
+else
+e.Fill.Position=UDim2.fromScale(0,0)
+e.Fill.Size=UDim2.fromScale(i,1)
+end
 e.ValueLabel.Text=tostring(f)
 end
-
 if not g and type(e.Callback)=="function"then
 task.spawn(e.Callback,f)
+end
 end
 return e
 end
 
 function d.GetValue(e)
+if e.Variant=="Range"then
+return{Min=e.Low,Max=e.High}
+end
 return e.Value
 end
 
@@ -1081,6 +1190,7 @@ List=p,
 Options={},
 OptionButtons={},
 Value=nil,
+Multi=i.Multi==true,
 Callback=i.Callback,
 Open=false,
 Connections={},
@@ -1093,6 +1203,8 @@ end))
 r:SetOptions(i.Options or{})
 if i.Default~=nil then
 r:SetValue(i.Default,true)
+elseif r.Multi then
+r:SetValue({},true)
 elseif r.Options[1]~=nil then
 r:SetValue(r.Options[1],true)
 else
@@ -1114,6 +1226,29 @@ BackgroundColor3=if i then Color3.fromRGB(58,62,73)else Color3.fromRGB(45,48,57)
 end
 
 function d.SetValue(h,i,j)
+if h.Multi then
+assert(type(i)=="table","PureUI multi dropdown value must be a table")
+local k={}
+for l,m in ipairs(i)do
+assert(h.OptionButtons[m],"PureUI dropdown value is not in Options")
+k[m]=true
+end
+
+h.Value={}
+for l,m in ipairs(h.Options)do
+if k[m]then table.insert(h.Value,m)end
+end
+h.Button.Text=if#h.Value==0
+then"Select"
+elseif#h.Value==1 then tostring(h.Value[1])
+else tostring(#h.Value).." selected"
+h:RefreshOptions()
+if not j and type(h.Callback)=="function"then
+task.spawn(h.Callback,table.clone(h.Value))
+end
+return h
+end
+
 local k=false
 for l,m in ipairs(h.Options)do
 if m==i then
@@ -1138,7 +1273,18 @@ return h
 end
 
 function d.GetValue(h)
-return h.Value
+return if h.Multi then table.clone(h.Value)else h.Value
+end
+
+function d.RefreshOptions(h)
+local i={}
+if h.Multi then
+for j,k in ipairs(h.Value)do i[k]=true end
+end
+for j,k in pairs(h.OptionButtons)do
+local l=if h.Multi then i[j]else h.Value==j
+k.BackgroundColor3=if l then Color3.fromRGB(58,62,73)else Color3.fromRGB(35,38,46)
+end
 end
 
 function d.SetOptions(h,i)
@@ -1168,19 +1314,35 @@ table.insert(h.OptionConnections,l.MouseEnter:Connect(function()
 b:Create(l,e,{BackgroundColor3=Color3.fromRGB(58,62,73)}):Play()
 end))
 table.insert(h.OptionConnections,l.MouseLeave:Connect(function()
+local m=if h.Multi then table.find(h.Value,k)~=nil else h.Value==k
 b:Create(l,e,{
-BackgroundColor3=if h.Value==k then Color3.fromRGB(58,62,73)else Color3.fromRGB(35,38,46),
+BackgroundColor3=if m then Color3.fromRGB(58,62,73)else Color3.fromRGB(35,38,46),
 }):Play()
 end))
 table.insert(h.OptionConnections,l.MouseButton1Click:Connect(function()
+if h.Multi then
+local m=table.clone(h.Value)
+local n=table.find(m,k)
+if n then table.remove(m,n)else table.insert(m,k)end
+h:SetValue(m)
+else
 h:SetValue(k)
+end
 end))
 end
 
-if h.Value~=nil and h.OptionButtons[h.Value]==nil then
+if h.Multi then
+local j={}
+for k,l in ipairs(h.Value or{})do
+if h.OptionButtons[l]then table.insert(j,l)end
+end
+h.Value=j
+h.Button.Text=if#j==0 then"Select"elseif#j==1 then tostring(j[1])else#j.." selected"
+elseif h.Value~=nil and h.OptionButtons[h.Value]==nil then
 h.Value=nil
 h.Button.Text="Select"
 end
+h:RefreshOptions()
 h:SetOpen(false)
 return h
 end
@@ -1727,10 +1889,13 @@ local B=A.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left"}
 B:CreateToggle{Name="Demo Toggle"}
 B:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
 B:CreateSlider{Name="Demo Slider",Min=0,Max=100,Default=50}
+B:CreateSlider{Name="Centered Slider",Variant="Centered",Min=-100,Max=100}
+B:CreateSlider{Name="Range Slider",Variant="Range",Min=0,Max=100,Default={Min=25,Max=75}}
 B:CreateInput{Name="Demo Input",Placeholder="Text"}
 B:CreateDoubleButton{Left="Cancel",Right="Apply",Accent="Right"}
 B:CreateColorpicker{Name="Demo Color",Default=Color3.fromRGB(88,130,255)}
 B:CreateDropdown{Name="Demo Dropdown",Options={"One","Two","Three"},Default="One"}
+B:CreateDropdown{Name="Multi Dropdown",Options={"One","Two","Three"},Multi=true,Default={"One","Three"}}
 
 return A
 end

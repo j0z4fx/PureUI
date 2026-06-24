@@ -113,6 +113,28 @@ print(Slider:GetValue())
 Slider movement uses heavy smoothing while its stored value and callback stay
 current.
 
+Centered sliders default to `-100…100` and start at `0`:
+
+```lua
+Groupbox:CreateSlider({
+	Name = "Offset",
+	Variant = "Centered",
+})
+```
+
+Range sliders use two handles and return `{ Min, Max }`:
+
+```lua
+local Range = Groupbox:CreateSlider({
+	Name = "Range",
+	Variant = "Range",
+	Min = 0,
+	Max = 100,
+	Default = { Min = 25, Max = 75 },
+	Callback = function(value) print(value.Min, value.Max) end,
+})
+```
+
 ## `Groupbox:CreateInput(config)`
 
 ```lua
@@ -176,6 +198,18 @@ local Dropdown = Groupbox:CreateDropdown({
 Dropdown:SetValue("Two")
 Dropdown:SetOptions({ "A", "B", "C" })
 print(Dropdown:GetValue())
+```
+
+Set `Multi = true` for multi-select. Values become arrays and selecting an
+option does not close the list:
+
+```lua
+local Multi = Groupbox:CreateDropdown({
+	Name = "Targets",
+	Options = { "A", "B", "C" },
+	Multi = true,
+	Default = { "A", "C" },
+})
 ```
 
 ## `Tab:CreateButton(config)`

@@ -81,6 +81,7 @@ function Dropdown.new(parent, config)
 		Options = {},
 		OptionButtons = {},
 		Value = nil,
+		Multi = config.Multi == true,
 		Callback = config.Callback,
 		Open = false,
 		Connections = {},
@@ -93,6 +94,8 @@ function Dropdown.new(parent, config)
 	dropdown:SetOptions(config.Options or {})
 	if config.Default ~= nil then
 		dropdown:SetValue(config.Default, true)
+	elseif dropdown.Multi then
+		dropdown:SetValue({}, true)
 	elseif dropdown.Options[1] ~= nil then
 		dropdown:SetValue(dropdown.Options[1], true)
 	else
@@ -114,6 +117,29 @@ function Dropdown:SetOpen(open)
 end
 
 function Dropdown:SetValue(value, silent)
+	if self.Multi then
+		assert(type(value) == "table", "PureUI multi dropdown value must be a table")
+		local selected = {}
+		for _, item in ipairs(value) do
+			assert(self.OptionButtons[item], "PureUI dropdown value is not in Options")
+			selected[item] = true
+		end
+
+		self.Value = {}
+		for _, option in ipairs(self.Options) do
+			if selected[option] then table.insert(self.Value, option) end
+		end
+		self.Button.Text = if #self.Value == 0
+			then "Select"
+			elseif #self.Value == 1 then tostring(self.Value[1])
+			else tostring(#self.Value) .. " selected"
+		self:RefreshOptions()
+		if not silent and type(self.Callback) == "function" then
+			task.spawn(self.Callback, table.clone(self.Value))
+		end
+		return self
+	end
+
 	local found = false
 	for _, option in ipairs(self.Options) do
 		if option == value then
@@ -138,7 +164,18 @@ function Dropdown:SetValue(value, silent)
 end
 
 function Dropdown:GetValue()
-	return self.Value
+	return if self.Multi then table.clone(self.Value) else self.Value
+end
+
+function Dropdown:RefreshOptions()
+	local selected = {}
+	if self.Multi then
+		for _, option in ipairs(self.Value) do selected[option] = true end
+	end
+	for option, optionButton in pairs(self.OptionButtons) do
+		local active = if self.Multi then selected[option] else self.Value == option
+		optionButton.BackgroundColor3 = if active then Color3.fromRGB(58, 62, 73) else Color3.fromRGB(35, 38, 46)
+	end
 end
 
 function Dropdown:SetOptions(options)
@@ -168,19 +205,35 @@ function Dropdown:SetOptions(options)
 			TweenService:Create(optionButton, TWEEN, { BackgroundColor3 = Color3.fromRGB(58, 62, 73) }):Play()
 		end))
 		table.insert(self.OptionConnections, optionButton.MouseLeave:Connect(function()
+			local active = if self.Multi then table.find(self.Value, option) ~= nil else self.Value == option
 			TweenService:Create(optionButton, TWEEN, {
-				BackgroundColor3 = if self.Value == option then Color3.fromRGB(58, 62, 73) else Color3.fromRGB(35, 38, 46),
+				BackgroundColor3 = if active then Color3.fromRGB(58, 62, 73) else Color3.fromRGB(35, 38, 46),
 			}):Play()
 		end))
 		table.insert(self.OptionConnections, optionButton.MouseButton1Click:Connect(function()
-			self:SetValue(option)
+			if self.Multi then
+				local values = table.clone(self.Value)
+				local selectedIndex = table.find(values, option)
+				if selectedIndex then table.remove(values, selectedIndex) else table.insert(values, option) end
+				self:SetValue(values)
+			else
+				self:SetValue(option)
+			end
 		end))
 	end
 
-	if self.Value ~= nil and self.OptionButtons[self.Value] == nil then
+	if self.Multi then
+		local retained = {}
+		for _, value in ipairs(self.Value or {}) do
+			if self.OptionButtons[value] then table.insert(retained, value) end
+		end
+		self.Value = retained
+		self.Button.Text = if #retained == 0 then "Select" elseif #retained == 1 then tostring(retained[1]) else #retained .. " selected"
+	elseif self.Value ~= nil and self.OptionButtons[self.Value] == nil then
 		self.Value = nil
 		self.Button.Text = "Select"
 	end
+	self:RefreshOptions()
 	self:SetOpen(false)
 	return self
 end
