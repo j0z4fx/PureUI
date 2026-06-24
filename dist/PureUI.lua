@@ -118,85 +118,93 @@ local b=game:GetService"UserInputService"
 local c={}
 c.__index=c
 
-local function inputName(d)
-if d.UserInputType==Enum.UserInputType.Keyboard then
-return d.KeyCode.Name
+local d={
+MouseButton1="MB1",
+MouseButton2="MB2",
+MouseButton3="MB3",
+Insert="INS",
+Delete="DEL",
+}
+
+local function inputName(e)
+if e.UserInputType==Enum.UserInputType.Keyboard then
+return e.KeyCode.Name
 end
-return d.UserInputType.Name
+return e.UserInputType.Name
 end
 
-function c.new(d,e)
-e=e or{}
+function c.new(e,f)
+f=f or{}
 
-local f=Instance.new"TextButton"
-f.Name="Keypicker"
-f.AnchorPoint=Vector2.new(1,0.5)
-f.Position=UDim2.new(1,-52,0.5,0)
-f.AutomaticSize=Enum.AutomaticSize.X
-f.Size=UDim2.fromOffset(0,18)
-f.BackgroundColor3=Color3.fromRGB(45,48,57)
-f.BorderSizePixel=0
-f.AutoButtonColor=false
-f.Font=Enum.Font.GothamMedium
-f.TextColor3=Color3.fromRGB(220,223,228)
-f.TextSize=11
-f.Parent=d.Row
+local g=Instance.new"TextButton"
+g.Name="Keypicker"
+g.AnchorPoint=Vector2.new(1,0.5)
+g.Position=UDim2.new(1,-52,0.5,0)
+g.AutomaticSize=Enum.AutomaticSize.X
+g.Size=UDim2.fromOffset(0,18)
+g.BackgroundColor3=Color3.fromRGB(45,48,57)
+g.BorderSizePixel=0
+g.AutoButtonColor=false
+g.Font=Enum.Font.GothamMedium
+g.TextColor3=Color3.fromRGB(220,223,228)
+g.TextSize=11
+g.Parent=e.Row
 
-local g=Instance.new"UIPadding"
-g.PaddingLeft=UDim.new(0,8)
-g.PaddingRight=UDim.new(0,8)
-g.Parent=f
+local h=Instance.new"UIPadding"
+h.PaddingLeft=UDim.new(0,4)
+h.PaddingRight=UDim.new(0,4)
+h.Parent=g
 
-local h=setmetatable({
-Button=f,
-Key=e.Default or"None",
-Callback=e.Callback,
+local i=setmetatable({
+Button=g,
+Key=f.Default or"None",
+Callback=f.Callback,
 Listening=false,
 },c)
 
-h:SetKey(h.Key,true)
-h.PressConnection=f.MouseButton1Down:Connect(function()
-d.SuppressClick=true
+i:SetKey(i.Key,true)
+i.PressConnection=g.MouseButton1Down:Connect(function()
+e.SuppressClick=true
 task.defer(function()
-d.SuppressClick=false
+e.SuppressClick=false
 end)
 end)
-h.ClickConnection=f.MouseButton1Click:Connect(function()
-h.Listening=true
-f.Text="..."
+i.ClickConnection=g.MouseButton1Click:Connect(function()
+i.Listening=true
+g.Text="..."
 end)
-h.InputConnection=b.InputBegan:Connect(function(i)
-if not h.Listening then
+i.InputConnection=b.InputBegan:Connect(function(j)
+if not i.Listening then
 return
 end
-h.Listening=false
-h:SetKey(inputName(i))
+i.Listening=false
+i:SetKey(inputName(j))
 end)
 
-return h
+return i
 end
 
-function c.SetKey(d,e,f)
-assert(type(e)=="string"and e~="","PureUI keypicker key must be a string")
-d.Key=e
-d.Button.Text=e
+function c.SetKey(e,f,g)
+assert(type(f)=="string"and f~="","PureUI keypicker key must be a string")
+e.Key=f
+e.Button.Text=d[f]or f
 
-if not f and type(d.Callback)=="function"then
-task.spawn(d.Callback,e)
+if not g and type(e.Callback)=="function"then
+task.spawn(e.Callback,f)
 end
 
-return d
+return e
 end
 
-function c.GetKey(d)
-return d.Key
+function c.GetKey(e)
+return e.Key
 end
 
-function c.Destroy(d)
-d.PressConnection:Disconnect()
-d.ClickConnection:Disconnect()
-d.InputConnection:Disconnect()
-d.Button:Destroy()
+function c.Destroy(e)
+e.PressConnection:Disconnect()
+e.ClickConnection:Disconnect()
+e.InputConnection:Disconnect()
+e.Button:Destroy()
 end
 
 return c end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()

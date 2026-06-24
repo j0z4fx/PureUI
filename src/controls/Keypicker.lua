@@ -3,6 +3,14 @@ local UserInputService = game:GetService("UserInputService")
 local Keypicker = {}
 Keypicker.__index = Keypicker
 
+local DISPLAY_NAMES = {
+	MouseButton1 = "MB1",
+	MouseButton2 = "MB2",
+	MouseButton3 = "MB3",
+	Insert = "INS",
+	Delete = "DEL",
+}
+
 local function inputName(input)
 	if input.UserInputType == Enum.UserInputType.Keyboard then
 		return input.KeyCode.Name
@@ -28,8 +36,8 @@ function Keypicker.new(toggle, config)
 	button.Parent = toggle.Row
 
 	local padding = Instance.new("UIPadding")
-	padding.PaddingLeft = UDim.new(0, 8)
-	padding.PaddingRight = UDim.new(0, 8)
+	padding.PaddingLeft = UDim.new(0, 4)
+	padding.PaddingRight = UDim.new(0, 4)
 	padding.Parent = button
 
 	local picker = setmetatable({
@@ -64,7 +72,7 @@ end
 function Keypicker:SetKey(key, silent)
 	assert(type(key) == "string" and key ~= "", "PureUI keypicker key must be a string")
 	self.Key = key
-	self.Button.Text = key
+	self.Button.Text = DISPLAY_NAMES[key] or key
 
 	if not silent and type(self.Callback) == "function" then
 		task.spawn(self.Callback, key)
