@@ -21,7 +21,7 @@ local Window = PureUI:CreateWindow({})
 ```
 
 Destroy it with `Window:Destroy()`, or destroy every PureUI window with
-`PureUI:Destroy()`.
+`PureUI:Destroy()`. Press `RightShift` to show or hide the window.
 
 ## `Window:CreateTab(config)`
 

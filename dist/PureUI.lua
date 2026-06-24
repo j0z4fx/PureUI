@@ -1641,6 +1641,11 @@ if not v then
 setResizeHover(false)
 end
 end))
+table.insert(p,c.InputBegan:Connect(function(A)
+if A.KeyCode==Enum.KeyCode.RightShift and c:GetFocusedTextBox()==nil then
+h.Visible=not h.Visible
+end
+end))
 
 table.insert(p,c.InputChanged:Connect(function(A)
 if A.UserInputType~=Enum.UserInputType.MouseMovement

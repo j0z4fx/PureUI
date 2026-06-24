@@ -200,6 +200,11 @@ function Window.new()
 			setResizeHover(false)
 		end
 	end))
+	table.insert(connections, UserInputService.InputBegan:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode.RightShift and UserInputService:GetFocusedTextBox() == nil then
+			panel.Visible = not panel.Visible
+		end
+	end))
 
 	table.insert(connections, UserInputService.InputChanged:Connect(function(input)
 		if input.UserInputType ~= Enum.UserInputType.MouseMovement
