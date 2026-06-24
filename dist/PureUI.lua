@@ -558,7 +558,8 @@ i=i or{}
 
 local j=Instance.new"Frame"
 j.Name=i.Name or"Groupbox"
-j.Size=UDim2.new(1,0,0,i.Height or 120)
+j.Size=UDim2.new(1,0,0,i.Height or 0)
+j.AutomaticSize=if i.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
 j.BackgroundColor3=Color3.fromRGB(27,30,36)
 j.BorderSizePixel=0
 j.Parent=h
@@ -585,7 +586,8 @@ l.Parent=k
 local m=Instance.new"Frame"
 m.Name="Content"
 m.Position=UDim2.fromOffset(0,25)
-m.Size=UDim2.new(1,0,1,-25)
+m.Size=if i.Height then UDim2.new(1,0,1,-25)else UDim2.new(1,0,0,0)
+m.AutomaticSize=if i.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
 m.BackgroundTransparency=1
 m.Parent=j
 
@@ -1047,7 +1049,7 @@ b.new(A,{Name="Demo 1"})
 b.new(A,{Name="Demo 2"})
 A:UpdateTabLayout()
 
-local B=A.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=230}
+local B=A.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left"}
 B:CreateToggle{Name="Demo Toggle"}
 B:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
 B:CreateSlider{Name="Demo Slider",Min=0,Max=100,Default=50}

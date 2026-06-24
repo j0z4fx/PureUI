@@ -46,13 +46,13 @@ local Second = Window:CreateTab({ Name = "Demo 2" })
 ## `Tab:CreateGroupbox(config)`
 
 Creates a full-column-width groupbox. Groupboxes stack with an 8px vertical
-gap and have a separate 25px titlebar.
+gap and have a separate 25px titlebar. Height fits controls automatically;
+pass `Height` only to force a fixed height.
 
 ```lua
 local Groupbox = Tab:CreateGroupbox({
 	Name = "Player",
 	Column = "Left",
-	Height = 120,
 })
 ```
 

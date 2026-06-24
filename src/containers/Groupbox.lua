@@ -12,7 +12,8 @@ function Groupbox.new(parent, config)
 
 	local frame = Instance.new("Frame")
 	frame.Name = config.Name or "Groupbox"
-	frame.Size = UDim2.new(1, 0, 0, config.Height or 120)
+	frame.Size = UDim2.new(1, 0, 0, config.Height or 0)
+	frame.AutomaticSize = if config.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
 	frame.BackgroundColor3 = Color3.fromRGB(27, 30, 36)
 	frame.BorderSizePixel = 0
 	frame.Parent = parent
@@ -39,7 +40,8 @@ function Groupbox.new(parent, config)
 	local content = Instance.new("Frame")
 	content.Name = "Content"
 	content.Position = UDim2.fromOffset(0, 25)
-	content.Size = UDim2.new(1, 0, 1, -25)
+	content.Size = if config.Height then UDim2.new(1, 0, 1, -25) else UDim2.new(1, 0, 0, 0)
+	content.AutomaticSize = if config.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
 	content.BackgroundTransparency = 1
 	content.Parent = frame
 
