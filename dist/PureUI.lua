@@ -15,60 +15,55 @@ return c end function a.b():typeof(__modImpl())local b=a.cache.b if not b then b
 
 local b={}
 b.__index=b
+local c=game:GetService"TweenService"
+local d=TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
 
-function b.new(c,d)
-d=d or{}
+function b.new(e,f)
+f=f or{}
 
-local e=Instance.new"TextButton"
-e.Name=d.Name or"Toggle"
-e.Size=UDim2.new(1,0,0,32)
-e.BackgroundTransparency=1
-e.BorderSizePixel=0
-e.AutoButtonColor=false
-e.Text=""
-e.Parent=c
-
-local f=Instance.new"TextLabel"
-f.Size=UDim2.new(1,-52,1,0)
-f.Position=UDim2.fromOffset(8,0)
-f.BackgroundTransparency=1
-f.Font=Enum.Font.Gotham
-f.Text=d.Name or"Toggle"
-f.TextColor3=Color3.fromRGB(220,223,228)
-f.TextSize=13
-f.TextXAlignment=Enum.TextXAlignment.Left
-f.Parent=e
-
-local g=Instance.new"Frame"
-g.AnchorPoint=Vector2.new(1,0.5)
-g.Position=UDim2.new(1,-8,0.5,0)
-g.Size=UDim2.fromOffset(36,18)
+local g=Instance.new"TextButton"
+g.Name=f.Name or"Toggle"
+g.Size=UDim2.new(1,0,0,32)
+g.BackgroundTransparency=1
 g.BorderSizePixel=0
+g.AutoButtonColor=false
+g.Text=""
 g.Parent=e
 
-local h=Instance.new"UICorner"
-h.CornerRadius=UDim.new(1,0)
+local h=Instance.new"TextLabel"
+h.Size=UDim2.new(1,-52,1,0)
+h.Position=UDim2.fromOffset(8,0)
+h.BackgroundTransparency=1
+h.Font=Enum.Font.Gotham
+h.Text=f.Name or"Toggle"
+h.TextColor3=Color3.fromRGB(220,223,228)
+h.TextSize=13
+h.TextXAlignment=Enum.TextXAlignment.Left
 h.Parent=g
 
 local i=Instance.new"Frame"
-i.AnchorPoint=Vector2.new(0,0.5)
-i.Size=UDim2.fromOffset(14,14)
+i.AnchorPoint=Vector2.new(1,0.5)
+i.Position=UDim2.new(1,-8,0.5,0)
+i.Size=UDim2.fromOffset(18,18)
 i.BorderSizePixel=0
 i.Parent=g
 
-local j=Instance.new"UICorner"
-j.CornerRadius=UDim.new(1,0)
+local j=Instance.new"Frame"
+j.AnchorPoint=Vector2.new(0.5,0.5)
+j.Position=UDim2.fromScale(0.5,0.5)
+j.Size=UDim2.fromOffset(10,10)
+j.BorderSizePixel=0
 j.Parent=i
 
 local k=setmetatable({
-Row=e,
-Track=g,
-Knob=i,
-Value=d.Default==true,
-Callback=d.Callback,
+Row=g,
+Track=i,
+Knob=j,
+Value=f.Default==true,
+Callback=f.Callback,
 },b)
 
-k.Connection=e.MouseButton1Click:Connect(function()
+k.Connection=g.MouseButton1Click:Connect(function()
 k:SetValue(not k.Value)
 end)
 
@@ -76,27 +71,32 @@ k:SetValue(k.Value,true)
 return k
 end
 
-function b.SetValue(c,d,e)
-assert(type(d)=="boolean","PureUI toggle value must be boolean")
-c.Value=d
-c.Track.BackgroundColor3=if d then Color3.fromRGB(88,130,255)else Color3.fromRGB(61,65,76)
-c.Knob.BackgroundColor3=Color3.fromRGB(245,246,248)
-c.Knob.Position=if d then UDim2.new(1,-16,0.5,0)else UDim2.fromOffset(2,9)
+function b.SetValue(e,f,g)
+assert(type(f)=="boolean","PureUI toggle value must be boolean")
+e.Value=f
+e.Knob.BackgroundColor3=Color3.fromRGB(245,246,248)
 
-if not e and type(c.Callback)=="function"then
-task.spawn(c.Callback,d)
+c:Create(e.Track,d,{
+BackgroundColor3=if f then Color3.fromRGB(88,130,255)else Color3.fromRGB(61,65,76),
+}):Play()
+c:Create(e.Knob,d,{
+Size=if f then UDim2.fromOffset(10,10)else UDim2.fromOffset(0,0),
+}):Play()
+
+if not g and type(e.Callback)=="function"then
+task.spawn(e.Callback,f)
 end
 
-return c
+return e
 end
 
-function b.GetValue(c)
-return c.Value
+function b.GetValue(e)
+return e.Value
 end
 
-function b.Destroy(c)
-c.Connection:Disconnect()
-c.Row:Destroy()
+function b.Destroy(e)
+e.Connection:Disconnect()
+e.Row:Destroy()
 end
 
 return b end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()

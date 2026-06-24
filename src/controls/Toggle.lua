@@ -1,5 +1,7 @@
 local Toggle = {}
 Toggle.__index = Toggle
+local TweenService = game:GetService("TweenService")
+local TWEEN = TweenInfo.new(0.16, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 function Toggle.new(parent, config)
 	config = config or {}
@@ -27,23 +29,16 @@ function Toggle.new(parent, config)
 	local track = Instance.new("Frame")
 	track.AnchorPoint = Vector2.new(1, 0.5)
 	track.Position = UDim2.new(1, -8, 0.5, 0)
-	track.Size = UDim2.fromOffset(36, 18)
+	track.Size = UDim2.fromOffset(18, 18)
 	track.BorderSizePixel = 0
 	track.Parent = row
 
-	local trackCorner = Instance.new("UICorner")
-	trackCorner.CornerRadius = UDim.new(1, 0)
-	trackCorner.Parent = track
-
 	local knob = Instance.new("Frame")
-	knob.AnchorPoint = Vector2.new(0, 0.5)
-	knob.Size = UDim2.fromOffset(14, 14)
+	knob.AnchorPoint = Vector2.new(0.5, 0.5)
+	knob.Position = UDim2.fromScale(0.5, 0.5)
+	knob.Size = UDim2.fromOffset(10, 10)
 	knob.BorderSizePixel = 0
 	knob.Parent = track
-
-	local knobCorner = Instance.new("UICorner")
-	knobCorner.CornerRadius = UDim.new(1, 0)
-	knobCorner.Parent = knob
 
 	local toggle = setmetatable({
 		Row = row,
@@ -64,9 +59,14 @@ end
 function Toggle:SetValue(value, silent)
 	assert(type(value) == "boolean", "PureUI toggle value must be boolean")
 	self.Value = value
-	self.Track.BackgroundColor3 = if value then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(61, 65, 76)
 	self.Knob.BackgroundColor3 = Color3.fromRGB(245, 246, 248)
-	self.Knob.Position = if value then UDim2.new(1, -16, 0.5, 0) else UDim2.fromOffset(2, 9)
+
+	TweenService:Create(self.Track, TWEEN, {
+		BackgroundColor3 = if value then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(61, 65, 76),
+	}):Play()
+	TweenService:Create(self.Knob, TWEEN, {
+		Size = if value then UDim2.fromOffset(10, 10) else UDim2.fromOffset(0, 0),
+	}):Play()
 
 	if not silent and type(self.Callback) == "function" then
 		task.spawn(self.Callback, value)
