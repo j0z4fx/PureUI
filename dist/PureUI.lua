@@ -332,7 +332,9 @@ b.new(r,{Name="Demo 1"})
 b.new(r,{Name="Demo 2"})
 r:UpdateTabLayout()
 
-r.Tabs[1]:CreateGroupbox{Name="Left Group",Column="Left",Height=150}
+r.Tabs[1]:CreateGroupbox{Name="Left Group 1",Column="Left",Height=150}
+r.Tabs[1]:CreateGroupbox{Name="Left Group 2",Column="Left",Height=150}
+r.Tabs[1]:CreateGroupbox{Name="Left Group 3",Column="Left",Height=150}
 r.Tabs[1]:CreateGroupbox{Name="Center Group",Column="Center",Height=200}
 r.Tabs[1]:CreateGroupbox{Name="Right Group",Column="Right",Height=120}
 
