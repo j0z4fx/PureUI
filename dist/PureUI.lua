@@ -507,128 +507,143 @@ m.Name="ResizeHandle"
 m.AnchorPoint=Vector2.new(0.5,0.5)
 m.Position=UDim2.fromScale(1,1)
 m.Size=UDim2.fromOffset(14,14)
-m.BackgroundColor3=Color3.fromRGB(120,124,136)
-m.BackgroundTransparency=0.35
+m.BackgroundTransparency=1
 m.BorderSizePixel=0
 m.Active=true
 m.ZIndex=20
 m.Parent=g
 
-local n={}
-local o=false
-local p
-local q
-local r=g.Position
-local s=false
-local t
-local u
+local n=Instance.new"Frame"
+n.AnchorPoint=Vector2.new(1,1)
+n.Position=UDim2.fromScale(1,1)
+n.Size=UDim2.fromOffset(10,2)
+n.BackgroundColor3=Color3.fromRGB(120,124,136)
+n.BorderSizePixel=0
+n.Parent=m
 
-local function clampToScreen(v)
-local w=f.AbsoluteSize
-local x=g.AbsoluteSize
-local y=x.X*g.AnchorPoint.X
-local z=x.Y*g.AnchorPoint.Y
-local A=v.X.Offset+w.X*v.X.Scale
-local B=v.Y.Offset+w.Y*v.Y.Scale
+local o=Instance.new"Frame"
+o.AnchorPoint=Vector2.new(1,1)
+o.Position=UDim2.fromScale(1,1)
+o.Size=UDim2.fromOffset(2,10)
+o.BackgroundColor3=Color3.fromRGB(120,124,136)
+o.BorderSizePixel=0
+o.Parent=m
+
+local p={}
+local q=false
+local r
+local s
+local t=g.Position
+local u=false
+local v
+local w
+
+local function clampToScreen(x)
+local y=f.AbsoluteSize
+local z=g.AbsoluteSize
+local A=z.X*g.AnchorPoint.X
+local B=z.Y*g.AnchorPoint.Y
+local C=x.X.Offset+y.X*x.X.Scale
+local D=x.Y.Offset+y.Y*x.Y.Scale
 
 return UDim2.fromOffset(
-if x.X>w.X then w.X/2 else math.clamp(A,y,w.X-(x.X-y)),
-if x.Y>w.Y then w.Y/2 else math.clamp(B,z,w.Y-(x.Y-z))
+if z.X>y.X then y.X/2 else math.clamp(C,A,y.X-(z.X-A)),
+if z.Y>y.Y then y.Y/2 else math.clamp(D,B,y.Y-(z.Y-B))
 )
 end
 
-local function beginDrag(v)
-if v.UserInputType~=Enum.UserInputType.MouseButton1
-and v.UserInputType~=Enum.UserInputType.Touch
+local function beginDrag(x)
+if x.UserInputType~=Enum.UserInputType.MouseButton1
+and x.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
-o=true
-p=v.Position
-q=g.Position
-r=g.Position
+q=true
+r=x.Position
+s=g.Position
+t=g.Position
 end
 
-table.insert(n,h.InputBegan:Connect(beginDrag))
-table.insert(n,l.InputBegan:Connect(beginDrag))
-table.insert(n,m.InputBegan:Connect(function(v)
-if v.UserInputType~=Enum.UserInputType.MouseButton1
-and v.UserInputType~=Enum.UserInputType.Touch
+table.insert(p,h.InputBegan:Connect(beginDrag))
+table.insert(p,l.InputBegan:Connect(beginDrag))
+table.insert(p,m.InputBegan:Connect(function(x)
+if x.UserInputType~=Enum.UserInputType.MouseButton1
+and x.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
-s=true
-t=v.Position
-u=g.Size
+u=true
+v=x.Position
+w=g.Size
 end))
 
-table.insert(n,c.InputEnded:Connect(function(v)
-if o
-and(v.UserInputType==Enum.UserInputType.MouseButton1
-or v.UserInputType==Enum.UserInputType.Touch)
+table.insert(p,c.InputEnded:Connect(function(x)
+if q
+and(x.UserInputType==Enum.UserInputType.MouseButton1
+or x.UserInputType==Enum.UserInputType.Touch)
 then
-o=false
-r=g.Position
+q=false
+t=g.Position
 end
-if s
-and(v.UserInputType==Enum.UserInputType.MouseButton1
-or v.UserInputType==Enum.UserInputType.Touch)
+if u
+and(x.UserInputType==Enum.UserInputType.MouseButton1
+or x.UserInputType==Enum.UserInputType.Touch)
 then
-s=false
+u=false
 end
 end))
 
-table.insert(n,c.InputChanged:Connect(function(v)
-if v.UserInputType~=Enum.UserInputType.MouseMovement
-and v.UserInputType~=Enum.UserInputType.Touch
+table.insert(p,c.InputChanged:Connect(function(x)
+if x.UserInputType~=Enum.UserInputType.MouseMovement
+and x.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
-if o then
-local w=v.Position-p
-r=clampToScreen(UDim2.new(
-q.X.Scale,
-q.X.Offset+w.X,
-q.Y.Scale,
-q.Y.Offset+w.Y
+if q then
+local y=x.Position-r
+t=clampToScreen(UDim2.new(
+s.X.Scale,
+s.X.Offset+y.X,
+s.Y.Scale,
+s.Y.Offset+y.Y
 ))
 end
 
-if s then
-local w=v.Position-t
-local x=f.AbsoluteSize
-local y=math.max(560,math.min(850,x.X))
-local z=math.max(350,math.min(560,x.Y))
+if u then
+local y=x.Position-v
+local z=f.AbsoluteSize
+local A=math.max(560,math.min(850,z.X))
+local B=math.max(350,math.min(560,z.Y))
 g.Size=UDim2.fromOffset(
-math.clamp(u.X.Offset+w.X*2,560,y),
-math.clamp(u.Y.Offset+w.Y*2,350,z)
+math.clamp(w.X.Offset+y.X*2,560,A),
+math.clamp(w.Y.Offset+y.Y*2,350,B)
 )
-r=clampToScreen(g.Position)
+t=clampToScreen(g.Position)
 end
 end))
 
-table.insert(n,d.RenderStepped:Connect(function(v)
-if not o then
+table.insert(p,d.RenderStepped:Connect(function(x)
+if not q then
 return
 end
 
-r=clampToScreen(r)
-local w=r.X.Offset-g.Position.X.Offset
-local x=r.Y.Offset-g.Position.Y.Offset
-if w*w+x*x<0.25 then
-g.Position=r
+t=clampToScreen(t)
+local y=t.X.Offset-g.Position.X.Offset
+local z=t.Y.Offset-g.Position.Y.Offset
+if y*y+z*z<0.25 then
+g.Position=t
 return
 end
 
-g.Position=g.Position:Lerp(r,1-math.exp(-6*v))
+g.Position=g.Position:Lerp(t,1-math.exp(-6*x))
 end))
 
 f.Parent=getParent()
 
-local v=setmetatable({
+local x=setmetatable({
 ScreenGui=f,
 Panel=g,
 TitleBar=h,
@@ -637,18 +652,18 @@ TabBar=j,
 BottomDragHandle=l,
 ResizeHandle=m,
 Tabs={},
-Connections=n,
+Connections=p,
 },e)
 
-b.new(v,{Name="Demo 1"})
-b.new(v,{Name="Demo 2"})
-v:UpdateTabLayout()
+b.new(x,{Name="Demo 1"})
+b.new(x,{Name="Demo 2"})
+x:UpdateTabLayout()
 
-local w=v.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
-w:CreateToggle{Name="Demo Toggle"}
-w:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
+local y=x.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
+y:CreateToggle{Name="Demo Toggle"}
+y:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
 
-return v
+return x
 end
 
 function e.CreateTab(f,g)
