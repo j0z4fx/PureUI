@@ -18,8 +18,13 @@ function Groupbox.new(parent, config)
 	frame.BorderSizePixel = 0
 	frame.Parent = parent
 
+	local frameLayout = Instance.new("UIListLayout")
+	frameLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	frameLayout.Parent = frame
+
 	local titleBar = Instance.new("Frame")
 	titleBar.Name = "TitleBar"
+	titleBar.LayoutOrder = 1
 	titleBar.Size = UDim2.new(1, 0, 0, 25)
 	titleBar.BackgroundColor3 = Color3.fromRGB(37, 40, 48)
 	titleBar.BorderSizePixel = 0
@@ -39,7 +44,7 @@ function Groupbox.new(parent, config)
 
 	local content = Instance.new("Frame")
 	content.Name = "Content"
-	content.Position = UDim2.fromOffset(0, 25)
+	content.LayoutOrder = 2
 	content.Size = if config.Height then UDim2.new(1, 0, 1, -25) else UDim2.new(1, 0, 0, 0)
 	content.AutomaticSize = if config.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
 	content.BackgroundTransparency = 1

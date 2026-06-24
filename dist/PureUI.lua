@@ -564,47 +564,52 @@ j.BackgroundColor3=Color3.fromRGB(27,30,36)
 j.BorderSizePixel=0
 j.Parent=h
 
-local k=Instance.new"Frame"
-k.Name="TitleBar"
-k.Size=UDim2.new(1,0,0,25)
-k.BackgroundColor3=Color3.fromRGB(37,40,48)
-k.BorderSizePixel=0
+local k=Instance.new"UIListLayout"
+k.SortOrder=Enum.SortOrder.LayoutOrder
 k.Parent=j
 
-local l=Instance.new"TextLabel"
-l.Name="Title"
-l.Size=UDim2.new(1,-16,1,0)
-l.Position=UDim2.fromOffset(8,0)
-l.BackgroundTransparency=1
-l.Font=Enum.Font.GothamMedium
-l.Text=i.Name or"Groupbox"
-l.TextColor3=Color3.fromRGB(235,237,240)
-l.TextSize=13
-l.TextXAlignment=Enum.TextXAlignment.Left
-l.Parent=k
+local l=Instance.new"Frame"
+l.Name="TitleBar"
+l.LayoutOrder=1
+l.Size=UDim2.new(1,0,0,25)
+l.BackgroundColor3=Color3.fromRGB(37,40,48)
+l.BorderSizePixel=0
+l.Parent=j
 
-local m=Instance.new"Frame"
-m.Name="Content"
-m.Position=UDim2.fromOffset(0,25)
-m.Size=if i.Height then UDim2.new(1,0,1,-25)else UDim2.new(1,0,0,0)
-m.AutomaticSize=if i.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
+local m=Instance.new"TextLabel"
+m.Name="Title"
+m.Size=UDim2.new(1,-16,1,0)
+m.Position=UDim2.fromOffset(8,0)
 m.BackgroundTransparency=1
-m.Parent=j
+m.Font=Enum.Font.GothamMedium
+m.Text=i.Name or"Groupbox"
+m.TextColor3=Color3.fromRGB(235,237,240)
+m.TextSize=13
+m.TextXAlignment=Enum.TextXAlignment.Left
+m.Parent=l
 
-local n=Instance.new"UIPadding"
-n.PaddingTop=UDim.new(0,4)
-n.PaddingBottom=UDim.new(0,4)
-n.Parent=m
+local n=Instance.new"Frame"
+n.Name="Content"
+n.LayoutOrder=2
+n.Size=if i.Height then UDim2.new(1,0,1,-25)else UDim2.new(1,0,0,0)
+n.AutomaticSize=if i.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
+n.BackgroundTransparency=1
+n.Parent=j
 
-local o=Instance.new"UIListLayout"
-o.SortOrder=Enum.SortOrder.LayoutOrder
-o.Parent=m
+local o=Instance.new"UIPadding"
+o.PaddingTop=UDim.new(0,4)
+o.PaddingBottom=UDim.new(0,4)
+o.Parent=n
+
+local p=Instance.new"UIListLayout"
+p.SortOrder=Enum.SortOrder.LayoutOrder
+p.Parent=n
 
 return setmetatable({
 Frame=j,
-TitleBar=k,
-Title=l,
-Content=m,
+TitleBar=l,
+Title=m,
+Content=n,
 Toggles={},
 Controls={},
 },g)
