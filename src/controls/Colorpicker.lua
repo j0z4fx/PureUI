@@ -3,12 +3,27 @@ local TweenService = game:GetService("TweenService")
 
 local Colorpicker = {}
 Colorpicker.__index = Colorpicker
-local TWEEN = TweenInfo.new(0.16, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+local TWEEN = TweenInfo.new(0.1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
-local function button(parent, text, position, accent)
+local MARGIN = 12
+local GAP = 8
+local TITLE_HEIGHT = 28
+local MAP_WIDTH = 180
+local MAP_HEIGHT = 120
+local HUE_WIDTH = 12
+local ACTION_HEIGHT = 26
+local PREVIEW_WIDTH = 40
+local INNER_WIDTH = MAP_WIDTH + GAP + HUE_WIDTH
+local BUTTON_WIDTH = (INNER_WIDTH - PREVIEW_WIDTH - GAP * 2) / 2
+local MAP_Y = MARGIN + TITLE_HEIGHT + GAP
+local ACTION_Y = MAP_Y + MAP_HEIGHT + GAP
+local DIALOG_WIDTH = MARGIN * 2 + INNER_WIDTH
+local DIALOG_HEIGHT = ACTION_Y + ACTION_HEIGHT + MARGIN
+
+local function button(parent, text, x, accent)
 	local value = Instance.new("TextButton")
-	value.Position = position
-	value.Size = UDim2.fromOffset(82, 28)
+	value.Position = UDim2.fromOffset(x, ACTION_Y)
+	value.Size = UDim2.fromOffset(BUTTON_WIDTH, ACTION_HEIGHT)
 	value.BackgroundColor3 = if accent then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(45, 48, 57)
 	value.BorderSizePixel = 0
 	value.AutoButtonColor = false
@@ -54,46 +69,53 @@ function Colorpicker.new(parent, window, config)
 	swatch.BorderSizePixel = 0
 	swatch.Parent = row
 
-	local overlay = Instance.new("TextButton")
+	local overlay = Instance.new("CanvasGroup")
 	overlay.Name = "ColorpickerModal"
 	overlay.Size = UDim2.fromScale(1, 1)
 	overlay.BackgroundColor3 = Color3.new(0, 0, 0)
 	overlay.BackgroundTransparency = 0.35
 	overlay.BorderSizePixel = 0
-	overlay.AutoButtonColor = false
-	overlay.Text = ""
+	overlay.GroupTransparency = 1
 	overlay.Visible = false
 	overlay.ZIndex = 50
 	overlay.Parent = window.Panel
 
+	local backdrop = Instance.new("TextButton")
+	backdrop.Size = UDim2.fromScale(1, 1)
+	backdrop.BackgroundTransparency = 1
+	backdrop.Text = ""
+	backdrop.ZIndex = 51
+	backdrop.Parent = overlay
+
 	local dialog = Instance.new("Frame")
 	dialog.AnchorPoint = Vector2.new(0.5, 0.5)
 	dialog.Position = UDim2.fromScale(0.5, 0.5)
-	dialog.Size = UDim2.fromOffset(300, 250)
+	dialog.Size = UDim2.fromOffset(DIALOG_WIDTH, DIALOG_HEIGHT)
 	dialog.BackgroundColor3 = Color3.fromRGB(27, 30, 36)
 	dialog.BorderSizePixel = 0
-	dialog.ZIndex = 51
+	dialog.Active = true
+	dialog.ZIndex = 52
 	dialog.Parent = overlay
 
 	local title = Instance.new("TextLabel")
-	title.Position = UDim2.fromOffset(12, 0)
-	title.Size = UDim2.new(1, -24, 0, 36)
+	title.Position = UDim2.fromOffset(MARGIN, MARGIN)
+	title.Size = UDim2.fromOffset(INNER_WIDTH, TITLE_HEIGHT)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamMedium
 	title.Text = config.Name or "Color"
 	title.TextColor3 = Color3.fromRGB(240, 242, 245)
 	title.TextSize = 14
 	title.TextXAlignment = Enum.TextXAlignment.Left
-	title.ZIndex = 52
+	title.ZIndex = 53
 	title.Parent = dialog
 
 	local map = Instance.new("Frame")
-	map.Position = UDim2.fromOffset(12, 38)
-	map.Size = UDim2.fromOffset(220, 140)
+	map.Position = UDim2.fromOffset(MARGIN, MAP_Y)
+	map.Size = UDim2.fromOffset(MAP_WIDTH, MAP_HEIGHT)
 	map.BackgroundColor3 = Color3.fromHSV(hue, 1, 1)
 	map.BorderSizePixel = 0
 	map.ClipsDescendants = true
-	map.ZIndex = 52
+	map.ZIndex = 53
 	map.Parent = dialog
 
 	local white = Instance.new("Frame")
@@ -141,12 +163,12 @@ function Colorpicker.new(parent, window, config)
 	mapCursor.Parent = map
 
 	local hueBar = Instance.new("TextButton")
-	hueBar.Position = UDim2.fromOffset(242, 38)
-	hueBar.Size = UDim2.fromOffset(14, 140)
+	hueBar.Position = UDim2.fromOffset(MARGIN + MAP_WIDTH + GAP, MAP_Y)
+	hueBar.Size = UDim2.fromOffset(HUE_WIDTH, MAP_HEIGHT)
 	hueBar.BackgroundColor3 = Color3.new(1, 1, 1)
 	hueBar.BorderSizePixel = 0
 	hueBar.Text = ""
-	hueBar.ZIndex = 52
+	hueBar.ZIndex = 53
 	hueBar.Parent = dialog
 
 	local hueGradient = Instance.new("UIGradient")
@@ -172,20 +194,22 @@ function Colorpicker.new(parent, window, config)
 	hueCursor.Parent = hueBar
 
 	local preview = Instance.new("Frame")
-	preview.Position = UDim2.fromOffset(12, 188)
-	preview.Size = UDim2.fromOffset(88, 28)
+	preview.Position = UDim2.fromOffset(MARGIN, ACTION_Y)
+	preview.Size = UDim2.fromOffset(PREVIEW_WIDTH, ACTION_HEIGHT)
 	preview.BackgroundColor3 = initial
 	preview.BorderSizePixel = 0
-	preview.ZIndex = 52
+	preview.ZIndex = 53
 	preview.Parent = dialog
 
-	local cancel = button(dialog, "Cancel", UDim2.fromOffset(110, 188), false)
-	local apply = button(dialog, "Apply", UDim2.fromOffset(200, 188), true)
+	local cancelX = MARGIN + PREVIEW_WIDTH + GAP
+	local applyX = cancelX + BUTTON_WIDTH + GAP
+	local cancel = button(dialog, "Cancel", cancelX, false)
+	local apply = button(dialog, "Apply", applyX, true)
 
 	local picker = setmetatable({
 		Row = row,
 		Swatch = swatch,
-		Overlay = overlay,
+			Overlay = overlay,
 		Map = map,
 		MapCursor = mapCursor,
 		HueCursor = hueCursor,
@@ -258,8 +282,7 @@ function Colorpicker.new(parent, window, config)
 		picker:SetValue(picker.Pending)
 		picker:Close()
 	end))
-	table.insert(picker.Connections, overlay.MouseButton1Click:Connect(function() picker:Close() end))
-	table.insert(picker.Connections, dialog.InputBegan:Connect(function() end))
+	table.insert(picker.Connections, backdrop.MouseButton1Click:Connect(function() picker:Close() end))
 
 	picker:Update()
 	return picker
@@ -269,16 +292,28 @@ function Colorpicker:Open()
 	self.Pending = self.Value
 	self.Hue, self.Saturation, self.Brightness = self.Value:ToHSV()
 	self:Update()
-	self.Overlay.BackgroundTransparency = 1
+	self.Closing = false
+	if self.VisibilityTween then self.VisibilityTween:Cancel() end
+	self.Overlay.GroupTransparency = 1
 	self.Overlay.Visible = true
-	TweenService:Create(self.Overlay, TWEEN, { BackgroundTransparency = 0.35 }):Play()
+	self.VisibilityTween = TweenService:Create(self.Overlay, TWEEN, { GroupTransparency = 0 })
+	self.VisibilityTween:Play()
 end
 
 function Colorpicker:Close()
-	local tween = TweenService:Create(self.Overlay, TWEEN, { BackgroundTransparency = 1 })
-	tween:Play()
-	tween.Completed:Once(function()
-		self.Overlay.Visible = false
+	if not self.Overlay.Visible or self.Closing then return end
+	self.Closing = true
+	if self.VisibilityTween then self.VisibilityTween:Cancel() end
+	self.VisibilityTween = TweenService:Create(
+		self.Overlay,
+		TweenInfo.new(0.07, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+		{ GroupTransparency = 1 }
+	)
+	self.VisibilityTween:Play()
+	self.VisibilityTween.Completed:Once(function()
+		if self.Closing then
+			self.Overlay.Visible = false
+		end
 	end)
 end
 

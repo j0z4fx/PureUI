@@ -574,155 +574,177 @@ local c=game:GetService"TweenService"
 
 local d={}
 d.__index=d
-local e=TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+local e=TweenInfo.new(0.1,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
 
-local function button(f,g,h,i)
-local j=Instance.new"TextButton"
-j.Position=h
-j.Size=UDim2.fromOffset(82,28)
-j.BackgroundColor3=if i then Color3.fromRGB(88,130,255)else Color3.fromRGB(45,48,57)
-j.BorderSizePixel=0
-j.AutoButtonColor=false
-j.Font=Enum.Font.GothamMedium
-j.Text=g
-j.TextColor3=Color3.fromRGB(240,242,245)
-j.TextSize=12
-j.ZIndex=53
-j.Parent=f
-return j
+local f=12
+local g=8
+local h=28
+local i=180
+local j=120
+local k=12
+local l=26
+local m=40
+local n=i+g+k
+local o=(n-m-g*2)/2
+local p=f+h+g
+local q=p+j+g
+local r=f*2+n
+local s=q+l+f
+
+local function button(t,u,v,w)
+local x=Instance.new"TextButton"
+x.Position=UDim2.fromOffset(v,q)
+x.Size=UDim2.fromOffset(o,l)
+x.BackgroundColor3=if w then Color3.fromRGB(88,130,255)else Color3.fromRGB(45,48,57)
+x.BorderSizePixel=0
+x.AutoButtonColor=false
+x.Font=Enum.Font.GothamMedium
+x.Text=u
+x.TextColor3=Color3.fromRGB(240,242,245)
+x.TextSize=12
+x.ZIndex=53
+x.Parent=t
+return x
 end
 
-function d.new(f,g,h)
-h=h or{}
-local i=h.Default or Color3.fromRGB(88,130,255)
-local j,k,l=i:ToHSV()
+function d.new(t,u,v)
+v=v or{}
+local w=v.Default or Color3.fromRGB(88,130,255)
+local x,y,z=w:ToHSV()
 
-local m=Instance.new"TextButton"
-m.Name=h.Name or"Colorpicker"
-m.Size=UDim2.new(1,0,0,32)
-m.BackgroundTransparency=1
-m.BorderSizePixel=0
-m.AutoButtonColor=false
-m.Text=""
-m.Parent=f
+local A=Instance.new"TextButton"
+A.Name=v.Name or"Colorpicker"
+A.Size=UDim2.new(1,0,0,32)
+A.BackgroundTransparency=1
+A.BorderSizePixel=0
+A.AutoButtonColor=false
+A.Text=""
+A.Parent=t
 
-local n=Instance.new"TextLabel"
-n.Position=UDim2.fromOffset(8,0)
-n.Size=UDim2.new(1,-56,1,0)
-n.BackgroundTransparency=1
-n.Font=Enum.Font.Gotham
-n.Text=h.Name or"Color"
-n.TextColor3=Color3.fromRGB(220,223,228)
-n.TextSize=13
-n.TextXAlignment=Enum.TextXAlignment.Left
-n.Parent=m
+local B=Instance.new"TextLabel"
+B.Position=UDim2.fromOffset(8,0)
+B.Size=UDim2.new(1,-56,1,0)
+B.BackgroundTransparency=1
+B.Font=Enum.Font.Gotham
+B.Text=v.Name or"Color"
+B.TextColor3=Color3.fromRGB(220,223,228)
+B.TextSize=13
+B.TextXAlignment=Enum.TextXAlignment.Left
+B.Parent=A
 
-local o=Instance.new"Frame"
-o.AnchorPoint=Vector2.new(1,0.5)
-o.Position=UDim2.new(1,-8,0.5,0)
-o.Size=UDim2.fromOffset(36,18)
-o.BackgroundColor3=i
-o.BorderSizePixel=0
-o.Parent=m
+local C=Instance.new"Frame"
+C.AnchorPoint=Vector2.new(1,0.5)
+C.Position=UDim2.new(1,-8,0.5,0)
+C.Size=UDim2.fromOffset(36,18)
+C.BackgroundColor3=w
+C.BorderSizePixel=0
+C.Parent=A
 
-local p=Instance.new"TextButton"
-p.Name="ColorpickerModal"
-p.Size=UDim2.fromScale(1,1)
-p.BackgroundColor3=Color3.new(0,0,0)
-p.BackgroundTransparency=0.35
-p.BorderSizePixel=0
-p.AutoButtonColor=false
-p.Text=""
-p.Visible=false
-p.ZIndex=50
-p.Parent=g.Panel
+local D=Instance.new"CanvasGroup"
+D.Name="ColorpickerModal"
+D.Size=UDim2.fromScale(1,1)
+D.BackgroundColor3=Color3.new(0,0,0)
+D.BackgroundTransparency=0.35
+D.BorderSizePixel=0
+D.GroupTransparency=1
+D.Visible=false
+D.ZIndex=50
+D.Parent=u.Panel
 
-local q=Instance.new"Frame"
-q.AnchorPoint=Vector2.new(0.5,0.5)
-q.Position=UDim2.fromScale(0.5,0.5)
-q.Size=UDim2.fromOffset(300,250)
-q.BackgroundColor3=Color3.fromRGB(27,30,36)
-q.BorderSizePixel=0
-q.ZIndex=51
-q.Parent=p
+local E=Instance.new"TextButton"
+E.Size=UDim2.fromScale(1,1)
+E.BackgroundTransparency=1
+E.Text=""
+E.ZIndex=51
+E.Parent=D
 
-local r=Instance.new"TextLabel"
-r.Position=UDim2.fromOffset(12,0)
-r.Size=UDim2.new(1,-24,0,36)
-r.BackgroundTransparency=1
-r.Font=Enum.Font.GothamMedium
-r.Text=h.Name or"Color"
-r.TextColor3=Color3.fromRGB(240,242,245)
-r.TextSize=14
-r.TextXAlignment=Enum.TextXAlignment.Left
-r.ZIndex=52
-r.Parent=q
+local F=Instance.new"Frame"
+F.AnchorPoint=Vector2.new(0.5,0.5)
+F.Position=UDim2.fromScale(0.5,0.5)
+F.Size=UDim2.fromOffset(r,s)
+F.BackgroundColor3=Color3.fromRGB(27,30,36)
+F.BorderSizePixel=0
+F.Active=true
+F.ZIndex=52
+F.Parent=D
 
-local s=Instance.new"Frame"
-s.Position=UDim2.fromOffset(12,38)
-s.Size=UDim2.fromOffset(220,140)
-s.BackgroundColor3=Color3.fromHSV(j,1,1)
-s.BorderSizePixel=0
-s.ClipsDescendants=true
-s.ZIndex=52
-s.Parent=q
+local G=Instance.new"TextLabel"
+G.Position=UDim2.fromOffset(f,f)
+G.Size=UDim2.fromOffset(n,h)
+G.BackgroundTransparency=1
+G.Font=Enum.Font.GothamMedium
+G.Text=v.Name or"Color"
+G.TextColor3=Color3.fromRGB(240,242,245)
+G.TextSize=14
+G.TextXAlignment=Enum.TextXAlignment.Left
+G.ZIndex=53
+G.Parent=F
 
-local t=Instance.new"Frame"
-t.Size=UDim2.fromScale(1,1)
-t.BackgroundColor3=Color3.new(1,1,1)
-t.BorderSizePixel=0
-t.ZIndex=53
-t.Parent=s
+local H=Instance.new"Frame"
+H.Position=UDim2.fromOffset(f,p)
+H.Size=UDim2.fromOffset(i,j)
+H.BackgroundColor3=Color3.fromHSV(x,1,1)
+H.BorderSizePixel=0
+H.ClipsDescendants=true
+H.ZIndex=53
+H.Parent=F
 
-local u=Instance.new"UIGradient"
-u.Transparency=NumberSequence.new{
+local I=Instance.new"Frame"
+I.Size=UDim2.fromScale(1,1)
+I.BackgroundColor3=Color3.new(1,1,1)
+I.BorderSizePixel=0
+I.ZIndex=53
+I.Parent=H
+
+local J=Instance.new"UIGradient"
+J.Transparency=NumberSequence.new{
 NumberSequenceKeypoint.new(0,0),
 NumberSequenceKeypoint.new(1,1),
 }
-u.Parent=t
+J.Parent=I
 
-local v=Instance.new"Frame"
-v.Size=UDim2.fromScale(1,1)
-v.BackgroundColor3=Color3.new(0,0,0)
-v.BorderSizePixel=0
-v.ZIndex=54
-v.Parent=s
+local K=Instance.new"Frame"
+K.Size=UDim2.fromScale(1,1)
+K.BackgroundColor3=Color3.new(0,0,0)
+K.BorderSizePixel=0
+K.ZIndex=54
+K.Parent=H
 
-local w=Instance.new"UIGradient"
-w.Rotation=90
-w.Transparency=NumberSequence.new{
+local L=Instance.new"UIGradient"
+L.Rotation=90
+L.Transparency=NumberSequence.new{
 NumberSequenceKeypoint.new(0,1),
 NumberSequenceKeypoint.new(1,0),
 }
-w.Parent=v
+L.Parent=K
 
-local x=Instance.new"TextButton"
-x.Size=UDim2.fromScale(1,1)
-x.BackgroundTransparency=1
-x.Text=""
-x.ZIndex=55
-x.Parent=s
+local M=Instance.new"TextButton"
+M.Size=UDim2.fromScale(1,1)
+M.BackgroundTransparency=1
+M.Text=""
+M.ZIndex=55
+M.Parent=H
 
-local y=Instance.new"Frame"
-y.AnchorPoint=Vector2.new(0.5,0.5)
-y.Size=UDim2.fromOffset(8,8)
-y.BackgroundColor3=Color3.new(1,1,1)
-y.BorderColor3=Color3.new(0,0,0)
-y.ZIndex=56
-y.Parent=s
+local N=Instance.new"Frame"
+N.AnchorPoint=Vector2.new(0.5,0.5)
+N.Size=UDim2.fromOffset(8,8)
+N.BackgroundColor3=Color3.new(1,1,1)
+N.BorderColor3=Color3.new(0,0,0)
+N.ZIndex=56
+N.Parent=H
 
-local z=Instance.new"TextButton"
-z.Position=UDim2.fromOffset(242,38)
-z.Size=UDim2.fromOffset(14,140)
-z.BackgroundColor3=Color3.new(1,1,1)
-z.BorderSizePixel=0
-z.Text=""
-z.ZIndex=52
-z.Parent=q
+local O=Instance.new"TextButton"
+O.Position=UDim2.fromOffset(f+i+g,p)
+O.Size=UDim2.fromOffset(k,j)
+O.BackgroundColor3=Color3.new(1,1,1)
+O.BorderSizePixel=0
+O.Text=""
+O.ZIndex=53
+O.Parent=F
 
-local A=Instance.new"UIGradient"
-A.Rotation=90
-A.Color=ColorSequence.new{
+local P=Instance.new"UIGradient"
+P.Rotation=90
+P.Color=ColorSequence.new{
 ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0)),
 ColorSequenceKeypoint.new(0.17,Color3.fromRGB(255,255,0)),
 ColorSequenceKeypoint.new(0.33,Color3.fromRGB(0,255,0)),
@@ -731,147 +753,160 @@ ColorSequenceKeypoint.new(0.67,Color3.fromRGB(0,0,255)),
 ColorSequenceKeypoint.new(0.83,Color3.fromRGB(255,0,255)),
 ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0)),
 }
-A.Parent=z
+P.Parent=O
 
-local B=Instance.new"Frame"
-B.AnchorPoint=Vector2.new(0.5,0.5)
-B.Position=UDim2.fromScale(0.5,j)
-B.Size=UDim2.new(1,6,0,2)
-B.BackgroundColor3=Color3.new(1,1,1)
-B.BorderSizePixel=0
-B.ZIndex=56
-B.Parent=z
+local Q=Instance.new"Frame"
+Q.AnchorPoint=Vector2.new(0.5,0.5)
+Q.Position=UDim2.fromScale(0.5,x)
+Q.Size=UDim2.new(1,6,0,2)
+Q.BackgroundColor3=Color3.new(1,1,1)
+Q.BorderSizePixel=0
+Q.ZIndex=56
+Q.Parent=O
 
-local C=Instance.new"Frame"
-C.Position=UDim2.fromOffset(12,188)
-C.Size=UDim2.fromOffset(88,28)
-C.BackgroundColor3=i
-C.BorderSizePixel=0
-C.ZIndex=52
-C.Parent=q
+local R=Instance.new"Frame"
+R.Position=UDim2.fromOffset(f,q)
+R.Size=UDim2.fromOffset(m,l)
+R.BackgroundColor3=w
+R.BorderSizePixel=0
+R.ZIndex=53
+R.Parent=F
 
-local D=button(q,"Cancel",UDim2.fromOffset(110,188),false)
-local E=button(q,"Apply",UDim2.fromOffset(200,188),true)
+local S=f+m+g
+local T=S+o+g
+local U=button(F,"Cancel",S,false)
+local V=button(F,"Apply",T,true)
 
-local F=setmetatable({
-Row=m,
-Swatch=o,
-Overlay=p,
-Map=s,
-MapCursor=y,
-HueCursor=B,
-Preview=C,
-Value=i,
-Pending=i,
-Hue=j,
-Saturation=k,
-Brightness=l,
-Callback=h.Callback,
+local W=setmetatable({
+Row=A,
+Swatch=C,
+Overlay=D,
+Map=H,
+MapCursor=N,
+HueCursor=Q,
+Preview=R,
+Value=w,
+Pending=w,
+Hue=x,
+Saturation=y,
+Brightness=z,
+Callback=v.Callback,
 Connections={},
 },d)
 
-function F.Update(G)
-G.Pending=Color3.fromHSV(G.Hue,G.Saturation,G.Brightness)
-s.BackgroundColor3=Color3.fromHSV(G.Hue,1,1)
-y.Position=UDim2.fromScale(G.Saturation,1-G.Brightness)
-B.Position=UDim2.fromScale(0.5,G.Hue)
-C.BackgroundColor3=G.Pending
+function W.Update(X)
+X.Pending=Color3.fromHSV(X.Hue,X.Saturation,X.Brightness)
+H.BackgroundColor3=Color3.fromHSV(X.Hue,1,1)
+N.Position=UDim2.fromScale(X.Saturation,1-X.Brightness)
+Q.Position=UDim2.fromScale(0.5,X.Hue)
+R.BackgroundColor3=X.Pending
 end
 
-local function updateMap(G)
-F.Saturation=math.clamp((G.Position.X-s.AbsolutePosition.X)/s.AbsoluteSize.X,0,1)
-F.Brightness=1-math.clamp((G.Position.Y-s.AbsolutePosition.Y)/s.AbsoluteSize.Y,0,1)
-F:Update()
+local function updateMap(X)
+W.Saturation=math.clamp((X.Position.X-H.AbsolutePosition.X)/H.AbsoluteSize.X,0,1)
+W.Brightness=1-math.clamp((X.Position.Y-H.AbsolutePosition.Y)/H.AbsoluteSize.Y,0,1)
+W:Update()
 end
 
-local function updateHue(G)
-F.Hue=math.clamp((G.Position.Y-z.AbsolutePosition.Y)/z.AbsoluteSize.Y,0,1)
-F:Update()
+local function updateHue(X)
+W.Hue=math.clamp((X.Position.Y-O.AbsolutePosition.Y)/O.AbsoluteSize.Y,0,1)
+W:Update()
 end
 
-local function beginDrag(G,H,I)
-if H.UserInputType~=Enum.UserInputType.MouseButton1
-and H.UserInputType~=Enum.UserInputType.Touch
+local function beginDrag(X,Y,Z)
+if Y.UserInputType~=Enum.UserInputType.MouseButton1
+and Y.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
-F.DragTarget=G
-F.DragInput=H.UserInputType==Enum.UserInputType.Touch and H or nil
-I(H)
+W.DragTarget=X
+W.DragInput=Y.UserInputType==Enum.UserInputType.Touch and Y or nil
+Z(Y)
 end
 
-table.insert(F.Connections,x.InputBegan:Connect(function(G)
-beginDrag("Map",G,updateMap)
+table.insert(W.Connections,M.InputBegan:Connect(function(X)
+beginDrag("Map",X,updateMap)
 end))
-table.insert(F.Connections,z.InputBegan:Connect(function(G)
-beginDrag("Hue",G,updateHue)
+table.insert(W.Connections,O.InputBegan:Connect(function(X)
+beginDrag("Hue",X,updateHue)
 end))
-table.insert(F.Connections,b.InputChanged:Connect(function(G)
-if not F.DragTarget
-or not((F.DragInput and G==F.DragInput)
-or(not F.DragInput and G.UserInputType==Enum.UserInputType.MouseMovement))
+table.insert(W.Connections,b.InputChanged:Connect(function(X)
+if not W.DragTarget
+or not((W.DragInput and X==W.DragInput)
+or(not W.DragInput and X.UserInputType==Enum.UserInputType.MouseMovement))
 then
 return
 end
-if F.DragTarget=="Map"then updateMap(G)else updateHue(G)end
+if W.DragTarget=="Map"then updateMap(X)else updateHue(X)end
 end))
-table.insert(F.Connections,b.InputEnded:Connect(function(G)
-if(F.DragInput and G==F.DragInput)
-or(not F.DragInput and G.UserInputType==Enum.UserInputType.MouseButton1)
+table.insert(W.Connections,b.InputEnded:Connect(function(X)
+if(W.DragInput and X==W.DragInput)
+or(not W.DragInput and X.UserInputType==Enum.UserInputType.MouseButton1)
 then
-F.DragTarget=nil
-F.DragInput=nil
+W.DragTarget=nil
+W.DragInput=nil
 end
 end))
-table.insert(F.Connections,m.MouseButton1Click:Connect(function()F:Open()end))
-table.insert(F.Connections,D.MouseButton1Click:Connect(function()F:Close()end))
-table.insert(F.Connections,E.MouseButton1Click:Connect(function()
-F:SetValue(F.Pending)
-F:Close()
+table.insert(W.Connections,A.MouseButton1Click:Connect(function()W:Open()end))
+table.insert(W.Connections,U.MouseButton1Click:Connect(function()W:Close()end))
+table.insert(W.Connections,V.MouseButton1Click:Connect(function()
+W:SetValue(W.Pending)
+W:Close()
 end))
-table.insert(F.Connections,p.MouseButton1Click:Connect(function()F:Close()end))
-table.insert(F.Connections,q.InputBegan:Connect(function()end))
+table.insert(W.Connections,E.MouseButton1Click:Connect(function()W:Close()end))
 
-F:Update()
-return F
+W:Update()
+return W
 end
 
-function d.Open(f)
-f.Pending=f.Value
-f.Hue,f.Saturation,f.Brightness=f.Value:ToHSV()
-f:Update()
-f.Overlay.BackgroundTransparency=1
-f.Overlay.Visible=true
-c:Create(f.Overlay,e,{BackgroundTransparency=0.35}):Play()
+function d.Open(t)
+t.Pending=t.Value
+t.Hue,t.Saturation,t.Brightness=t.Value:ToHSV()
+t:Update()
+t.Closing=false
+if t.VisibilityTween then t.VisibilityTween:Cancel()end
+t.Overlay.GroupTransparency=1
+t.Overlay.Visible=true
+t.VisibilityTween=c:Create(t.Overlay,e,{GroupTransparency=0})
+t.VisibilityTween:Play()
 end
 
-function d.Close(f)
-local g=c:Create(f.Overlay,e,{BackgroundTransparency=1})
-g:Play()
-g.Completed:Once(function()
-f.Overlay.Visible=false
+function d.Close(t)
+if not t.Overlay.Visible or t.Closing then return end
+t.Closing=true
+if t.VisibilityTween then t.VisibilityTween:Cancel()end
+t.VisibilityTween=c:Create(
+t.Overlay,
+TweenInfo.new(0.07,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),
+{GroupTransparency=1}
+)
+t.VisibilityTween:Play()
+t.VisibilityTween.Completed:Once(function()
+if t.Closing then
+t.Overlay.Visible=false
+end
 end)
 end
 
-function d.SetValue(f,g,h)
-assert(typeof(g)=="Color3","PureUI colorpicker value must be Color3")
-f.Value=g
-f.Pending=g
-f.Swatch.BackgroundColor3=g
-if not h and type(f.Callback)=="function"then
-task.spawn(f.Callback,g)
+function d.SetValue(t,u,v)
+assert(typeof(u)=="Color3","PureUI colorpicker value must be Color3")
+t.Value=u
+t.Pending=u
+t.Swatch.BackgroundColor3=u
+if not v and type(t.Callback)=="function"then
+task.spawn(t.Callback,u)
 end
-return f
-end
-
-function d.GetValue(f)
-return f.Value
+return t
 end
 
-function d.Destroy(f)
-for g,h in ipairs(f.Connections)do h:Disconnect()end
-f.Overlay:Destroy()
-f.Row:Destroy()
+function d.GetValue(t)
+return t.Value
+end
+
+function d.Destroy(t)
+for u,v in ipairs(t.Connections)do v:Disconnect()end
+t.Overlay:Destroy()
+t.Row:Destroy()
 end
 
 return d end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
