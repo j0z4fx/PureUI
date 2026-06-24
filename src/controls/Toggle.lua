@@ -15,6 +15,15 @@ function Toggle.new(parent, config)
 	row.Text = ""
 	row.Parent = parent
 
+	local guide = Instance.new("Frame")
+	guide.Name = "AlignmentGuide"
+	guide.Position = UDim2.new(0, 0, 0.5, 0)
+	guide.Size = UDim2.new(1, 0, 0, 1)
+	guide.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	guide.BorderSizePixel = 0
+	guide.ZIndex = 10
+	guide.Parent = row
+
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.new(1, -52, 1, 0)
 	label.Position = UDim2.fromOffset(8, 0)

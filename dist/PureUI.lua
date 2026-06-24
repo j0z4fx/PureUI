@@ -30,45 +30,54 @@ g.AutoButtonColor=false
 g.Text=""
 g.Parent=e
 
-local h=Instance.new"TextLabel"
-h.Size=UDim2.new(1,-52,1,0)
-h.Position=UDim2.fromOffset(8,0)
-h.BackgroundTransparency=1
-h.Font=Enum.Font.Gotham
-h.Text=f.Name or"Toggle"
-h.TextColor3=Color3.fromRGB(220,223,228)
-h.TextSize=13
-h.TextXAlignment=Enum.TextXAlignment.Left
+local h=Instance.new"Frame"
+h.Name="AlignmentGuide"
+h.Position=UDim2.new(0,0,0.5,0)
+h.Size=UDim2.new(1,0,0,1)
+h.BackgroundColor3=Color3.fromRGB(255,0,0)
+h.BorderSizePixel=0
+h.ZIndex=10
 h.Parent=g
 
-local i=Instance.new"Frame"
-i.AnchorPoint=Vector2.new(1,0.5)
-i.Position=UDim2.new(1,-8,0.5,0)
-i.Size=UDim2.fromOffset(36,18)
-i.BorderSizePixel=0
+local i=Instance.new"TextLabel"
+i.Size=UDim2.new(1,-52,1,0)
+i.Position=UDim2.fromOffset(8,0)
+i.BackgroundTransparency=1
+i.Font=Enum.Font.Gotham
+i.Text=f.Name or"Toggle"
+i.TextColor3=Color3.fromRGB(220,223,228)
+i.TextSize=13
+i.TextXAlignment=Enum.TextXAlignment.Left
 i.Parent=g
 
 local j=Instance.new"Frame"
-j.AnchorPoint=Vector2.new(0,0.5)
-j.Position=UDim2.fromOffset(2,9)
-j.Size=UDim2.fromOffset(14,14)
+j.AnchorPoint=Vector2.new(1,0.5)
+j.Position=UDim2.new(1,-8,0.5,0)
+j.Size=UDim2.fromOffset(36,18)
 j.BorderSizePixel=0
-j.Parent=i
+j.Parent=g
 
-local k=setmetatable({
+local k=Instance.new"Frame"
+k.AnchorPoint=Vector2.new(0,0.5)
+k.Position=UDim2.fromOffset(2,9)
+k.Size=UDim2.fromOffset(14,14)
+k.BorderSizePixel=0
+k.Parent=j
+
+local l=setmetatable({
 Row=g,
-Track=i,
-Knob=j,
+Track=j,
+Knob=k,
 Value=f.Default==true,
 Callback=f.Callback,
 },b)
 
-k.Connection=g.MouseButton1Click:Connect(function()
-k:SetValue(not k.Value)
+l.Connection=g.MouseButton1Click:Connect(function()
+l:SetValue(not l.Value)
 end)
 
-k:SetValue(k.Value,true)
-return k
+l:SetValue(l.Value,true)
+return l
 end
 
 function b.SetValue(e,f,g)
