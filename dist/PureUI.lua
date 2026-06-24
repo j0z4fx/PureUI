@@ -516,16 +516,18 @@ m.Parent=g
 local n=Instance.new"Frame"
 n.AnchorPoint=Vector2.new(1,1)
 n.Position=UDim2.fromScale(1,1)
-n.Size=UDim2.fromOffset(10,2)
+n.Size=UDim2.fromOffset(14,4)
 n.BackgroundColor3=Color3.fromRGB(120,124,136)
+n.BackgroundTransparency=0.35
 n.BorderSizePixel=0
 n.Parent=m
 
 local o=Instance.new"Frame"
 o.AnchorPoint=Vector2.new(1,1)
 o.Position=UDim2.fromScale(1,1)
-o.Size=UDim2.fromOffset(2,10)
+o.Size=UDim2.fromOffset(4,14)
 o.BackgroundColor3=Color3.fromRGB(120,124,136)
+o.BackgroundTransparency=0.35
 o.BorderSizePixel=0
 o.Parent=m
 

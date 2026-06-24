@@ -86,16 +86,18 @@ function Window.new()
 	local resizeHorizontal = Instance.new("Frame")
 	resizeHorizontal.AnchorPoint = Vector2.new(1, 1)
 	resizeHorizontal.Position = UDim2.fromScale(1, 1)
-	resizeHorizontal.Size = UDim2.fromOffset(10, 2)
+	resizeHorizontal.Size = UDim2.fromOffset(14, 4)
 	resizeHorizontal.BackgroundColor3 = Color3.fromRGB(120, 124, 136)
+	resizeHorizontal.BackgroundTransparency = 0.35
 	resizeHorizontal.BorderSizePixel = 0
 	resizeHorizontal.Parent = resizeHandle
 
 	local resizeVertical = Instance.new("Frame")
 	resizeVertical.AnchorPoint = Vector2.new(1, 1)
 	resizeVertical.Position = UDim2.fromScale(1, 1)
-	resizeVertical.Size = UDim2.fromOffset(2, 10)
+	resizeVertical.Size = UDim2.fromOffset(4, 14)
 	resizeVertical.BackgroundColor3 = Color3.fromRGB(120, 124, 136)
+	resizeVertical.BackgroundTransparency = 0.35
 	resizeVertical.BorderSizePixel = 0
 	resizeVertical.Parent = resizeHandle
 
