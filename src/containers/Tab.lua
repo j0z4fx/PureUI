@@ -50,8 +50,10 @@ function Tab.new(window, config)
 		column.BorderSizePixel = 0
 		column.AutomaticCanvasSize = Enum.AutomaticSize.Y
 		column.CanvasSize = UDim2.fromOffset(0, 0)
-		column.ScrollBarThickness = 3
-		column.ScrollBarImageColor3 = Color3.fromRGB(80, 84, 96)
+		column.ScrollingDirection = Enum.ScrollingDirection.Y
+		column.ElasticBehavior = Enum.ElasticBehavior.Always
+		column.ScrollBarThickness = 1
+		column.ScrollBarImageTransparency = 1
 		column.Parent = content
 
 		local columnLayout = Instance.new("UIListLayout")

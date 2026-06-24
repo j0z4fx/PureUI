@@ -118,8 +118,10 @@ n.BackgroundTransparency=1
 n.BorderSizePixel=0
 n.AutomaticCanvasSize=Enum.AutomaticSize.Y
 n.CanvasSize=UDim2.fromOffset(0,0)
-n.ScrollBarThickness=3
-n.ScrollBarImageColor3=Color3.fromRGB(80,84,96)
+n.ScrollingDirection=Enum.ScrollingDirection.Y
+n.ElasticBehavior=Enum.ElasticBehavior.Always
+n.ScrollBarThickness=1
+n.ScrollBarImageTransparency=1
 n.Parent=h
 
 local o=Instance.new"UIListLayout"

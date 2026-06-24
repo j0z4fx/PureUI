@@ -34,7 +34,8 @@ Tab.Columns.Center
 Tab.Columns.Right
 ```
 
-Scrollbars appear only when column content overflows.
+Columns scroll only when content overflows. Scrollbars are hidden and native
+elastic overscroll provides spring feedback on touch devices.
 
 ```lua
 local First = Window:CreateTab({ Name = "Demo 1" })
