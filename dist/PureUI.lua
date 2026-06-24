@@ -421,12 +421,15 @@ i.Size=UDim2.new(0.6,-8,0,24)
 i.BackgroundColor3=Color3.fromRGB(45,48,57)
 i.BorderSizePixel=0
 i.ClearTextOnFocus=false
+i.ClipsDescendants=true
 i.Font=Enum.Font.Gotham
+i.MultiLine=false
 i.PlaceholderText=f.Placeholder or""
 i.PlaceholderColor3=Color3.fromRGB(125,130,142)
 i.Text=f.Default or""
 i.TextColor3=Color3.fromRGB(235,237,240)
 i.TextSize=12
+i.TextTruncate=Enum.TextTruncate.AtEnd
 i.TextXAlignment=Enum.TextXAlignment.Left
 i.Parent=g
 
@@ -443,9 +446,12 @@ Callback=f.Callback,
 },c)
 
 k.FocusConnection=i.Focused:Connect(function()
+i.TextTruncate=Enum.TextTruncate.None
+i.CursorPosition=#i.Text+1
 b:Create(i,d,{BackgroundColor3=Color3.fromRGB(58,62,73)}):Play()
 end)
 k.LostConnection=i.FocusLost:Connect(function()
+i.TextTruncate=Enum.TextTruncate.AtEnd
 b:Create(i,d,{BackgroundColor3=Color3.fromRGB(45,48,57)}):Play()
 k:SetValue(i.Text)
 end)

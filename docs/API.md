@@ -127,6 +127,9 @@ Input:SetValue("Hello")
 print(Input:GetValue())
 ```
 
+Long values truncate with an ellipsis while idle and scroll horizontally
+around the caret while editing.
+
 ## `Groupbox:CreateDoubleButton(config)`
 
 Creates two equal buttons in one row. `Accent` accepts `"Left"` or `"Right"`.

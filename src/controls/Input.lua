@@ -31,12 +31,15 @@ function Input.new(parent, config)
 	box.BackgroundColor3 = Color3.fromRGB(45, 48, 57)
 	box.BorderSizePixel = 0
 	box.ClearTextOnFocus = false
+	box.ClipsDescendants = true
 	box.Font = Enum.Font.Gotham
+	box.MultiLine = false
 	box.PlaceholderText = config.Placeholder or ""
 	box.PlaceholderColor3 = Color3.fromRGB(125, 130, 142)
 	box.Text = config.Default or ""
 	box.TextColor3 = Color3.fromRGB(235, 237, 240)
 	box.TextSize = 12
+	box.TextTruncate = Enum.TextTruncate.AtEnd
 	box.TextXAlignment = Enum.TextXAlignment.Left
 	box.Parent = row
 
@@ -53,9 +56,12 @@ function Input.new(parent, config)
 	}, Input)
 
 	input.FocusConnection = box.Focused:Connect(function()
+		box.TextTruncate = Enum.TextTruncate.None
+		box.CursorPosition = #box.Text + 1
 		TweenService:Create(box, TWEEN, { BackgroundColor3 = Color3.fromRGB(58, 62, 73) }):Play()
 	end)
 	input.LostConnection = box.FocusLost:Connect(function()
+		box.TextTruncate = Enum.TextTruncate.AtEnd
 		TweenService:Create(box, TWEEN, { BackgroundColor3 = Color3.fromRGB(45, 48, 57) }):Play()
 		input:SetValue(box.Text)
 	end)
