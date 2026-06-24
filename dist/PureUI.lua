@@ -540,59 +540,61 @@ local t=h.Position
 local u=false
 local v
 local w
+local x=h.Size
 
-local function clampToScreen(x)
-local y=g.AbsoluteSize
-local z=h.AbsoluteSize
-local A=z.X*h.AnchorPoint.X
-local B=z.Y*h.AnchorPoint.Y
-local C=x.X.Offset+y.X*x.X.Scale
-local D=x.Y.Offset+y.Y*x.Y.Scale
+local function clampToScreen(y)
+local z=g.AbsoluteSize
+local A=h.AbsoluteSize
+local B=A.X*h.AnchorPoint.X
+local C=A.Y*h.AnchorPoint.Y
+local D=y.X.Offset+z.X*y.X.Scale
+local E=y.Y.Offset+z.Y*y.Y.Scale
 
 return UDim2.fromOffset(
-if z.X>y.X then y.X/2 else math.clamp(C,A,y.X-(z.X-A)),
-if z.Y>y.Y then y.Y/2 else math.clamp(D,B,y.Y-(z.Y-B))
+if A.X>z.X then z.X/2 else math.clamp(D,B,z.X-(A.X-B)),
+if A.Y>z.Y then z.Y/2 else math.clamp(E,C,z.Y-(A.Y-C))
 )
 end
 
-local function beginDrag(x)
-if x.UserInputType~=Enum.UserInputType.MouseButton1
-and x.UserInputType~=Enum.UserInputType.Touch
+local function beginDrag(y)
+if y.UserInputType~=Enum.UserInputType.MouseButton1
+and y.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
 q=true
-r=x.Position
+r=y.Position
 s=h.Position
 t=h.Position
 end
 
 table.insert(p,i.InputBegan:Connect(beginDrag))
-table.insert(p,m.InputBegan:Connect(function(x)
-if x.UserInputType~=Enum.UserInputType.MouseButton1
-and x.UserInputType~=Enum.UserInputType.Touch
+table.insert(p,m.InputBegan:Connect(function(y)
+if y.UserInputType~=Enum.UserInputType.MouseButton1
+and y.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
 u=true
 setResizeHover(true)
-v=x.Position
+v=y.Position
 w=h.Size
+x=h.Size
 end))
 
-table.insert(p,c.InputEnded:Connect(function(x)
+table.insert(p,c.InputEnded:Connect(function(y)
 if q
-and(x.UserInputType==Enum.UserInputType.MouseButton1
-or x.UserInputType==Enum.UserInputType.Touch)
+and(y.UserInputType==Enum.UserInputType.MouseButton1
+or y.UserInputType==Enum.UserInputType.Touch)
 then
 q=false
 t=h.Position
 end
 if u
-and(x.UserInputType==Enum.UserInputType.MouseButton1
-or x.UserInputType==Enum.UserInputType.Touch)
+and(y.UserInputType==Enum.UserInputType.MouseButton1
+or y.UserInputType==Enum.UserInputType.Touch)
 then
 u=false
 setResizeHover(false)
@@ -609,55 +611,65 @@ setResizeHover(false)
 end
 end))
 
-table.insert(p,c.InputChanged:Connect(function(x)
-if x.UserInputType~=Enum.UserInputType.MouseMovement
-and x.UserInputType~=Enum.UserInputType.Touch
+table.insert(p,c.InputChanged:Connect(function(y)
+if y.UserInputType~=Enum.UserInputType.MouseMovement
+and y.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
 if q then
-local y=x.Position-r
+local z=y.Position-r
 t=clampToScreen(UDim2.new(
 s.X.Scale,
-s.X.Offset+y.X,
+s.X.Offset+z.X,
 s.Y.Scale,
-s.Y.Offset+y.Y
+s.Y.Offset+z.Y
 ))
 end
 
 if u then
-local y=x.Position-v
-local z=g.AbsoluteSize
-local A=math.max(560,z.X)
-local B=math.max(350,z.Y)
-h.Size=UDim2.fromOffset(
-math.clamp(w.X.Offset+y.X*2,560,A),
-math.clamp(w.Y.Offset+y.Y*2,350,B)
+local z=y.Position-v
+local A=g.AbsoluteSize
+local B=math.max(560,A.X)
+local C=math.max(350,A.Y)
+x=UDim2.fromOffset(
+math.clamp(w.X.Offset+z.X*2,560,B),
+math.clamp(w.Y.Offset+z.Y*2,350,C)
 )
-t=clampToScreen(h.Position)
 end
 end))
 
-table.insert(p,d.RenderStepped:Connect(function(x)
+table.insert(p,d.RenderStepped:Connect(function(y)
+local z=Vector2.new(
+x.X.Offset-h.Size.X.Offset,
+x.Y.Offset-h.Size.Y.Offset
+)
+if u or z.Magnitude>0.5 then
+h.Size=h.Size:Lerp(x,1-math.exp(-10*y))
+t=clampToScreen(h.Position)
+elseif z.Magnitude>0 then
+h.Size=x
+end
+
 if not q then
 return
 end
 
 t=clampToScreen(t)
-local y=t.X.Offset-h.Position.X.Offset
-local z=t.Y.Offset-h.Position.Y.Offset
-if y*y+z*z<0.25 then
+local A=t.X.Offset-h.Position.X.Offset
+local B=t.Y.Offset-h.Position.Y.Offset
+if A*A+B*B<0.25 then
 h.Position=t
 return
 end
 
-h.Position=h.Position:Lerp(t,1-math.exp(-6*x))
+h.Position=h.Position:Lerp(t,1-math.exp(-6*y))
 end))
 
 g.Parent=getParent()
 
-local x=setmetatable({
+local y=setmetatable({
 ScreenGui=g,
 Panel=h,
 TitleBar=i,
@@ -668,15 +680,15 @@ Tabs={},
 Connections=p,
 },f)
 
-b.new(x,{Name="Demo 1"})
-b.new(x,{Name="Demo 2"})
-x:UpdateTabLayout()
+b.new(y,{Name="Demo 1"})
+b.new(y,{Name="Demo 2"})
+y:UpdateTabLayout()
 
-local y=x.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
-y:CreateToggle{Name="Demo Toggle"}
-y:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
+local z=y.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
+z:CreateToggle{Name="Demo Toggle"}
+z:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
 
-return x
+return y
 end
 
 function f.CreateTab(g,h)

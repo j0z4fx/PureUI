@@ -110,6 +110,7 @@ function Window.new()
 	local resizing = false
 	local resizeStart
 	local startSize
+	local targetSize = panel.Size
 
 	local function clampToScreen(position)
 		local viewport = screenGui.AbsoluteSize
@@ -150,6 +151,7 @@ function Window.new()
 		setResizeHover(true)
 		resizeStart = input.Position
 		startSize = panel.Size
+		targetSize = panel.Size
 	end))
 
 	table.insert(connections, UserInputService.InputEnded:Connect(function(input)
@@ -201,15 +203,25 @@ function Window.new()
 			local viewport = screenGui.AbsoluteSize
 			local maxWidth = math.max(560, viewport.X)
 			local maxHeight = math.max(350, viewport.Y)
-			panel.Size = UDim2.fromOffset(
+			targetSize = UDim2.fromOffset(
 				math.clamp(startSize.X.Offset + delta.X * 2, 560, maxWidth),
 				math.clamp(startSize.Y.Offset + delta.Y * 2, 350, maxHeight)
 			)
-			targetPosition = clampToScreen(panel.Position)
 		end
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
+		local sizeDelta = Vector2.new(
+			targetSize.X.Offset - panel.Size.X.Offset,
+			targetSize.Y.Offset - panel.Size.Y.Offset
+		)
+		if resizing or sizeDelta.Magnitude > 0.5 then
+			panel.Size = panel.Size:Lerp(targetSize, 1 - math.exp(-10 * deltaTime))
+			targetPosition = clampToScreen(panel.Position)
+		elseif sizeDelta.Magnitude > 0 then
+			panel.Size = targetSize
+		end
+
 		if not dragging then
 			return
 		end
