@@ -645,7 +645,7 @@ local z=Vector2.new(
 x.X.Offset-h.Size.X.Offset,
 x.Y.Offset-h.Size.Y.Offset
 )
-if u or z.Magnitude>0.5 then
+if z.Magnitude>1.5 then
 h.Size=h.Size:Lerp(x,1-math.exp(-10*y))
 t=clampToScreen(h.Position)
 elseif z.Magnitude>0 then

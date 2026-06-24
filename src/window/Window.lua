@@ -215,7 +215,7 @@ function Window.new()
 			targetSize.X.Offset - panel.Size.X.Offset,
 			targetSize.Y.Offset - panel.Size.Y.Offset
 		)
-		if resizing or sizeDelta.Magnitude > 0.5 then
+		if sizeDelta.Magnitude > 1.5 then
 			panel.Size = panel.Size:Lerp(targetSize, 1 - math.exp(-10 * deltaTime))
 			targetPosition = clampToScreen(panel.Position)
 		elseif sizeDelta.Magnitude > 0 then
