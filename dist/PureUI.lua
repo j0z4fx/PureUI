@@ -151,6 +151,8 @@ g.AutoButtonColor=false
 g.Font=Enum.Font.GothamMedium
 g.TextColor3=Color3.fromRGB(220,223,228)
 g.TextSize=11
+g.TextXAlignment=Enum.TextXAlignment.Center
+g.TextYAlignment=Enum.TextYAlignment.Center
 g.Parent=e.Row
 
 local h=Instance.new"UIPadding"

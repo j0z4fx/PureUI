@@ -33,6 +33,8 @@ function Keypicker.new(toggle, config)
 	button.Font = Enum.Font.GothamMedium
 	button.TextColor3 = Color3.fromRGB(220, 223, 228)
 	button.TextSize = 11
+	button.TextXAlignment = Enum.TextXAlignment.Center
+	button.TextYAlignment = Enum.TextYAlignment.Center
 	button.Parent = toggle.Row
 
 	local padding = Instance.new("UIPadding")
