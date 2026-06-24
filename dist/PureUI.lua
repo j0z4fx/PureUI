@@ -30,9 +30,10 @@ return c end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b
 
 local b=a.c()
 local c=game:GetService"UserInputService"
+local d=game:GetService"RunService"
 
-local d={}
-d.__index=d
+local e={}
+e.__index=e
 
 local function getParent()
 if type(gethui)=="function"then
@@ -42,116 +43,122 @@ end
 return game:GetService"CoreGui"
 end
 
-function d.new()
-local e=Instance.new"ScreenGui"
-e.Name="PureUI"
-e.IgnoreGuiInset=true
-e.ResetOnSpawn=false
-e.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-
-local f=Instance.new"Frame"
-f.Name="Background"
-f.AnchorPoint=Vector2.new(0.5,0.5)
-f.Position=UDim2.fromScale(0.5,0.5)
-f.Size=UDim2.fromOffset(800,450)
-f.BackgroundColor3=Color3.fromRGB(20,22,27)
-f.BorderSizePixel=0
-f.Parent=e
+function e.new()
+local f=Instance.new"ScreenGui"
+f.Name="PureUI"
+f.IgnoreGuiInset=true
+f.ResetOnSpawn=false
+f.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 
 local g=Instance.new"Frame"
-g.Name="TitleBar"
-g.Size=UDim2.new(1,0,0,30)
-g.BackgroundColor3=Color3.fromRGB(27,30,36)
+g.Name="Background"
+g.AnchorPoint=Vector2.new(0.5,0.5)
+g.Position=UDim2.fromScale(0.5,0.5)
+g.Size=UDim2.fromOffset(800,450)
+g.BackgroundColor3=Color3.fromRGB(20,22,27)
 g.BorderSizePixel=0
 g.Parent=f
 
-local h=Instance.new"TextLabel"
-h.Name="Title"
-h.Size=UDim2.fromScale(1,1)
-h.BackgroundTransparency=1
-h.Font=Enum.Font.GothamMedium
-h.Text="Pure"
-h.TextColor3=Color3.fromRGB(235,237,240)
-h.TextSize=14
+local h=Instance.new"Frame"
+h.Name="TitleBar"
+h.Size=UDim2.new(1,0,0,30)
+h.BackgroundColor3=Color3.fromRGB(27,30,36)
+h.BorderSizePixel=0
 h.Parent=g
 
-local i={}
-local j=false
-local k
+local i=Instance.new"TextLabel"
+i.Name="Title"
+i.Size=UDim2.fromScale(1,1)
+i.BackgroundTransparency=1
+i.Font=Enum.Font.GothamMedium
+i.Text="Pure"
+i.TextColor3=Color3.fromRGB(235,237,240)
+i.TextSize=14
+i.Parent=h
+
+local j={}
+local k=false
 local l
 local m
+local n
+local o=g.Position
 
-table.insert(i,g.InputBegan:Connect(function(n)
-if n.UserInputType~=Enum.UserInputType.MouseButton1
-and n.UserInputType~=Enum.UserInputType.Touch
+table.insert(j,h.InputBegan:Connect(function(p)
+if p.UserInputType~=Enum.UserInputType.MouseButton1
+and p.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
-j=true
-l=n.Position
-m=f.Position
+k=true
+m=p.Position
+n=g.Position
+o=g.Position
 
-table.insert(i,n.Changed:Connect(function()
-if n.UserInputState==Enum.UserInputState.End then
-j=false
+table.insert(j,p.Changed:Connect(function()
+if p.UserInputState==Enum.UserInputState.End then
+k=false
 end
 end))
 end))
 
-table.insert(i,g.InputChanged:Connect(function(n)
-if n.UserInputType==Enum.UserInputType.MouseMovement
-or n.UserInputType==Enum.UserInputType.Touch
+table.insert(j,h.InputChanged:Connect(function(p)
+if p.UserInputType==Enum.UserInputType.MouseMovement
+or p.UserInputType==Enum.UserInputType.Touch
 then
-k=n
+l=p
 end
 end))
 
-table.insert(i,c.InputChanged:Connect(function(n)
-if not j or n~=k then
+table.insert(j,c.InputChanged:Connect(function(p)
+if not k or p~=l then
 return
 end
 
-local o=n.Position-l
-f.Position=UDim2.new(
-m.X.Scale,
-m.X.Offset+o.X,
-m.Y.Scale,
-m.Y.Offset+o.Y
+local q=p.Position-m
+o=UDim2.new(
+n.X.Scale,
+n.X.Offset+q.X,
+n.Y.Scale,
+n.Y.Offset+q.Y
 )
 end))
 
-e.Parent=getParent()
+table.insert(j,d.RenderStepped:Connect(function(p)
+g.Position=g.Position:Lerp(o,1-math.exp(-12*p))
+end))
+
+f.Parent=getParent()
 
 return setmetatable({
-ScreenGui=e,
-Panel=f,
-TitleBar=g,
-Title=h,
-Connections=i,
-},d)
+ScreenGui=f,
+Panel=g,
+TitleBar=h,
+Title=i,
+Connections=j,
+},e)
 end
 
-function d.CreateTab(e,f)
+function e.CreateTab(f,g)
 return b.new()
 end
 
-function d.Destroy(e)
-for f,g in ipairs(e.Connections)do
-g:Disconnect()
+function e.Destroy(f)
+for g,h in ipairs(f.Connections)do
+h:Disconnect()
 end
-table.clear(e.Connections)
+table.clear(f.Connections)
 
-if e.ScreenGui then
-e.ScreenGui:Destroy()
-e.ScreenGui=nil
-e.Panel=nil
-e.TitleBar=nil
-e.Title=nil
+if f.ScreenGui then
+f.ScreenGui:Destroy()
+f.ScreenGui=nil
+f.Panel=nil
+f.TitleBar=nil
+f.Title=nil
 end
 end
 
-return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+return e end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 

@@ -1,5 +1,6 @@
 local Tab = require("../containers/Tab")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 local Window = {}
 Window.__index = Window
@@ -50,6 +51,7 @@ function Window.new()
 	local dragInput
 	local dragStart
 	local startPosition
+	local targetPosition = panel.Position
 
 	table.insert(connections, titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType ~= Enum.UserInputType.MouseButton1
@@ -61,6 +63,7 @@ function Window.new()
 		dragging = true
 		dragStart = input.Position
 		startPosition = panel.Position
+		targetPosition = panel.Position
 
 		table.insert(connections, input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
@@ -83,12 +86,16 @@ function Window.new()
 		end
 
 		local delta = input.Position - dragStart
-		panel.Position = UDim2.new(
+		targetPosition = UDim2.new(
 			startPosition.X.Scale,
 			startPosition.X.Offset + delta.X,
 			startPosition.Y.Scale,
 			startPosition.Y.Offset + delta.Y
 		)
+	end))
+
+	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
+		panel.Position = panel.Position:Lerp(targetPosition, 1 - math.exp(-12 * deltaTime))
 	end))
 
 	screenGui.Parent = getParent()
