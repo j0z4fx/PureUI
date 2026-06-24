@@ -551,10 +551,18 @@ local D=C.X*h.AnchorPoint.X
 local E=C.Y*h.AnchorPoint.Y
 local F=A.X.Offset+B.X*A.X.Scale
 local G=A.Y.Offset+B.Y*A.Y.Scale
+local H=if C.X>B.X
+then B.X/2
+else math.clamp(F,D,B.X-(C.X-D))
+local I=if C.Y>B.Y
+then B.Y/2
+else math.clamp(G,E,B.Y-(C.Y-E))
 
-return UDim2.fromOffset(
-if C.X>B.X then B.X/2 else math.clamp(F,D,B.X-(C.X-D)),
-if C.Y>B.Y then B.Y/2 else math.clamp(G,E,B.Y-(C.Y-E))
+return UDim2.new(
+A.X.Scale,
+H-B.X*A.X.Scale,
+A.Y.Scale,
+I-B.Y*A.Y.Scale
 )
 end
 

@@ -121,10 +121,18 @@ function Window.new()
 		local halfHeight = size.Y * panel.AnchorPoint.Y
 		local x = position.X.Offset + viewport.X * position.X.Scale
 		local y = position.Y.Offset + viewport.Y * position.Y.Scale
+		local clampedX = if size.X > viewport.X
+			then viewport.X / 2
+			else math.clamp(x, halfWidth, viewport.X - (size.X - halfWidth))
+		local clampedY = if size.Y > viewport.Y
+			then viewport.Y / 2
+			else math.clamp(y, halfHeight, viewport.Y - (size.Y - halfHeight))
 
-		return UDim2.fromOffset(
-			if size.X > viewport.X then viewport.X / 2 else math.clamp(x, halfWidth, viewport.X - (size.X - halfWidth)),
-			if size.Y > viewport.Y then viewport.Y / 2 else math.clamp(y, halfHeight, viewport.Y - (size.Y - halfHeight))
+		return UDim2.new(
+			position.X.Scale,
+			clampedX - viewport.X * position.X.Scale,
+			position.Y.Scale,
+			clampedY - viewport.Y * position.Y.Scale
 		)
 	end
 
