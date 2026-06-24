@@ -104,10 +104,12 @@ function Window.new()
 
 	local connections = {}
 	local dragging = false
+	local dragTouch
 	local dragStart
 	local startPosition
 	local targetPosition = panel.Position
 	local resizing = false
+	local resizeTouch
 	local resizeStart
 	local startSize
 	local targetSize = panel.Size
@@ -132,11 +134,19 @@ function Window.new()
 		then
 			return
 		end
+		if resizing then
+			return
+		end
 
 		dragging = true
-		dragStart = input.Position
-		startPosition = panel.Position
-		targetPosition = panel.Position
+		dragTouch = if input.UserInputType == Enum.UserInputType.Touch then input else nil
+		dragStart = if dragTouch then input.Position else UserInputService:GetMouseLocation()
+		startPosition = UDim2.fromOffset(
+			panel.AbsolutePosition.X + panel.AbsoluteSize.X * panel.AnchorPoint.X,
+			panel.AbsolutePosition.Y + panel.AbsoluteSize.Y * panel.AnchorPoint.Y
+		)
+		panel.Position = startPosition
+		targetPosition = startPosition
 	end
 
 	table.insert(connections, titleBar.InputBegan:Connect(beginDrag))
@@ -146,8 +156,12 @@ function Window.new()
 		then
 			return
 		end
+		if dragging then
+			return
+		end
 
 		resizing = true
+		resizeTouch = if input.UserInputType == Enum.UserInputType.Touch then input else nil
 		setResizeHover(true)
 		resizeStart = input.Position
 		startSize = panel.Size
@@ -156,17 +170,19 @@ function Window.new()
 
 	table.insert(connections, UserInputService.InputEnded:Connect(function(input)
 		if dragging
-			and (input.UserInputType == Enum.UserInputType.MouseButton1
-				or input.UserInputType == Enum.UserInputType.Touch)
+			and ((dragTouch and input == dragTouch)
+				or (not dragTouch and input.UserInputType == Enum.UserInputType.MouseButton1))
 		then
 			dragging = false
+			dragTouch = nil
 			targetPosition = panel.Position
 		end
 		if resizing
-			and (input.UserInputType == Enum.UserInputType.MouseButton1
-				or input.UserInputType == Enum.UserInputType.Touch)
+			and ((resizeTouch and input == resizeTouch)
+				or (not resizeTouch and input.UserInputType == Enum.UserInputType.MouseButton1))
 		then
 			resizing = false
+			resizeTouch = nil
 			setResizeHover(false)
 		end
 	end))
@@ -186,16 +202,6 @@ function Window.new()
 			and input.UserInputType ~= Enum.UserInputType.Touch
 		then
 			return
-		end
-
-		if dragging then
-			local delta = input.Position - dragStart
-			targetPosition = clampToScreen(UDim2.new(
-				startPosition.X.Scale,
-				startPosition.X.Offset + delta.X,
-				startPosition.Y.Scale,
-				startPosition.Y.Offset + delta.Y
-			))
 		end
 
 		if resizing then
@@ -226,6 +232,12 @@ function Window.new()
 			return
 		end
 
+		local pointer = if dragTouch then dragTouch.Position else UserInputService:GetMouseLocation()
+		local delta = pointer - dragStart
+		targetPosition = clampToScreen(UDim2.fromOffset(
+			startPosition.X.Offset + delta.X,
+			startPosition.Y.Offset + delta.Y
+		))
 		targetPosition = clampToScreen(targetPosition)
 		local x = targetPosition.X.Offset - panel.Position.X.Offset
 		local y = targetPosition.Y.Offset - panel.Position.Y.Offset
