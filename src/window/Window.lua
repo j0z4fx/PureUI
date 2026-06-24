@@ -283,6 +283,7 @@ function Window.new()
 	controls:CreateSlider({ Name = "Demo Slider", Min = 0, Max = 100, Default = 50 })
 	controls:CreateInput({ Name = "Demo Input", Placeholder = "Text" })
 	controls:CreateDoubleButton({ Left = "Cancel", Right = "Apply", Accent = "Right" })
+	controls:CreateColorpicker({ Name = "Demo Color", Default = Color3.fromRGB(88, 130, 255) })
 
 	return window
 end

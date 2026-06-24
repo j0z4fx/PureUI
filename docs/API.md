@@ -142,6 +142,22 @@ Groupbox:CreateDoubleButton({
 })
 ```
 
+## `Groupbox:CreateColorpicker(config)`
+
+Opens a modal saturation/value and hue picker. Changes apply only after
+pressing `Apply`.
+
+```lua
+local Colorpicker = Groupbox:CreateColorpicker({
+	Name = "Accent",
+	Default = Color3.fromRGB(88, 130, 255),
+	Callback = function(color) print(color) end,
+})
+
+Colorpicker:SetValue(Color3.fromRGB(255, 80, 80))
+print(Colorpicker:GetValue())
+```
+
 ## `Tab:CreateButton(config)`
 
 Reserved for button creation. Currently raises a not-implemented error.

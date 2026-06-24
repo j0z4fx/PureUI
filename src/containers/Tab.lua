@@ -93,7 +93,7 @@ function Tab:CreateGroupbox(config)
 	config = config or {}
 	local column = self.Columns[config.Column or "Left"]
 	assert(column, "PureUI groupbox Column must be Left, Center, or Right")
-	local groupbox = Groupbox.new(column, config)
+	local groupbox = Groupbox.new(column, self.Window, config)
 	table.insert(self.Groupboxes, groupbox)
 	return groupbox
 end

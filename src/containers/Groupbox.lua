@@ -3,11 +3,12 @@ local Keypicker = require("../controls/Keypicker")
 local Slider = require("../controls/Slider")
 local Input = require("../controls/Input")
 local DoubleButton = require("../controls/DoubleButton")
+local Colorpicker = require("../controls/Colorpicker")
 
 local Groupbox = {}
 Groupbox.__index = Groupbox
 
-function Groupbox.new(parent, config)
+function Groupbox.new(parent, window, config)
 	config = config or {}
 
 	local frame = Instance.new("Frame")
@@ -64,6 +65,7 @@ function Groupbox.new(parent, config)
 		TitleBar = titleBar,
 		Title = title,
 		Content = content,
+		Window = window,
 		Toggles = {},
 		Controls = {},
 	}, Groupbox)
@@ -101,6 +103,12 @@ function Groupbox:CreateDoubleButton(config)
 	local buttons = DoubleButton.new(self.Content, config)
 	table.insert(self.Controls, buttons)
 	return buttons
+end
+
+function Groupbox:CreateColorpicker(config)
+	local colorpicker = Colorpicker.new(self.Content, self.Window, config)
+	table.insert(self.Controls, colorpicker)
+	return colorpicker
 end
 
 function Groupbox:Destroy()
