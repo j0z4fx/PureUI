@@ -62,21 +62,24 @@ function Toggle.new(parent, config)
 		TweenService:Create(label, TWEEN, { TextColor3 = Color3.fromRGB(220, 223, 228) }):Play()
 	end)
 
-	toggle:SetValue(toggle.Value, true)
+	toggle:SetValue(toggle.Value, true, true)
 	return toggle
 end
 
-function Toggle:SetValue(value, silent)
+function Toggle:SetValue(value, silent, instant)
 	assert(type(value) == "boolean", "PureUI toggle value must be boolean")
 	self.Value = value
 	self.Knob.BackgroundColor3 = Color3.fromRGB(245, 246, 248)
 
-	TweenService:Create(self.Track, TWEEN, {
-		BackgroundColor3 = if value then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(61, 65, 76),
-	}):Play()
-	TweenService:Create(self.Knob, TWEEN, {
-		Position = if value then UDim2.fromOffset(20, 9) else UDim2.fromOffset(2, 9),
-	}):Play()
+	local color = if value then Color3.fromRGB(88, 130, 255) else Color3.fromRGB(61, 65, 76)
+	local position = if value then UDim2.fromOffset(20, 9) else UDim2.fromOffset(2, 9)
+	if instant then
+		self.Track.BackgroundColor3 = color
+		self.Knob.Position = position
+	else
+		TweenService:Create(self.Track, TWEEN, { BackgroundColor3 = color }):Play()
+		TweenService:Create(self.Knob, TWEEN, { Position = position }):Play()
+	end
 
 	if not silent and type(self.Callback) == "function" then
 		task.spawn(self.Callback, value)

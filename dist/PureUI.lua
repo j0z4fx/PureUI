@@ -77,21 +77,24 @@ k.LeaveConnection=g.MouseLeave:Connect(function()
 c:Create(h,d,{TextColor3=Color3.fromRGB(220,223,228)}):Play()
 end)
 
-k:SetValue(k.Value,true)
+k:SetValue(k.Value,true,true)
 return k
 end
 
-function b.SetValue(e,f,g)
+function b.SetValue(e,f,g,h)
 assert(type(f)=="boolean","PureUI toggle value must be boolean")
 e.Value=f
 e.Knob.BackgroundColor3=Color3.fromRGB(245,246,248)
 
-c:Create(e.Track,d,{
-BackgroundColor3=if f then Color3.fromRGB(88,130,255)else Color3.fromRGB(61,65,76),
-}):Play()
-c:Create(e.Knob,d,{
-Position=if f then UDim2.fromOffset(20,9)else UDim2.fromOffset(2,9),
-}):Play()
+local i=if f then Color3.fromRGB(88,130,255)else Color3.fromRGB(61,65,76)
+local j=if f then UDim2.fromOffset(20,9)else UDim2.fromOffset(2,9)
+if h then
+e.Track.BackgroundColor3=i
+e.Knob.Position=j
+else
+c:Create(e.Track,d,{BackgroundColor3=i}):Play()
+c:Create(e.Knob,d,{Position=j}):Play()
+end
 
 if not g and type(e.Callback)=="function"then
 task.spawn(e.Callback,f)
@@ -529,6 +532,10 @@ p.Y.Offset+s.Y
 end))
 
 table.insert(l,d.RenderStepped:Connect(function(r)
+if not m then
+return
+end
+
 q=clampToScreen(q)
 local s=q.X.Offset-g.Position.X.Offset
 local t=q.Y.Offset-g.Position.Y.Offset

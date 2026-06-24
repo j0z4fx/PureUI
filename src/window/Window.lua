@@ -128,6 +128,10 @@ function Window.new()
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
+		if not dragging then
+			return
+		end
+
 		targetPosition = clampToScreen(targetPosition)
 		local x = targetPosition.X.Offset - panel.Position.X.Offset
 		local y = targetPosition.Y.Offset - panel.Position.Y.Offset
