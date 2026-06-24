@@ -1,3 +1,5 @@
+local Toggle = require("../controls/Toggle")
+
 local Groupbox = {}
 Groupbox.__index = Groupbox
 
@@ -37,12 +39,25 @@ function Groupbox.new(parent, config)
 	content.BackgroundTransparency = 1
 	content.Parent = frame
 
+	local padding = Instance.new("UIPadding")
+	padding.PaddingTop = UDim.new(0, 4)
+	padding.PaddingBottom = UDim.new(0, 4)
+	padding.Parent = content
+
+	local layout = Instance.new("UIListLayout")
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Parent = content
+
 	return setmetatable({
 		Frame = frame,
 		TitleBar = titleBar,
 		Title = title,
 		Content = content,
 	}, Groupbox)
+end
+
+function Groupbox:CreateToggle(config)
+	return Toggle.new(self.Content, config)
 end
 
 function Groupbox:Destroy()

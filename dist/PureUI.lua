@@ -19,55 +19,158 @@ b.__index=b
 function b.new(c,d)
 d=d or{}
 
-local e=Instance.new"Frame"
-e.Name=d.Name or"Groupbox"
-e.Size=UDim2.new(1,0,0,d.Height or 120)
-e.BackgroundColor3=Color3.fromRGB(27,30,36)
+local e=Instance.new"TextButton"
+e.Name=d.Name or"Toggle"
+e.Size=UDim2.new(1,0,0,32)
+e.BackgroundTransparency=1
 e.BorderSizePixel=0
+e.AutoButtonColor=false
+e.Text=""
 e.Parent=c
 
-local f=Instance.new"Frame"
-f.Name="TitleBar"
-f.Size=UDim2.new(1,0,0,25)
-f.BackgroundColor3=Color3.fromRGB(37,40,48)
-f.BorderSizePixel=0
+local f=Instance.new"TextLabel"
+f.Size=UDim2.new(1,-52,1,0)
+f.Position=UDim2.fromOffset(8,0)
+f.BackgroundTransparency=1
+f.Font=Enum.Font.Gotham
+f.Text=d.Name or"Toggle"
+f.TextColor3=Color3.fromRGB(220,223,228)
+f.TextSize=13
+f.TextXAlignment=Enum.TextXAlignment.Left
 f.Parent=e
 
-local g=Instance.new"TextLabel"
-g.Name="Title"
-g.Size=UDim2.new(1,-16,1,0)
-g.Position=UDim2.fromOffset(8,0)
-g.BackgroundTransparency=1
-g.Font=Enum.Font.GothamMedium
-g.Text=d.Name or"Groupbox"
-g.TextColor3=Color3.fromRGB(235,237,240)
-g.TextSize=13
-g.TextXAlignment=Enum.TextXAlignment.Left
-g.Parent=f
+local g=Instance.new"Frame"
+g.AnchorPoint=Vector2.new(1,0.5)
+g.Position=UDim2.new(1,-8,0.5,0)
+g.Size=UDim2.fromOffset(36,18)
+g.BorderSizePixel=0
+g.Parent=e
 
-local h=Instance.new"Frame"
-h.Name="Content"
-h.Position=UDim2.fromOffset(0,25)
-h.Size=UDim2.new(1,0,1,-25)
-h.BackgroundTransparency=1
-h.Parent=e
+local h=Instance.new"UICorner"
+h.CornerRadius=UDim.new(1,0)
+h.Parent=g
 
-return setmetatable({
-Frame=e,
-TitleBar=f,
-Title=g,
-Content=h,
+local i=Instance.new"Frame"
+i.AnchorPoint=Vector2.new(0,0.5)
+i.Size=UDim2.fromOffset(14,14)
+i.BorderSizePixel=0
+i.Parent=g
+
+local j=Instance.new"UICorner"
+j.CornerRadius=UDim.new(1,0)
+j.Parent=i
+
+local k=setmetatable({
+Row=e,
+Track=g,
+Knob=i,
+Value=d.Default==true,
+Callback=d.Callback,
 },b)
+
+k.Connection=e.MouseButton1Click:Connect(function()
+k:SetValue(not k.Value)
+end)
+
+k:SetValue(k.Value,true)
+return k
+end
+
+function b.SetValue(c,d,e)
+assert(type(d)=="boolean","PureUI toggle value must be boolean")
+c.Value=d
+c.Track.BackgroundColor3=if d then Color3.fromRGB(88,130,255)else Color3.fromRGB(61,65,76)
+c.Knob.BackgroundColor3=Color3.fromRGB(245,246,248)
+c.Knob.Position=if d then UDim2.new(1,-16,0.5,0)else UDim2.fromOffset(2,9)
+
+if not e and type(c.Callback)=="function"then
+task.spawn(c.Callback,d)
+end
+
+return c
+end
+
+function b.GetValue(c)
+return c.Value
 end
 
 function b.Destroy(c)
-c.Frame:Destroy()
+c.Connection:Disconnect()
+c.Row:Destroy()
 end
 
 return b end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
 
+local b=a.c()
+
+local c={}
+c.__index=c
+
+function c.new(d,e)
+e=e or{}
+
+local f=Instance.new"Frame"
+f.Name=e.Name or"Groupbox"
+f.Size=UDim2.new(1,0,0,e.Height or 120)
+f.BackgroundColor3=Color3.fromRGB(27,30,36)
+f.BorderSizePixel=0
+f.Parent=d
+
+local g=Instance.new"Frame"
+g.Name="TitleBar"
+g.Size=UDim2.new(1,0,0,25)
+g.BackgroundColor3=Color3.fromRGB(37,40,48)
+g.BorderSizePixel=0
+g.Parent=f
+
+local h=Instance.new"TextLabel"
+h.Name="Title"
+h.Size=UDim2.new(1,-16,1,0)
+h.Position=UDim2.fromOffset(8,0)
+h.BackgroundTransparency=1
+h.Font=Enum.Font.GothamMedium
+h.Text=e.Name or"Groupbox"
+h.TextColor3=Color3.fromRGB(235,237,240)
+h.TextSize=13
+h.TextXAlignment=Enum.TextXAlignment.Left
+h.Parent=g
+
+local i=Instance.new"Frame"
+i.Name="Content"
+i.Position=UDim2.fromOffset(0,25)
+i.Size=UDim2.new(1,0,1,-25)
+i.BackgroundTransparency=1
+i.Parent=f
+
+local j=Instance.new"UIPadding"
+j.PaddingTop=UDim.new(0,4)
+j.PaddingBottom=UDim.new(0,4)
+j.Parent=i
+
+local k=Instance.new"UIListLayout"
+k.SortOrder=Enum.SortOrder.LayoutOrder
+k.Parent=i
+
+return setmetatable({
+Frame=f,
+TitleBar=g,
+Title=h,
+Content=i,
+},c)
+end
+
+function c.CreateToggle(d,e)
+return b.new(d.Content,e)
+end
+
+function c.Destroy(d)
+d.Frame:Destroy()
+end
+
+return c end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+
 local b=a.b()
-local c=a.c()
+local c=a.d()
 
 local d={}
 d.__index=d
@@ -175,9 +278,9 @@ e.Button:Destroy()
 e.Content:Destroy()
 end
 
-return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+return d end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
 
-local b=a.d()
+local b=a.e()
 local c=game:GetService"UserInputService"
 local d=game:GetService"RunService"
 
@@ -334,11 +437,8 @@ b.new(r,{Name="Demo 1"})
 b.new(r,{Name="Demo 2"})
 r:UpdateTabLayout()
 
-r.Tabs[1]:CreateGroupbox{Name="Left Group 1",Column="Left",Height=150}
-r.Tabs[1]:CreateGroupbox{Name="Left Group 2",Column="Left",Height=150}
-r.Tabs[1]:CreateGroupbox{Name="Left Group 3",Column="Left",Height=150}
-r.Tabs[1]:CreateGroupbox{Name="Center Group",Column="Center",Height=200}
-r.Tabs[1]:CreateGroupbox{Name="Right Group",Column="Right",Height=120}
+local s=r.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
+s:CreateToggle{Name="Demo Toggle"}
 
 return r
 end
@@ -384,7 +484,7 @@ f.SelectedTab=nil
 end
 end
 
-return e end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
+return e end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 
@@ -530,7 +630,7 @@ delfile(d.Path)
 end)
 end
 
-return c end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
+return c end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -611,7 +711,7 @@ end
 return nil
 end
 
-return b end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+return b end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -684,12 +784,12 @@ end)
 return h
 end
 
-return b end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
+return b end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
 
-local b=a.e()
-local c=a.f()
-local d=a.g()
-local e=a.h()
+local b=a.f()
+local c=a.g()
+local d=a.h()
+local e=a.i()
 
 local f={}
 f.__index=f
@@ -722,8 +822,8 @@ end
 
 f.Icons=d.Icons
 
-return setmetatable({},f)end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end end
+return setmetatable({},f)end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end end
 
-local b=a.i()
+local b=a.j()
 
 return b

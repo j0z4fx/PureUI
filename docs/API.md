@@ -57,6 +57,23 @@ local Groupbox = Tab:CreateGroupbox({
 
 `Column` must be `Left`, `Center`, or `Right`.
 
+## `Groupbox:CreateToggle(config)`
+
+Creates a boolean toggle switch.
+
+```lua
+local Toggle = Groupbox:CreateToggle({
+	Name = "Enabled",
+	Default = false,
+	Callback = function(value)
+		print(value)
+	end,
+})
+
+Toggle:SetValue(true)
+print(Toggle:GetValue())
+```
+
 ## `Tab:CreateButton(config)`
 
 Reserved for button creation. Currently raises a not-implemented error.

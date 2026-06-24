@@ -155,11 +155,8 @@ function Window.new()
 	Tab.new(window, { Name = "Demo 2" })
 	window:UpdateTabLayout()
 
-	window.Tabs[1]:CreateGroupbox({ Name = "Left Group 1", Column = "Left", Height = 150 })
-	window.Tabs[1]:CreateGroupbox({ Name = "Left Group 2", Column = "Left", Height = 150 })
-	window.Tabs[1]:CreateGroupbox({ Name = "Left Group 3", Column = "Left", Height = 150 })
-	window.Tabs[1]:CreateGroupbox({ Name = "Center Group", Column = "Center", Height = 200 })
-	window.Tabs[1]:CreateGroupbox({ Name = "Right Group", Column = "Right", Height = 120 })
+	local controls = window.Tabs[1]:CreateGroupbox({ Name = "Controls", Column = "Left", Height = 70 })
+	controls:CreateToggle({ Name = "Demo Toggle" })
 
 	return window
 end
