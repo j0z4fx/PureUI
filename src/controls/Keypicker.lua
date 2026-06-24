@@ -1,7 +1,9 @@
 local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
 
 local Keypicker = {}
 Keypicker.__index = Keypicker
+local TWEEN = TweenInfo.new(0.14, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local DISPLAY_NAMES = {
 	MouseButton1 = "MB1",
@@ -52,7 +54,19 @@ function Keypicker.new(toggle, config)
 	end)
 	picker.ClickConnection = button.MouseButton1Click:Connect(function()
 		picker.Listening = true
-		button.Text = "..."
+		picker:SetDisplay("...")
+	end)
+	picker.HoverConnection = button.MouseEnter:Connect(function()
+		TweenService:Create(button, TWEEN, {
+			BackgroundColor3 = Color3.fromRGB(58, 62, 73),
+			TextColor3 = Color3.fromRGB(248, 249, 251),
+		}):Play()
+	end)
+	picker.LeaveConnection = button.MouseLeave:Connect(function()
+		TweenService:Create(button, TWEEN, {
+			BackgroundColor3 = Color3.fromRGB(45, 48, 57),
+			TextColor3 = Color3.fromRGB(220, 223, 228),
+		}):Play()
 	end)
 	picker.InputConnection = UserInputService.InputBegan:Connect(function(input)
 		if not picker.Listening then
@@ -65,10 +79,24 @@ function Keypicker.new(toggle, config)
 	return picker
 end
 
+function Keypicker:SetDisplay(text)
+	local fadeOut = TweenService:Create(self.Button, TWEEN, { TextTransparency = 1 })
+	fadeOut:Play()
+	fadeOut.Completed:Once(function()
+		self.Button.Text = text
+		TweenService:Create(self.Button, TWEEN, { TextTransparency = 0 }):Play()
+	end)
+end
+
 function Keypicker:SetKey(key, silent)
 	assert(type(key) == "string" and key ~= "", "PureUI keypicker key must be a string")
 	self.Key = key
-	self.Button.Text = DISPLAY_NAMES[key] or key
+	local display = DISPLAY_NAMES[key] or key
+	if silent then
+		self.Button.Text = display
+	else
+		self:SetDisplay(display)
+	end
 
 	if not silent and type(self.Callback) == "function" then
 		task.spawn(self.Callback, key)
@@ -84,6 +112,8 @@ end
 function Keypicker:Destroy()
 	self.PressConnection:Disconnect()
 	self.ClickConnection:Disconnect()
+	self.HoverConnection:Disconnect()
+	self.LeaveConnection:Disconnect()
 	self.InputConnection:Disconnect()
 	self.Button:Destroy()
 end

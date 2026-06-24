@@ -117,11 +117,13 @@ end
 return b end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"UserInputService"
+local c=game:GetService"TweenService"
 
-local c={}
-c.__index=c
+local d={}
+d.__index=d
+local e=TweenInfo.new(0.14,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
 
-local d={
+local f={
 MouseButton1="MB1",
 MouseButton2="MB2",
 MouseButton3="MB3",
@@ -129,84 +131,112 @@ Insert="INS",
 Delete="DEL",
 }
 
-local function inputName(e)
-if e.UserInputType==Enum.UserInputType.Keyboard then
-return e.KeyCode.Name
+local function inputName(g)
+if g.UserInputType==Enum.UserInputType.Keyboard then
+return g.KeyCode.Name
 end
-return e.UserInputType.Name
+return g.UserInputType.Name
 end
 
-function c.new(e,f)
-f=f or{}
+function d.new(g,h)
+h=h or{}
 
-local g=Instance.new"TextButton"
-g.Name="Keypicker"
-g.AnchorPoint=Vector2.new(1,0.5)
-g.Position=UDim2.new(1,-52,0.5,0)
-g.Size=UDim2.fromOffset(28,18)
-g.BackgroundColor3=Color3.fromRGB(45,48,57)
-g.BorderSizePixel=0
-g.AutoButtonColor=false
-g.Font=Enum.Font.GothamMedium
-g.TextColor3=Color3.fromRGB(220,223,228)
-g.TextSize=11
-g.TextXAlignment=Enum.TextXAlignment.Center
-g.TextYAlignment=Enum.TextYAlignment.Center
-g.Parent=e.Row
+local i=Instance.new"TextButton"
+i.Name="Keypicker"
+i.AnchorPoint=Vector2.new(1,0.5)
+i.Position=UDim2.new(1,-52,0.5,0)
+i.Size=UDim2.fromOffset(28,18)
+i.BackgroundColor3=Color3.fromRGB(45,48,57)
+i.BorderSizePixel=0
+i.AutoButtonColor=false
+i.Font=Enum.Font.GothamMedium
+i.TextColor3=Color3.fromRGB(220,223,228)
+i.TextSize=11
+i.TextXAlignment=Enum.TextXAlignment.Center
+i.TextYAlignment=Enum.TextYAlignment.Center
+i.Parent=g.Row
 
-local h=setmetatable({
-Button=g,
-Key=f.Default or"None",
-Callback=f.Callback,
+local j=setmetatable({
+Button=i,
+Key=h.Default or"None",
+Callback=h.Callback,
 Listening=false,
-},c)
+},d)
 
-h:SetKey(h.Key,true)
-h.PressConnection=g.MouseButton1Down:Connect(function()
-e.SuppressClick=true
+j:SetKey(j.Key,true)
+j.PressConnection=i.MouseButton1Down:Connect(function()
+g.SuppressClick=true
 task.defer(function()
-e.SuppressClick=false
+g.SuppressClick=false
 end)
 end)
-h.ClickConnection=g.MouseButton1Click:Connect(function()
-h.Listening=true
-g.Text="..."
+j.ClickConnection=i.MouseButton1Click:Connect(function()
+j.Listening=true
+j:SetDisplay"..."
 end)
-h.InputConnection=b.InputBegan:Connect(function(i)
-if not h.Listening then
+j.HoverConnection=i.MouseEnter:Connect(function()
+c:Create(i,e,{
+BackgroundColor3=Color3.fromRGB(58,62,73),
+TextColor3=Color3.fromRGB(248,249,251),
+}):Play()
+end)
+j.LeaveConnection=i.MouseLeave:Connect(function()
+c:Create(i,e,{
+BackgroundColor3=Color3.fromRGB(45,48,57),
+TextColor3=Color3.fromRGB(220,223,228),
+}):Play()
+end)
+j.InputConnection=b.InputBegan:Connect(function(k)
+if not j.Listening then
 return
 end
-h.Listening=false
-h:SetKey(inputName(i))
+j.Listening=false
+j:SetKey(inputName(k))
 end)
 
-return h
+return j
 end
 
-function c.SetKey(e,f,g)
-assert(type(f)=="string"and f~="","PureUI keypicker key must be a string")
-e.Key=f
-e.Button.Text=d[f]or f
-
-if not g and type(e.Callback)=="function"then
-task.spawn(e.Callback,f)
+function d.SetDisplay(g,h)
+local i=c:Create(g.Button,e,{TextTransparency=1})
+i:Play()
+i.Completed:Once(function()
+g.Button.Text=h
+c:Create(g.Button,e,{TextTransparency=0}):Play()
+end)
 end
 
-return e
+function d.SetKey(g,h,i)
+assert(type(h)=="string"and h~="","PureUI keypicker key must be a string")
+g.Key=h
+local j=f[h]or h
+if i then
+g.Button.Text=j
+else
+g:SetDisplay(j)
 end
 
-function c.GetKey(e)
-return e.Key
+if not i and type(g.Callback)=="function"then
+task.spawn(g.Callback,h)
 end
 
-function c.Destroy(e)
-e.PressConnection:Disconnect()
-e.ClickConnection:Disconnect()
-e.InputConnection:Disconnect()
-e.Button:Destroy()
+return g
 end
 
-return c end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
+function d.GetKey(g)
+return g.Key
+end
+
+function d.Destroy(g)
+g.PressConnection:Disconnect()
+g.ClickConnection:Disconnect()
+g.HoverConnection:Disconnect()
+g.LeaveConnection:Disconnect()
+g.InputConnection:Disconnect()
+g.Button:Destroy()
+end
+
+return d end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
 local b=a.c()
 local c=a.d()
