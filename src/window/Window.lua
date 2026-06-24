@@ -157,6 +157,7 @@ function Window.new()
 
 	local controls = window.Tabs[1]:CreateGroupbox({ Name = "Controls", Column = "Left", Height = 70 })
 	controls:CreateToggle({ Name = "Demo Toggle" })
+	controls:CreateKeypicker({ Toggle = "Demo Toggle", Default = "K" })
 
 	return window
 end

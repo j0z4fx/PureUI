@@ -74,6 +74,25 @@ Toggle:SetValue(true)
 print(Toggle:GetValue())
 ```
 
+Toggle labels fade lighter on hover.
+
+## `Groupbox:CreateKeypicker(config)`
+
+Attaches a keypicker to an existing toggle by its name.
+
+```lua
+local Keypicker = Groupbox:CreateKeypicker({
+	Toggle = "Enabled",
+	Default = "K",
+	Callback = function(key)
+		print(key)
+	end,
+})
+
+Keypicker:SetKey("RightShift")
+print(Keypicker:GetKey())
+```
+
 ## `Tab:CreateButton(config)`
 
 Reserved for button creation. Currently raises a not-implemented error.

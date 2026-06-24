@@ -1,4 +1,5 @@
 local Toggle = require("../controls/Toggle")
+local Keypicker = require("../controls/Keypicker")
 
 local Groupbox = {}
 Groupbox.__index = Groupbox
@@ -53,11 +54,21 @@ function Groupbox.new(parent, config)
 		TitleBar = titleBar,
 		Title = title,
 		Content = content,
+		Toggles = {},
 	}, Groupbox)
 end
 
 function Groupbox:CreateToggle(config)
-	return Toggle.new(self.Content, config)
+	local toggle = Toggle.new(self.Content, config)
+	self.Toggles[config.Name or "Toggle"] = toggle
+	return toggle
+end
+
+function Groupbox:CreateKeypicker(config)
+	config = config or {}
+	local toggle = self.Toggles[config.Toggle]
+	assert(toggle, "PureUI keypicker Toggle must name an existing toggle in this groupbox")
+	return Keypicker.new(toggle, config)
 end
 
 function Groupbox:Destroy()

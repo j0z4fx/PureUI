@@ -30,54 +30,55 @@ g.AutoButtonColor=false
 g.Text=""
 g.Parent=e
 
-local h=Instance.new"Frame"
-h.Name="AlignmentGuide"
-h.Position=UDim2.new(0,0,0.5,0)
-h.Size=UDim2.new(1,0,0,1)
-h.BackgroundColor3=Color3.fromRGB(255,0,0)
-h.BorderSizePixel=0
-h.ZIndex=10
+local h=Instance.new"TextLabel"
+h.Size=UDim2.new(1,-96,1,0)
+h.Position=UDim2.fromOffset(8,0)
+h.BackgroundTransparency=1
+h.Font=Enum.Font.Gotham
+h.Text=f.Name or"Toggle"
+h.TextColor3=Color3.fromRGB(220,223,228)
+h.TextSize=13
+h.TextXAlignment=Enum.TextXAlignment.Left
 h.Parent=g
 
-local i=Instance.new"TextLabel"
-i.Size=UDim2.new(1,-52,1,0)
-i.Position=UDim2.fromOffset(8,0)
-i.BackgroundTransparency=1
-i.Font=Enum.Font.Gotham
-i.Text=f.Name or"Toggle"
-i.TextColor3=Color3.fromRGB(220,223,228)
-i.TextSize=13
-i.TextXAlignment=Enum.TextXAlignment.Left
+local i=Instance.new"Frame"
+i.AnchorPoint=Vector2.new(1,0.5)
+i.Position=UDim2.new(1,-8,0.5,0)
+i.Size=UDim2.fromOffset(36,18)
+i.BorderSizePixel=0
 i.Parent=g
 
 local j=Instance.new"Frame"
-j.AnchorPoint=Vector2.new(1,0.5)
-j.Position=UDim2.new(1,-8,0.5,0)
-j.Size=UDim2.fromOffset(36,18)
+j.AnchorPoint=Vector2.new(0,0.5)
+j.Position=UDim2.fromOffset(2,9)
+j.Size=UDim2.fromOffset(14,14)
 j.BorderSizePixel=0
-j.Parent=g
+j.Parent=i
 
-local k=Instance.new"Frame"
-k.AnchorPoint=Vector2.new(0,0.5)
-k.Position=UDim2.fromOffset(2,9)
-k.Size=UDim2.fromOffset(14,14)
-k.BorderSizePixel=0
-k.Parent=j
-
-local l=setmetatable({
+local k=setmetatable({
 Row=g,
-Track=j,
-Knob=k,
+Track=i,
+Knob=j,
+Label=h,
 Value=f.Default==true,
 Callback=f.Callback,
 },b)
 
-l.Connection=g.MouseButton1Click:Connect(function()
-l:SetValue(not l.Value)
+k.Connection=g.MouseButton1Click:Connect(function()
+if k.SuppressClick then
+return
+end
+k:SetValue(not k.Value)
+end)
+k.HoverConnection=g.MouseEnter:Connect(function()
+c:Create(h,d,{TextColor3=Color3.fromRGB(248,249,251)}):Play()
+end)
+k.LeaveConnection=g.MouseLeave:Connect(function()
+c:Create(h,d,{TextColor3=Color3.fromRGB(220,223,228)}):Play()
 end)
 
-l:SetValue(l.Value,true)
-return l
+k:SetValue(k.Value,true)
+return k
 end
 
 function b.SetValue(e,f,g)
@@ -105,81 +106,176 @@ end
 
 function b.Destroy(e)
 e.Connection:Disconnect()
+e.HoverConnection:Disconnect()
+e.LeaveConnection:Disconnect()
 e.Row:Destroy()
 end
 
 return b end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
 
-local b=a.c()
+local b=game:GetService"UserInputService"
 
 local c={}
 c.__index=c
 
+local function inputName(d)
+if d.UserInputType==Enum.UserInputType.Keyboard then
+return d.KeyCode.Name
+end
+return d.UserInputType.Name
+end
+
 function c.new(d,e)
 e=e or{}
 
-local f=Instance.new"Frame"
-f.Name=e.Name or"Groupbox"
-f.Size=UDim2.new(1,0,0,e.Height or 120)
-f.BackgroundColor3=Color3.fromRGB(27,30,36)
+local f=Instance.new"TextButton"
+f.Name="Keypicker"
+f.AnchorPoint=Vector2.new(1,0.5)
+f.Position=UDim2.new(1,-52,0.5,0)
+f.Size=UDim2.fromOffset(38,18)
+f.BackgroundColor3=Color3.fromRGB(45,48,57)
 f.BorderSizePixel=0
-f.Parent=d
+f.AutoButtonColor=false
+f.Font=Enum.Font.GothamMedium
+f.TextColor3=Color3.fromRGB(220,223,228)
+f.TextSize=11
+f.Parent=d.Row
 
-local g=Instance.new"Frame"
-g.Name="TitleBar"
-g.Size=UDim2.new(1,0,0,25)
-g.BackgroundColor3=Color3.fromRGB(37,40,48)
-g.BorderSizePixel=0
-g.Parent=f
-
-local h=Instance.new"TextLabel"
-h.Name="Title"
-h.Size=UDim2.new(1,-16,1,0)
-h.Position=UDim2.fromOffset(8,0)
-h.BackgroundTransparency=1
-h.Font=Enum.Font.GothamMedium
-h.Text=e.Name or"Groupbox"
-h.TextColor3=Color3.fromRGB(235,237,240)
-h.TextSize=13
-h.TextXAlignment=Enum.TextXAlignment.Left
-h.Parent=g
-
-local i=Instance.new"Frame"
-i.Name="Content"
-i.Position=UDim2.fromOffset(0,25)
-i.Size=UDim2.new(1,0,1,-25)
-i.BackgroundTransparency=1
-i.Parent=f
-
-local j=Instance.new"UIPadding"
-j.PaddingTop=UDim.new(0,4)
-j.PaddingBottom=UDim.new(0,4)
-j.Parent=i
-
-local k=Instance.new"UIListLayout"
-k.SortOrder=Enum.SortOrder.LayoutOrder
-k.Parent=i
-
-return setmetatable({
-Frame=f,
-TitleBar=g,
-Title=h,
-Content=i,
+local g=setmetatable({
+Button=f,
+Key=e.Default or"None",
+Callback=e.Callback,
+Listening=false,
 },c)
+
+g:SetKey(g.Key,true)
+g.PressConnection=f.MouseButton1Down:Connect(function()
+d.SuppressClick=true
+task.defer(function()
+d.SuppressClick=false
+end)
+end)
+g.ClickConnection=f.MouseButton1Click:Connect(function()
+g.Listening=true
+f.Text="..."
+end)
+g.InputConnection=b.InputBegan:Connect(function(h)
+if not g.Listening then
+return
+end
+g.Listening=false
+g:SetKey(inputName(h))
+end)
+
+return g
 end
 
-function c.CreateToggle(d,e)
-return b.new(d.Content,e)
+function c.SetKey(d,e,f)
+assert(type(e)=="string"and e~="","PureUI keypicker key must be a string")
+d.Key=e
+d.Button.Text=e
+
+if not f and type(d.Callback)=="function"then
+task.spawn(d.Callback,e)
+end
+
+return d
+end
+
+function c.GetKey(d)
+return d.Key
 end
 
 function c.Destroy(d)
-d.Frame:Destroy()
+d.PressConnection:Disconnect()
+d.ClickConnection:Disconnect()
+d.InputConnection:Disconnect()
+d.Button:Destroy()
 end
 
 return c end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
-local b=a.b()
+local b=a.c()
 local c=a.d()
+
+local d={}
+d.__index=d
+
+function d.new(e,f)
+f=f or{}
+
+local g=Instance.new"Frame"
+g.Name=f.Name or"Groupbox"
+g.Size=UDim2.new(1,0,0,f.Height or 120)
+g.BackgroundColor3=Color3.fromRGB(27,30,36)
+g.BorderSizePixel=0
+g.Parent=e
+
+local h=Instance.new"Frame"
+h.Name="TitleBar"
+h.Size=UDim2.new(1,0,0,25)
+h.BackgroundColor3=Color3.fromRGB(37,40,48)
+h.BorderSizePixel=0
+h.Parent=g
+
+local i=Instance.new"TextLabel"
+i.Name="Title"
+i.Size=UDim2.new(1,-16,1,0)
+i.Position=UDim2.fromOffset(8,0)
+i.BackgroundTransparency=1
+i.Font=Enum.Font.GothamMedium
+i.Text=f.Name or"Groupbox"
+i.TextColor3=Color3.fromRGB(235,237,240)
+i.TextSize=13
+i.TextXAlignment=Enum.TextXAlignment.Left
+i.Parent=h
+
+local j=Instance.new"Frame"
+j.Name="Content"
+j.Position=UDim2.fromOffset(0,25)
+j.Size=UDim2.new(1,0,1,-25)
+j.BackgroundTransparency=1
+j.Parent=g
+
+local k=Instance.new"UIPadding"
+k.PaddingTop=UDim.new(0,4)
+k.PaddingBottom=UDim.new(0,4)
+k.Parent=j
+
+local l=Instance.new"UIListLayout"
+l.SortOrder=Enum.SortOrder.LayoutOrder
+l.Parent=j
+
+return setmetatable({
+Frame=g,
+TitleBar=h,
+Title=i,
+Content=j,
+Toggles={},
+},d)
+end
+
+function d.CreateToggle(e,f)
+local g=b.new(e.Content,f)
+e.Toggles[f.Name or"Toggle"]=g
+return g
+end
+
+function d.CreateKeypicker(e,f)
+f=f or{}
+local g=e.Toggles[f.Toggle]
+assert(g,"PureUI keypicker Toggle must name an existing toggle in this groupbox")
+return c.new(g,f)
+end
+
+function d.Destroy(e)
+e.Frame:Destroy()
+end
+
+return d end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
+
+local b=a.b()
+local c=a.e()
 
 local d={}
 d.__index=d
@@ -287,9 +383,9 @@ e.Button:Destroy()
 e.Content:Destroy()
 end
 
-return d end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
+return d end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
 
-local b=a.e()
+local b=a.f()
 local c=game:GetService"UserInputService"
 local d=game:GetService"RunService"
 
@@ -448,6 +544,7 @@ r:UpdateTabLayout()
 
 local s=r.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left",Height=70}
 s:CreateToggle{Name="Demo Toggle"}
+s:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
 
 return r
 end
@@ -493,7 +590,7 @@ f.SelectedTab=nil
 end
 end
 
-return e end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
+return e end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 
@@ -639,7 +736,7 @@ delfile(d.Path)
 end)
 end
 
-return c end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
+return c end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -720,7 +817,7 @@ end
 return nil
 end
 
-return b end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
+return b end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -793,12 +890,12 @@ end)
 return h
 end
 
-return b end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
+return b end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
 
-local b=a.f()
-local c=a.g()
-local d=a.h()
-local e=a.i()
+local b=a.g()
+local c=a.h()
+local d=a.i()
+local e=a.j()
 
 local f={}
 f.__index=f
@@ -831,8 +928,8 @@ end
 
 f.Icons=d.Icons
 
-return setmetatable({},f)end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end end
+return setmetatable({},f)end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end end
 
-local b=a.j()
+local b=a.k()
 
 return b

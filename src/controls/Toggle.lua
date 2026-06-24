@@ -15,17 +15,8 @@ function Toggle.new(parent, config)
 	row.Text = ""
 	row.Parent = parent
 
-	local guide = Instance.new("Frame")
-	guide.Name = "AlignmentGuide"
-	guide.Position = UDim2.new(0, 0, 0.5, 0)
-	guide.Size = UDim2.new(1, 0, 0, 1)
-	guide.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	guide.BorderSizePixel = 0
-	guide.ZIndex = 10
-	guide.Parent = row
-
 	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, -52, 1, 0)
+	label.Size = UDim2.new(1, -96, 1, 0)
 	label.Position = UDim2.fromOffset(8, 0)
 	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.Gotham
@@ -53,12 +44,22 @@ function Toggle.new(parent, config)
 		Row = row,
 		Track = track,
 		Knob = knob,
+		Label = label,
 		Value = config.Default == true,
 		Callback = config.Callback,
 	}, Toggle)
 
 	toggle.Connection = row.MouseButton1Click:Connect(function()
+		if toggle.SuppressClick then
+			return
+		end
 		toggle:SetValue(not toggle.Value)
+	end)
+	toggle.HoverConnection = row.MouseEnter:Connect(function()
+		TweenService:Create(label, TWEEN, { TextColor3 = Color3.fromRGB(248, 249, 251) }):Play()
+	end)
+	toggle.LeaveConnection = row.MouseLeave:Connect(function()
+		TweenService:Create(label, TWEEN, { TextColor3 = Color3.fromRGB(220, 223, 228) }):Play()
 	end)
 
 	toggle:SetValue(toggle.Value, true)
@@ -90,6 +91,8 @@ end
 
 function Toggle:Destroy()
 	self.Connection:Disconnect()
+	self.HoverConnection:Disconnect()
+	self.LeaveConnection:Disconnect()
 	self.Row:Destroy()
 end
 
