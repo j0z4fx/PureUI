@@ -114,6 +114,32 @@ function Dropdown:SetOpen(open)
 	TweenService:Create(self.Button, TWEEN, {
 		BackgroundColor3 = if open then Color3.fromRGB(58, 62, 73) else Color3.fromRGB(45, 48, 57),
 	}):Play()
+
+	if open then
+		task.delay(TWEEN.Time, function()
+			if not self.Open or not self.Root.Parent then
+				return
+			end
+
+			local scroller = self.Root:FindFirstAncestorWhichIsA("ScrollingFrame")
+			if not scroller then
+				return
+			end
+
+			local dropdownBottom = self.Root.AbsolutePosition.Y + self.Root.AbsoluteSize.Y + 10
+			local visibleBottom = scroller.AbsolutePosition.Y + scroller.AbsoluteWindowSize.Y
+			local overflow = dropdownBottom - visibleBottom
+			if overflow <= 0 then
+				return
+			end
+
+			local maximum = math.max(0, scroller.AbsoluteCanvasSize.Y - scroller.AbsoluteWindowSize.Y)
+			local target = math.min(scroller.CanvasPosition.Y + overflow, maximum)
+			TweenService:Create(scroller, TWEEN, {
+				CanvasPosition = Vector2.new(scroller.CanvasPosition.X, target),
+			}):Play()
+		end)
+	end
 end
 
 function Dropdown:SetValue(value, silent)

@@ -1223,6 +1223,32 @@ b:Create(h.Arrow,e,{Rotation=if i then 180 else 0}):Play()
 b:Create(h.Button,e,{
 BackgroundColor3=if i then Color3.fromRGB(58,62,73)else Color3.fromRGB(45,48,57),
 }):Play()
+
+if i then
+task.delay(e.Time,function()
+if not h.Open or not h.Root.Parent then
+return
+end
+
+local k=h.Root:FindFirstAncestorWhichIsA"ScrollingFrame"
+if not k then
+return
+end
+
+local l=h.Root.AbsolutePosition.Y+h.Root.AbsoluteSize.Y+10
+local m=k.AbsolutePosition.Y+k.AbsoluteWindowSize.Y
+local n=l-m
+if n<=0 then
+return
+end
+
+local o=math.max(0,k.AbsoluteCanvasSize.Y-k.AbsoluteWindowSize.Y)
+local p=math.min(k.CanvasPosition.Y+n,o)
+b:Create(k,e,{
+CanvasPosition=Vector2.new(k.CanvasPosition.X,p),
+}):Play()
+end)
+end
 end
 
 function d.SetValue(h,i,j)

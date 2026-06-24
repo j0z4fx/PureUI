@@ -186,6 +186,8 @@ print(Colorpicker:GetValue())
 ## `Groupbox:CreateDropdown(config)`
 
 Creates an animated single-select dropdown. Lists over five items scroll.
+Opening a dropdown auto-scrolls its column until the list is visible with a
+10px lower margin, or to the canvas bottom when that margin is unavailable.
 
 ```lua
 local Dropdown = Groupbox:CreateDropdown({
