@@ -132,7 +132,7 @@ g.Position=o
 return
 end
 
-g.Position=g.Position:Lerp(o,1-math.exp(-8*p))
+g.Position=g.Position:Lerp(o,1-math.exp(-12*p))
 end))
 
 f.Parent=getParent()

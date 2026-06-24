@@ -102,7 +102,7 @@ function Window.new()
 			return
 		end
 
-		panel.Position = panel.Position:Lerp(targetPosition, 1 - math.exp(-8 * deltaTime))
+		panel.Position = panel.Position:Lerp(targetPosition, 1 - math.exp(-12 * deltaTime))
 	end))
 
 	screenGui.Parent = getParent()
