@@ -14,7 +14,7 @@ local HUE_WIDTH = 12
 local ACTION_HEIGHT = 26
 local PREVIEW_WIDTH = 40
 local INNER_WIDTH = MAP_WIDTH + GAP + HUE_WIDTH
-local BUTTON_WIDTH = (INNER_WIDTH - PREVIEW_WIDTH - GAP * 2) / 2
+local BUTTON_WIDTH = (INNER_WIDTH - GAP) / 2
 local MAP_Y = MARGIN + TITLE_HEIGHT + GAP
 local ACTION_Y = MAP_Y + MAP_HEIGHT + GAP
 local DIALOG_WIDTH = MARGIN * 2 + INNER_WIDTH
@@ -99,7 +99,7 @@ function Colorpicker.new(parent, window, config)
 
 	local title = Instance.new("TextLabel")
 	title.Position = UDim2.fromOffset(MARGIN, MARGIN)
-	title.Size = UDim2.fromOffset(INNER_WIDTH, TITLE_HEIGHT)
+	title.Size = UDim2.fromOffset(INNER_WIDTH - PREVIEW_WIDTH - GAP, TITLE_HEIGHT)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamMedium
 	title.Text = config.Name or "Color"
@@ -194,14 +194,14 @@ function Colorpicker.new(parent, window, config)
 	hueCursor.Parent = hueBar
 
 	local preview = Instance.new("Frame")
-	preview.Position = UDim2.fromOffset(MARGIN, ACTION_Y)
-	preview.Size = UDim2.fromOffset(PREVIEW_WIDTH, ACTION_HEIGHT)
+	preview.Position = UDim2.fromOffset(MARGIN + INNER_WIDTH - PREVIEW_WIDTH, MARGIN)
+	preview.Size = UDim2.fromOffset(PREVIEW_WIDTH, TITLE_HEIGHT)
 	preview.BackgroundColor3 = initial
 	preview.BorderSizePixel = 0
 	preview.ZIndex = 53
 	preview.Parent = dialog
 
-	local cancelX = MARGIN + PREVIEW_WIDTH + GAP
+	local cancelX = MARGIN
 	local applyX = cancelX + BUTTON_WIDTH + GAP
 	local cancel = button(dialog, "Cancel", cancelX, false)
 	local apply = button(dialog, "Apply", applyX, true)

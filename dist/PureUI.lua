@@ -585,7 +585,7 @@ local k=12
 local l=26
 local m=40
 local n=i+g+k
-local o=(n-m-g*2)/2
+local o=(n-g)/2
 local p=f+h+g
 local q=p+j+g
 local r=f*2+n
@@ -670,7 +670,7 @@ F.Parent=D
 
 local G=Instance.new"TextLabel"
 G.Position=UDim2.fromOffset(f,f)
-G.Size=UDim2.fromOffset(n,h)
+G.Size=UDim2.fromOffset(n-m-g,h)
 G.BackgroundTransparency=1
 G.Font=Enum.Font.GothamMedium
 G.Text=v.Name or"Color"
@@ -765,14 +765,14 @@ Q.ZIndex=56
 Q.Parent=O
 
 local R=Instance.new"Frame"
-R.Position=UDim2.fromOffset(f,q)
-R.Size=UDim2.fromOffset(m,l)
+R.Position=UDim2.fromOffset(f+n-m,f)
+R.Size=UDim2.fromOffset(m,h)
 R.BackgroundColor3=w
 R.BorderSizePixel=0
 R.ZIndex=53
 R.Parent=F
 
-local S=f+m+g
+local S=f
 local T=S+o+g
 local U=button(F,"Cancel",S,false)
 local V=button(F,"Apply",T,true)
