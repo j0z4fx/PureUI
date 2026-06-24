@@ -158,6 +158,23 @@ Colorpicker:SetValue(Color3.fromRGB(255, 80, 80))
 print(Colorpicker:GetValue())
 ```
 
+## `Groupbox:CreateDropdown(config)`
+
+Creates an animated single-select dropdown. Lists over five items scroll.
+
+```lua
+local Dropdown = Groupbox:CreateDropdown({
+	Name = "Mode",
+	Options = { "One", "Two", "Three" },
+	Default = "One",
+	Callback = function(value) print(value) end,
+})
+
+Dropdown:SetValue("Two")
+Dropdown:SetOptions({ "A", "B", "C" })
+print(Dropdown:GetValue())
+```
+
 ## `Tab:CreateButton(config)`
 
 Reserved for button creation. Currently raises a not-implemented error.

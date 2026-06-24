@@ -4,6 +4,7 @@ local Slider = require("../controls/Slider")
 local Input = require("../controls/Input")
 local DoubleButton = require("../controls/DoubleButton")
 local Colorpicker = require("../controls/Colorpicker")
+local Dropdown = require("../controls/Dropdown")
 
 local Groupbox = {}
 Groupbox.__index = Groupbox
@@ -109,6 +110,12 @@ function Groupbox:CreateColorpicker(config)
 	local colorpicker = Colorpicker.new(self.Content, self.Window, config)
 	table.insert(self.Controls, colorpicker)
 	return colorpicker
+end
+
+function Groupbox:CreateDropdown(config)
+	local dropdown = Dropdown.new(self.Content, config)
+	table.insert(self.Controls, dropdown)
+	return dropdown
 end
 
 function Groupbox:Destroy()

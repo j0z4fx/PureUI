@@ -911,130 +911,330 @@ end
 
 return d end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
 
+local b=game:GetService"TweenService"
+
+local c={}
+c.__index=c
+local d=TweenInfo.new(0.14,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+local e=26
+local f=5
+
+function c.new(g,h)
+h=h or{}
+
+local i=Instance.new"Frame"
+i.Name=h.Name or"Dropdown"
+i.Size=UDim2.new(1,0,0,38)
+i.BackgroundTransparency=1
+i.ClipsDescendants=true
+i.Parent=g
+
+local j=Instance.new"TextLabel"
+j.Position=UDim2.fromOffset(8,0)
+j.Size=UDim2.new(0.4,-8,0,38)
+j.BackgroundTransparency=1
+j.Font=Enum.Font.Gotham
+j.Text=h.Name or"Dropdown"
+j.TextColor3=Color3.fromRGB(220,223,228)
+j.TextSize=13
+j.TextXAlignment=Enum.TextXAlignment.Left
+j.Parent=i
+
+local k=Instance.new"TextButton"
+k.AnchorPoint=Vector2.new(1,0)
+k.Position=UDim2.new(1,-8,0,7)
+k.Size=UDim2.new(0.6,-8,0,24)
+k.BackgroundColor3=Color3.fromRGB(45,48,57)
+k.BorderSizePixel=0
+k.AutoButtonColor=false
+k.Font=Enum.Font.Gotham
+k.TextColor3=Color3.fromRGB(235,237,240)
+k.TextSize=12
+k.TextXAlignment=Enum.TextXAlignment.Left
+k.Parent=i
+
+local l=Instance.new"UIPadding"
+l.PaddingLeft=UDim.new(0,7)
+l.PaddingRight=UDim.new(0,22)
+l.Parent=k
+
+local m=Instance.new"TextLabel"
+m.AnchorPoint=Vector2.new(1,0.5)
+m.Position=UDim2.new(1,-7,0.5,0)
+m.Size=UDim2.fromOffset(12,12)
+m.BackgroundTransparency=1
+m.Font=Enum.Font.GothamMedium
+m.Text="v"
+m.TextColor3=Color3.fromRGB(155,160,172)
+m.TextSize=11
+m.Parent=k
+
+local n=Instance.new"ScrollingFrame"
+n.Position=UDim2.fromOffset(8,38)
+n.Size=UDim2.new(1,-16,0,0)
+n.BackgroundColor3=Color3.fromRGB(35,38,46)
+n.BorderSizePixel=0
+n.CanvasSize=UDim2.fromOffset(0,0)
+n.AutomaticCanvasSize=Enum.AutomaticSize.Y
+n.ScrollBarThickness=0
+n.ScrollingDirection=Enum.ScrollingDirection.Y
+n.Parent=i
+
+local o=Instance.new"UIListLayout"
+o.SortOrder=Enum.SortOrder.LayoutOrder
+o.Parent=n
+
+local p=setmetatable({
+Root=i,
+Button=k,
+Arrow=m,
+List=n,
+Options={},
+OptionButtons={},
+Value=nil,
+Callback=h.Callback,
+Open=false,
+Connections={},
+},c)
+
+table.insert(p.Connections,k.MouseButton1Click:Connect(function()
+p:SetOpen(not p.Open)
+end))
+
+p:SetOptions(h.Options or{})
+if h.Default~=nil then
+p:SetValue(h.Default,true)
+elseif p.Options[1]~=nil then
+p:SetValue(p.Options[1],true)
+else
+k.Text=h.Placeholder or"Select"
+end
+
+return p
+end
+
+function c.SetOpen(g,h)
+g.Open=h
+local i=if h then math.min(#g.Options,f)*e else 0
+b:Create(g.Root,d,{Size=UDim2.new(1,0,0,38+i)}):Play()
+b:Create(g.List,d,{Size=UDim2.new(1,-16,0,i)}):Play()
+b:Create(g.Arrow,d,{Rotation=if h then 180 else 0}):Play()
+b:Create(g.Button,d,{
+BackgroundColor3=if h then Color3.fromRGB(58,62,73)else Color3.fromRGB(45,48,57),
+}):Play()
+end
+
+function c.SetValue(g,h,i)
+local j=false
+for k,l in ipairs(g.Options)do
+if l==h then
+j=true
+break
+end
+end
+assert(j,"PureUI dropdown value is not in Options")
+
+g.Value=h
+g.Button.Text=tostring(h)
+g:SetOpen(false)
+
+for k,l in pairs(g.OptionButtons)do
+l.BackgroundColor3=if k==h then Color3.fromRGB(58,62,73)else Color3.fromRGB(35,38,46)
+end
+
+if not i and type(g.Callback)=="function"then
+task.spawn(g.Callback,h)
+end
+return g
+end
+
+function c.GetValue(g)
+return g.Value
+end
+
+function c.SetOptions(g,h)
+assert(type(h)=="table","PureUI dropdown Options must be a table")
+for i,j in ipairs(g.OptionConnections or{})do j:Disconnect()end
+g.OptionConnections={}
+for i,j in pairs(g.OptionButtons)do j:Destroy()end
+g.OptionButtons={}
+g.Options=h
+
+for i,j in ipairs(h)do
+local k=Instance.new"TextButton"
+k.Name=tostring(j)
+k.LayoutOrder=i
+k.Size=UDim2.new(1,0,0,e)
+k.BackgroundColor3=Color3.fromRGB(35,38,46)
+k.BorderSizePixel=0
+k.AutoButtonColor=false
+k.Font=Enum.Font.Gotham
+k.Text=tostring(j)
+k.TextColor3=Color3.fromRGB(220,223,228)
+k.TextSize=12
+k.Parent=g.List
+g.OptionButtons[j]=k
+
+table.insert(g.OptionConnections,k.MouseEnter:Connect(function()
+b:Create(k,d,{BackgroundColor3=Color3.fromRGB(58,62,73)}):Play()
+end))
+table.insert(g.OptionConnections,k.MouseLeave:Connect(function()
+b:Create(k,d,{
+BackgroundColor3=if g.Value==j then Color3.fromRGB(58,62,73)else Color3.fromRGB(35,38,46),
+}):Play()
+end))
+table.insert(g.OptionConnections,k.MouseButton1Click:Connect(function()
+g:SetValue(j)
+end))
+end
+
+if g.Value~=nil and g.OptionButtons[g.Value]==nil then
+g.Value=nil
+g.Button.Text="Select"
+end
+g:SetOpen(false)
+return g
+end
+
+function c.Destroy(g)
+for h,i in ipairs(g.Connections)do i:Disconnect()end
+for h,i in ipairs(g.OptionConnections)do i:Disconnect()end
+g.Root:Destroy()
+end
+
+return c end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
+
 local b=a.c()
 local c=a.d()
 local d=a.e()
 local e=a.f()
 local f=a.g()
 local g=a.h()
+local h=a.i()
 
-local h={}
-h.__index=h
+local i={}
+i.__index=i
 
-function h.new(i,j,k)
-k=k or{}
+function i.new(j,k,l)
+l=l or{}
 
-local l=Instance.new"Frame"
-l.Name=k.Name or"Groupbox"
-l.Size=UDim2.new(1,0,0,k.Height or 0)
-l.AutomaticSize=if k.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
-l.BackgroundColor3=Color3.fromRGB(27,30,36)
-l.BorderSizePixel=0
-l.Parent=i
+local m=Instance.new"Frame"
+m.Name=l.Name or"Groupbox"
+m.Size=UDim2.new(1,0,0,l.Height or 0)
+m.AutomaticSize=if l.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
+m.BackgroundColor3=Color3.fromRGB(27,30,36)
+m.BorderSizePixel=0
+m.Parent=j
 
-local m=Instance.new"UIListLayout"
-m.SortOrder=Enum.SortOrder.LayoutOrder
-m.Parent=l
+local n=Instance.new"UIListLayout"
+n.SortOrder=Enum.SortOrder.LayoutOrder
+n.Parent=m
 
-local n=Instance.new"Frame"
-n.Name="TitleBar"
-n.LayoutOrder=1
-n.Size=UDim2.new(1,0,0,25)
-n.BackgroundColor3=Color3.fromRGB(37,40,48)
-n.BorderSizePixel=0
-n.Parent=l
+local o=Instance.new"Frame"
+o.Name="TitleBar"
+o.LayoutOrder=1
+o.Size=UDim2.new(1,0,0,25)
+o.BackgroundColor3=Color3.fromRGB(37,40,48)
+o.BorderSizePixel=0
+o.Parent=m
 
-local o=Instance.new"TextLabel"
-o.Name="Title"
-o.Size=UDim2.new(1,-16,1,0)
-o.Position=UDim2.fromOffset(8,0)
-o.BackgroundTransparency=1
-o.Font=Enum.Font.GothamMedium
-o.Text=k.Name or"Groupbox"
-o.TextColor3=Color3.fromRGB(235,237,240)
-o.TextSize=13
-o.TextXAlignment=Enum.TextXAlignment.Left
-o.Parent=n
-
-local p=Instance.new"Frame"
-p.Name="Content"
-p.LayoutOrder=2
-p.Size=if k.Height then UDim2.new(1,0,1,-25)else UDim2.new(1,0,0,0)
-p.AutomaticSize=if k.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
+local p=Instance.new"TextLabel"
+p.Name="Title"
+p.Size=UDim2.new(1,-16,1,0)
+p.Position=UDim2.fromOffset(8,0)
 p.BackgroundTransparency=1
-p.Parent=l
+p.Font=Enum.Font.GothamMedium
+p.Text=l.Name or"Groupbox"
+p.TextColor3=Color3.fromRGB(235,237,240)
+p.TextSize=13
+p.TextXAlignment=Enum.TextXAlignment.Left
+p.Parent=o
 
-local q=Instance.new"UIPadding"
-q.PaddingTop=UDim.new(0,4)
-q.PaddingBottom=UDim.new(0,4)
-q.Parent=p
+local q=Instance.new"Frame"
+q.Name="Content"
+q.LayoutOrder=2
+q.Size=if l.Height then UDim2.new(1,0,1,-25)else UDim2.new(1,0,0,0)
+q.AutomaticSize=if l.Height then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
+q.BackgroundTransparency=1
+q.Parent=m
 
-local r=Instance.new"UIListLayout"
-r.SortOrder=Enum.SortOrder.LayoutOrder
-r.Parent=p
+local r=Instance.new"UIPadding"
+r.PaddingTop=UDim.new(0,4)
+r.PaddingBottom=UDim.new(0,4)
+r.Parent=q
+
+local s=Instance.new"UIListLayout"
+s.SortOrder=Enum.SortOrder.LayoutOrder
+s.Parent=q
 
 return setmetatable({
-Frame=l,
-TitleBar=n,
-Title=o,
-Content=p,
-Window=j,
+Frame=m,
+TitleBar=o,
+Title=p,
+Content=q,
+Window=k,
 Toggles={},
 Controls={},
-},h)
+},i)
 end
 
-function h.CreateToggle(i,j)
-local k=b.new(i.Content,j)
-i.Toggles[j.Name or"Toggle"]=k
-table.insert(i.Controls,k)
-return k
-end
-
-function h.CreateKeypicker(i,j)
-j=j or{}
-local k=i.Toggles[j.Toggle]
-assert(k,"PureUI keypicker Toggle must name an existing toggle in this groupbox")
-local l=c.new(k,j)
-table.insert(i.Controls,l)
+function i.CreateToggle(j,k)
+local l=b.new(j.Content,k)
+j.Toggles[k.Name or"Toggle"]=l
+table.insert(j.Controls,l)
 return l
 end
 
-function h.CreateSlider(i,j)
-local k=d.new(i.Content,j)
-table.insert(i.Controls,k)
-return k
+function i.CreateKeypicker(j,k)
+k=k or{}
+local l=j.Toggles[k.Toggle]
+assert(l,"PureUI keypicker Toggle must name an existing toggle in this groupbox")
+local m=c.new(l,k)
+table.insert(j.Controls,m)
+return m
 end
 
-function h.CreateInput(i,j)
-local k=e.new(i.Content,j)
-table.insert(i.Controls,k)
-return k
+function i.CreateSlider(j,k)
+local l=d.new(j.Content,k)
+table.insert(j.Controls,l)
+return l
 end
 
-function h.CreateDoubleButton(i,j)
-local k=f.new(i.Content,j)
-table.insert(i.Controls,k)
-return k
+function i.CreateInput(j,k)
+local l=e.new(j.Content,k)
+table.insert(j.Controls,l)
+return l
 end
 
-function h.CreateColorpicker(i,j)
-local k=g.new(i.Content,i.Window,j)
-table.insert(i.Controls,k)
-return k
+function i.CreateDoubleButton(j,k)
+local l=f.new(j.Content,k)
+table.insert(j.Controls,l)
+return l
 end
 
-function h.Destroy(i)
-for j,k in ipairs(i.Controls)do
-k:Destroy()
-end
-i.Frame:Destroy()
+function i.CreateColorpicker(j,k)
+local l=g.new(j.Content,j.Window,k)
+table.insert(j.Controls,l)
+return l
 end
 
-return h end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
+function i.CreateDropdown(j,k)
+local l=h.new(j.Content,k)
+table.insert(j.Controls,l)
+return l
+end
+
+function i.Destroy(j)
+for k,l in ipairs(j.Controls)do
+l:Destroy()
+end
+j.Frame:Destroy()
+end
+
+return i end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
 
 local b=a.b()
-local c=a.i()
+local c=a.j()
 
 local d={}
 d.__index=d
@@ -1148,9 +1348,9 @@ e.Button:Destroy()
 e.Content:Destroy()
 end
 
-return d end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
+return d end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end do local function __modImpl()
 
-local b=a.j()
+local b=a.k()
 local c=game:GetService"UserInputService"
 local d=game:GetService"RunService"
 local e=game:GetService"TweenService"
@@ -1436,6 +1636,7 @@ B:CreateSlider{Name="Demo Slider",Min=0,Max=100,Default=50}
 B:CreateInput{Name="Demo Input",Placeholder="Text"}
 B:CreateDoubleButton{Left="Cancel",Right="Apply",Accent="Right"}
 B:CreateColorpicker{Name="Demo Color",Default=Color3.fromRGB(88,130,255)}
+B:CreateDropdown{Name="Demo Dropdown",Options={"One","Two","Three"},Default="One"}
 
 return A
 end
@@ -1482,7 +1683,7 @@ g.SelectedTab=nil
 end
 end
 
-return f end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end do local function __modImpl()
+return f end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 
@@ -1628,7 +1829,7 @@ delfile(d.Path)
 end)
 end
 
-return c end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
+return c end function a.m():typeof(__modImpl())local b=a.cache.m if not b then b={c=__modImpl()}a.cache.m=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -1709,7 +1910,7 @@ end
 return nil
 end
 
-return b end function a.m():typeof(__modImpl())local b=a.cache.m if not b then b={c=__modImpl()}a.cache.m=b end return b.c end end do local function __modImpl()
+return b end function a.n():typeof(__modImpl())local b=a.cache.n if not b then b={c=__modImpl()}a.cache.n=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -1782,12 +1983,12 @@ end)
 return h
 end
 
-return b end function a.n():typeof(__modImpl())local b=a.cache.n if not b then b={c=__modImpl()}a.cache.n=b end return b.c end end do local function __modImpl()
+return b end function a.o():typeof(__modImpl())local b=a.cache.o if not b then b={c=__modImpl()}a.cache.o=b end return b.c end end do local function __modImpl()
 
-local b=a.k()
-local c=a.l()
-local d=a.m()
-local e=a.n()
+local b=a.l()
+local c=a.m()
+local d=a.n()
+local e=a.o()
 
 local f={}
 f.__index=f
@@ -1820,8 +2021,8 @@ end
 
 f.Icons=d.Icons
 
-return setmetatable({},f)end function a.o():typeof(__modImpl())local b=a.cache.o if not b then b={c=__modImpl()}a.cache.o=b end return b.c end end end
+return setmetatable({},f)end function a.p():typeof(__modImpl())local b=a.cache.p if not b then b={c=__modImpl()}a.cache.p=b end return b.c end end end
 
-local b=a.o()
+local b=a.p()
 
 return b

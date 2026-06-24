@@ -284,6 +284,7 @@ function Window.new()
 	controls:CreateInput({ Name = "Demo Input", Placeholder = "Text" })
 	controls:CreateDoubleButton({ Left = "Cancel", Right = "Apply", Accent = "Right" })
 	controls:CreateColorpicker({ Name = "Demo Color", Default = Color3.fromRGB(88, 130, 255) })
+	controls:CreateDropdown({ Name = "Demo Dropdown", Options = { "One", "Two", "Three" }, Default = "One" })
 
 	return window
 end
