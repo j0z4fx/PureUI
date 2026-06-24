@@ -570,12 +570,8 @@ end
 
 q=true
 r=if A.UserInputType==Enum.UserInputType.Touch then A else nil
-s=if r then A.Position else c:GetMouseLocation()
-t=UDim2.fromOffset(
-h.AbsolutePosition.X+h.AbsoluteSize.X*h.AnchorPoint.X,
-h.AbsolutePosition.Y+h.AbsoluteSize.Y*h.AnchorPoint.Y
-)
-h.Position=t
+s=A.Position
+t=h.Position
 u=t
 end
 
@@ -644,6 +640,19 @@ math.clamp(y.X.Offset+B.X*2,560,D),
 math.clamp(y.Y.Offset+B.Y*2,350,E)
 )
 end
+
+if q
+and((r and A==r)
+or(not r and A.UserInputType==Enum.UserInputType.MouseMovement))
+then
+local B=A.Position-s
+u=clampToScreen(UDim2.new(
+t.X.Scale,
+t.X.Offset+B.X,
+t.Y.Scale,
+t.Y.Offset+B.Y
+))
+end
 end))
 
 table.insert(p,d.RenderStepped:Connect(function(A)
@@ -662,16 +671,10 @@ if not q then
 return
 end
 
-local C=if r then r.Position else c:GetMouseLocation()
-local D=C-s
-u=clampToScreen(UDim2.fromOffset(
-t.X.Offset+D.X,
-t.Y.Offset+D.Y
-))
 u=clampToScreen(u)
-local E=u.X.Offset-h.Position.X.Offset
-local F=u.Y.Offset-h.Position.Y.Offset
-if E*E+F*F<0.25 then
+local C=u.X.Offset-h.Position.X.Offset
+local D=u.Y.Offset-h.Position.Y.Offset
+if C*C+D*D<0.25 then
 h.Position=u
 return
 end

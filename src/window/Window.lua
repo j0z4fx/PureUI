@@ -140,12 +140,8 @@ function Window.new()
 
 		dragging = true
 		dragTouch = if input.UserInputType == Enum.UserInputType.Touch then input else nil
-		dragStart = if dragTouch then input.Position else UserInputService:GetMouseLocation()
-		startPosition = UDim2.fromOffset(
-			panel.AbsolutePosition.X + panel.AbsoluteSize.X * panel.AnchorPoint.X,
-			panel.AbsolutePosition.Y + panel.AbsoluteSize.Y * panel.AnchorPoint.Y
-		)
-		panel.Position = startPosition
+		dragStart = input.Position
+		startPosition = panel.Position
 		targetPosition = startPosition
 	end
 
@@ -214,6 +210,19 @@ function Window.new()
 				math.clamp(startSize.Y.Offset + delta.Y * 2, 350, maxHeight)
 			)
 		end
+
+		if dragging
+			and ((dragTouch and input == dragTouch)
+				or (not dragTouch and input.UserInputType == Enum.UserInputType.MouseMovement))
+		then
+			local delta = input.Position - dragStart
+			targetPosition = clampToScreen(UDim2.new(
+				startPosition.X.Scale,
+				startPosition.X.Offset + delta.X,
+				startPosition.Y.Scale,
+				startPosition.Y.Offset + delta.Y
+			))
+		end
 	end))
 
 	table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime)
@@ -232,12 +241,6 @@ function Window.new()
 			return
 		end
 
-		local pointer = if dragTouch then dragTouch.Position else UserInputService:GetMouseLocation()
-		local delta = pointer - dragStart
-		targetPosition = clampToScreen(UDim2.fromOffset(
-			startPosition.X.Offset + delta.X,
-			startPosition.Y.Offset + delta.Y
-		))
 		targetPosition = clampToScreen(targetPosition)
 		local x = targetPosition.X.Offset - panel.Position.X.Offset
 		local y = targetPosition.Y.Offset - panel.Position.Y.Offset
