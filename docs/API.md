@@ -307,3 +307,31 @@ when a new valid bundle loads, and places the replacement in
 `getgenv().PureUI`.
 
 Stop polling with `Bridge:Stop()`. This API is development-only.
+
+## `Window:NotifyLeft(config)`
+
+Creates a notification on the left edge of the screen. Notifications live at the
+ScreenGui level — visible even when the window is hidden. They stack vertically
+with 64px spacing and auto-dismiss after `Duration` seconds (default `5`).
+Set `Duration = 0` to disable auto-dismiss. The timer bar at the bottom
+shrinks linearly. Click `x` to dismiss immediately.
+
+```lua
+Window:NotifyLeft({
+	Title = "Success",
+	Message = "Operation completed.",
+	Duration = 3,   -- optional, default 5
+})
+```
+
+## `Window:NotifyRight(config)`
+
+Same as `NotifyLeft` but appears on the right edge of the screen.
+
+```lua
+Window:NotifyRight({
+	Title = "Error",
+	Message = "Something went wrong.",
+	Duration = 0,   -- stays until dismissed
+})
+```
