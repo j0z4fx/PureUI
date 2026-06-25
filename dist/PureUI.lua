@@ -1889,24 +1889,24 @@ m.Parent=l
 
 local n=Instance.new"Frame"
 n.Name="NotifLeft"
-n.Position=UDim2.fromOffset(0,60)
-n.Size=UDim2.new(0,280,1,-60)
+n.Position=UDim2.fromOffset(12,12)
+n.Size=UDim2.new(0,280,1,-24)
 n.BackgroundTransparency=1
 n.BorderSizePixel=0
 n.ClipsDescendants=false
-n.ZIndex=10
-n.Parent=i
+n.ZIndex=999
+n.Parent=h
 
 local o=Instance.new"Frame"
 o.Name="NotifRight"
 o.AnchorPoint=Vector2.new(1,0)
-o.Position=UDim2.new(1,0,0,60)
-o.Size=UDim2.new(0,280,1,-60)
+o.Position=UDim2.new(1,-12,0,12)
+o.Size=UDim2.new(0,280,1,-24)
 o.BackgroundTransparency=1
 o.BorderSizePixel=0
 o.ClipsDescendants=false
-o.ZIndex=10
-o.Parent=i
+o.ZIndex=999
+o.Parent=h
 
 local p=Instance.new"Frame"
 p.Name="ResizeHandle"

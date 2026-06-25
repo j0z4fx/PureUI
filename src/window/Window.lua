@@ -65,24 +65,24 @@ function Window.new()
 
 	local notifLeft = Instance.new("Frame")
 	notifLeft.Name = "NotifLeft"
-	notifLeft.Position = UDim2.fromOffset(0, 60)
-	notifLeft.Size = UDim2.new(0, 280, 1, -60)
+	notifLeft.Position = UDim2.fromOffset(12, 12)
+	notifLeft.Size = UDim2.new(0, 280, 1, -24)
 	notifLeft.BackgroundTransparency = 1
 	notifLeft.BorderSizePixel = 0
 	notifLeft.ClipsDescendants = false
-	notifLeft.ZIndex = 10
-	notifLeft.Parent = panel
+	notifLeft.ZIndex = 999
+	notifLeft.Parent = screenGui
 
 	local notifRight = Instance.new("Frame")
 	notifRight.Name = "NotifRight"
 	notifRight.AnchorPoint = Vector2.new(1, 0)
-	notifRight.Position = UDim2.new(1, 0, 0, 60)
-	notifRight.Size = UDim2.new(0, 280, 1, -60)
+	notifRight.Position = UDim2.new(1, -12, 0, 12)
+	notifRight.Size = UDim2.new(0, 280, 1, -24)
 	notifRight.BackgroundTransparency = 1
 	notifRight.BorderSizePixel = 0
 	notifRight.ClipsDescendants = false
-	notifRight.ZIndex = 10
-	notifRight.Parent = panel
+	notifRight.ZIndex = 999
+	notifRight.Parent = screenGui
 
 	local resizeHandle = Instance.new("Frame")
 	resizeHandle.Name = "ResizeHandle"
