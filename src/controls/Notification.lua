@@ -1,4 +1,5 @@
 local TweenService = game:GetService("TweenService")
+local _FORCE_REBUILD = 1
 
 local NOTIF_WIDTH = 280
 local NOTIF_HEIGHT = 56
