@@ -1,4 +1,5 @@
 local Tab = require("../containers/Tab")
+local Notification = require("../controls/Notification")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
@@ -61,6 +62,27 @@ function Window.new()
 	tabLayout.FillDirectionMaxCells = 1
 	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	tabLayout.Parent = tabBar
+
+	local notifLeft = Instance.new("Frame")
+	notifLeft.Name = "NotifLeft"
+	notifLeft.Position = UDim2.fromOffset(0, 60)
+	notifLeft.Size = UDim2.new(0, 280, 1, -60)
+	notifLeft.BackgroundTransparency = 1
+	notifLeft.BorderSizePixel = 0
+	notifLeft.ClipsDescendants = false
+	notifLeft.ZIndex = 10
+	notifLeft.Parent = panel
+
+	local notifRight = Instance.new("Frame")
+	notifRight.Name = "NotifRight"
+	notifRight.AnchorPoint = Vector2.new(1, 0)
+	notifRight.Position = UDim2.new(1, 0, 0, 60)
+	notifRight.Size = UDim2.new(0, 280, 1, -60)
+	notifRight.BackgroundTransparency = 1
+	notifRight.BorderSizePixel = 0
+	notifRight.ClipsDescendants = false
+	notifRight.ZIndex = 10
+	notifRight.Parent = panel
 
 	local resizeHandle = Instance.new("Frame")
 	resizeHandle.Name = "ResizeHandle"
@@ -274,6 +296,10 @@ function Window.new()
 		Title = title,
 		TabBar = tabBar,
 		ResizeHandle = resizeHandle,
+		NotifLeft = notifLeft,
+		NotifRight = notifRight,
+		NotificationsLeft = {},
+		NotificationsRight = {},
 		Tabs = {},
 		Connections = connections,
 	}, Window)
@@ -289,7 +315,17 @@ function Window.new()
 	controls:CreateSlider({ Name = "Centered Slider", Variant = "Centered", Min = -100, Max = 100 })
 	controls:CreateSlider({ Name = "Range Slider", Variant = "Range", Min = 0, Max = 100, Default = { Min = 25, Max = 75 } })
 	controls:CreateInput({ Name = "Demo Input", Placeholder = "Text" })
-	controls:CreateDoubleButton({ Left = "Cancel", Right = "Apply", Accent = "Right" })
+	controls:CreateDoubleButton({
+		Left = "Left",
+		Right = "Right",
+		Accent = "Left",
+		LeftCallback = function()
+			window:NotifyLeft({ Title = "Left Notification", Message = "This appears on the left side." })
+		end,
+		RightCallback = function()
+			window:NotifyRight({ Title = "Right Notification", Message = "This appears on the right side." })
+		end,
+	})
 	controls:CreateColorpicker({ Name = "Demo Color", Default = Color3.fromRGB(88, 130, 255) })
 	controls:CreateDropdown({ Name = "Demo Dropdown", Options = { "One", "Two", "Three" }, Default = "One" })
 	controls:CreateDropdown({ Name = "Multi Dropdown", Options = { "One", "Two", "Three" }, Multi = true, Default = { "One", "Three" } })
@@ -309,6 +345,52 @@ function Window:UpdateTabLayout()
 	self.TabBar.UIGridLayout.CellSize = UDim2.new(1 / count, 0, 1, 0)
 end
 
+local function repositionStack(notifs)
+	for i, n in ipairs(notifs) do
+		n:SetY((i - 1) * 64)
+	end
+end
+
+function Window:NotifyLeft(config)
+	config = config or {}
+	config.Side = "Left"
+	local notif = Notification.new(self.NotifLeft, config)
+	table.insert(self.NotificationsLeft, notif)
+
+	notif.DismissedConn = notif.Frame.AncestryChanged:Connect(function()
+		if not notif.Frame or not notif.Frame.Parent then
+			local idx = table.find(self.NotificationsLeft, notif)
+			if idx then
+				table.remove(self.NotificationsLeft, idx)
+				repositionStack(self.NotificationsLeft)
+			end
+		end
+	end)
+
+	repositionStack(self.NotificationsLeft)
+	return notif
+end
+
+function Window:NotifyRight(config)
+	config = config or {}
+	config.Side = "Right"
+	local notif = Notification.new(self.NotifRight, config)
+	table.insert(self.NotificationsRight, notif)
+
+	notif.DismissedConn = notif.Frame.AncestryChanged:Connect(function()
+		if not notif.Frame or not notif.Frame.Parent then
+			local idx = table.find(self.NotificationsRight, notif)
+			if idx then
+				table.remove(self.NotificationsRight, idx)
+				repositionStack(self.NotificationsRight)
+			end
+		end
+	end)
+
+	repositionStack(self.NotificationsRight)
+	return notif
+end
+
 function Window:SelectTab(selected)
 	for _, tab in ipairs(self.Tabs) do
 		tab:SetActive(tab == selected)
@@ -326,6 +408,16 @@ function Window:Destroy()
 		tab:Destroy()
 	end
 	table.clear(self.Tabs)
+
+	for _, n in ipairs(self.NotificationsLeft) do
+		n:Destroy()
+	end
+	table.clear(self.NotificationsLeft)
+
+	for _, n in ipairs(self.NotificationsRight) do
+		n:Destroy()
+	end
+	table.clear(self.NotificationsRight)
 
 	if self.ScreenGui then
 		self.ScreenGui:Destroy()

@@ -1627,13 +1627,209 @@ end
 
 return d end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
 
-local b=a.l()
-local c=game:GetService"UserInputService"
-local d=game:GetService"RunService"
-local e=game:GetService"TweenService"
+local b=game:GetService"TweenService"
 
-local f={}
-f.__index=f
+local c=280
+local d=56
+local e=4
+local f=2
+local g=8
+
+
+local h=TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+local i=TweenInfo.new(0.12,Enum.EasingStyle.Quint,Enum.EasingDirection.Out)
+
+local j={}
+j.__index=j
+
+function j.new(k,l)
+l=l or{}
+local m=l.Side or"Left"
+local n=m=="Left"
+
+local o=Instance.new"Frame"
+o.Name="Notification"
+o.Size=UDim2.fromOffset(c,d)
+o.BackgroundColor3=Color3.fromRGB(27,30,36)
+o.BorderSizePixel=0
+o.BackgroundTransparency=1
+o.ClipsDescendants=true
+o.Parent=k
+
+local p=Instance.new"Frame"
+p.Name="Accent"
+if n then
+p.Position=UDim2.fromOffset(0,0)
+else
+p.Position=UDim2.new(1,-e,0,0)
+end
+p.Size=UDim2.fromOffset(e,d)
+p.BackgroundColor3=Color3.fromRGB(88,130,255)
+p.BorderSizePixel=0
+p.Parent=o
+
+local q=Instance.new"TextLabel"
+q.Name="Title"
+q.Position=UDim2.fromOffset(g+e+4,g)
+q.Size=UDim2.new(1,-(g*2+e+28),0,20)
+q.BackgroundTransparency=1
+q.Font=Enum.Font.GothamMedium
+q.Text=l.Title or""
+q.TextColor3=Color3.fromRGB(235,237,240)
+q.TextSize=13
+q.TextXAlignment=Enum.TextXAlignment.Left
+q.TextTruncate=Enum.TextTruncate.AtEnd
+q.Parent=o
+
+local r=l.Message and l.Message~=""
+local s
+if r then
+s=Instance.new"TextLabel"
+s.Name="Message"
+s.Position=UDim2.fromOffset(g+e+4,g+22)
+s.Size=UDim2.new(1,-(g*2+e+8),0,16)
+s.BackgroundTransparency=1
+s.Font=Enum.Font.Gotham
+s.Text=l.Message
+s.TextColor3=Color3.fromRGB(220,223,228)
+s.TextSize=12
+s.TextXAlignment=Enum.TextXAlignment.Left
+s.TextTruncate=Enum.TextTruncate.AtEnd
+s.Parent=o
+end
+
+local t=Instance.new"TextButton"
+t.Name="Close"
+t.Size=UDim2.fromOffset(20,20)
+if n then
+t.Position=UDim2.new(1,-(g+4),0,g-2)
+else
+t.Position=UDim2.fromOffset(g+e+4,g-2)
+end
+t.BackgroundTransparency=1
+t.BorderSizePixel=0
+t.AutoButtonColor=false
+t.Font=Enum.Font.Gotham
+t.Text="x"
+t.TextColor3=Color3.fromRGB(155,160,172)
+t.TextSize=14
+t.Parent=o
+
+local u=Instance.new"Frame"
+u.Name="Timer"
+u.AnchorPoint=Vector2.new(0,1)
+u.Position=UDim2.new(0,0,1,0)
+u.Size=UDim2.new(1,0,0,f)
+u.BackgroundColor3=Color3.fromRGB(88,130,255)
+u.BorderSizePixel=0
+u.Parent=o
+
+local v=setmetatable({
+Frame=o,
+Title=q,
+Message=s,
+Close=t,
+Timer=u,
+Side=m,
+Connections={},
+},j)
+
+v.CloseConn=t.MouseButton1Click:Connect(function()
+v:Dismiss()
+end)
+v.HoverConn=t.MouseEnter:Connect(function()
+b:Create(t,h,{TextColor3=Color3.fromRGB(248,249,251)}):Play()
+end)
+v.LeaveConn=t.MouseLeave:Connect(function()
+b:Create(t,h,{TextColor3=Color3.fromRGB(155,160,172)}):Play()
+end)
+
+local w=-c
+if not n then
+w=c
+end
+o.Position=UDim2.fromOffset(w,0)
+b:Create(o,h,{
+BackgroundTransparency=0,
+Position=UDim2.fromOffset(0,0),
+}):Play()
+
+local x=l.Duration
+if x==nil then
+x=5
+end
+if x>0 then
+local y=b:Create(u,TweenInfo.new(x,Enum.EasingStyle.Linear,Enum.EasingDirection.Out),{
+Size=UDim2.new(0,0,0,f),
+})
+y:Play()
+
+v.DismissConn=y.Completed:Connect(function()
+if v.Frame and v.Frame.Parent then
+v:Dismiss()
+end
+end)
+end
+
+return v
+end
+
+function j.Dismiss(k)
+if k.Dismissed then
+return
+end
+k.Dismissed=true
+
+local l=-c
+if k.Side~="Left"then
+l=c
+end
+local m=k.Frame.Position.X.Offset
+local n=k.Frame.Position.Y.Offset
+
+local o=b:Create(k.Frame,i,{
+BackgroundTransparency=1,
+Position=UDim2.fromOffset(m+l,n),
+})
+o.Completed:Connect(function()
+k:Destroy()
+end)
+o:Play()
+end
+
+function j.Destroy(k)
+if k.DismissConn then
+k.DismissConn:Disconnect()
+end
+if k.CloseConn then
+k.CloseConn:Disconnect()
+end
+if k.HoverConn then
+k.HoverConn:Disconnect()
+end
+if k.LeaveConn then
+k.LeaveConn:Disconnect()
+end
+if k.Frame then
+k.Frame:Destroy()
+k.Frame=nil
+end
+end
+
+function j.SetY(k,l)
+k.Frame.Position=UDim2.fromOffset(k.Frame.Position.X.Offset,l)
+end
+
+return j end function a.m():typeof(__modImpl())local b=a.cache.m if not b then b={c=__modImpl()}a.cache.m=b end return b.c end end do local function __modImpl()
+
+local b=a.l()
+local c=a.m()
+local d=game:GetService"UserInputService"
+local e=game:GetService"RunService"
+local f=game:GetService"TweenService"
+
+local g={}
+g.__index=g
 
 local function getParent()
 if type(gethui)=="function"then
@@ -1643,332 +1839,423 @@ end
 return game:GetService"CoreGui"
 end
 
-function f.new()
-local g=Instance.new"ScreenGui"
-g.Name="PureUI"
-g.IgnoreGuiInset=true
-g.ResetOnSpawn=false
-g.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-
-local h=Instance.new"Frame"
-h.Name="Background"
-h.AnchorPoint=Vector2.new(0.5,0.5)
-h.Position=UDim2.fromScale(0.5,0.5)
-h.Size=UDim2.fromOffset(800,450)
-h.BackgroundColor3=Color3.fromRGB(20,22,27)
-h.BorderSizePixel=0
-h.Parent=g
+function g.new()
+local h=Instance.new"ScreenGui"
+h.Name="PureUI"
+h.IgnoreGuiInset=true
+h.ResetOnSpawn=false
+h.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 
 local i=Instance.new"Frame"
-i.Name="TitleBar"
-i.Size=UDim2.new(1,0,0,30)
-i.BackgroundColor3=Color3.fromRGB(27,30,36)
+i.Name="Background"
+i.AnchorPoint=Vector2.new(0.5,0.5)
+i.Position=UDim2.fromScale(0.5,0.5)
+i.Size=UDim2.fromOffset(800,450)
+i.BackgroundColor3=Color3.fromRGB(20,22,27)
 i.BorderSizePixel=0
 i.Parent=h
 
-local j=Instance.new"TextLabel"
-j.Name="Title"
-j.Size=UDim2.fromScale(1,1)
-j.BackgroundTransparency=1
-j.Font=Enum.Font.GothamMedium
-j.Text="Pure"
-j.TextColor3=Color3.fromRGB(235,237,240)
-j.TextSize=14
+local j=Instance.new"Frame"
+j.Name="TitleBar"
+j.Size=UDim2.new(1,0,0,30)
+j.BackgroundColor3=Color3.fromRGB(27,30,36)
+j.BorderSizePixel=0
 j.Parent=i
 
-local k=Instance.new"Frame"
-k.Name="TabBar"
-k.Position=UDim2.fromOffset(0,30)
-k.Size=UDim2.new(1,0,0,30)
-k.BackgroundColor3=Color3.fromRGB(24,26,32)
-k.BorderSizePixel=0
-k.Parent=h
+local k=Instance.new"TextLabel"
+k.Name="Title"
+k.Size=UDim2.fromScale(1,1)
+k.BackgroundTransparency=1
+k.Font=Enum.Font.GothamMedium
+k.Text="Pure"
+k.TextColor3=Color3.fromRGB(235,237,240)
+k.TextSize=14
+k.Parent=j
 
-local l=Instance.new"UIGridLayout"
-l.CellPadding=UDim2.fromOffset(0,0)
-l.CellSize=UDim2.new(1,0,1,0)
-l.FillDirectionMaxCells=1
-l.SortOrder=Enum.SortOrder.LayoutOrder
-l.Parent=k
+local l=Instance.new"Frame"
+l.Name="TabBar"
+l.Position=UDim2.fromOffset(0,30)
+l.Size=UDim2.new(1,0,0,30)
+l.BackgroundColor3=Color3.fromRGB(24,26,32)
+l.BorderSizePixel=0
+l.Parent=i
 
-local m=Instance.new"Frame"
-m.Name="ResizeHandle"
-m.AnchorPoint=Vector2.new(0.5,0.5)
-m.Position=UDim2.fromScale(1,1)
-m.Size=UDim2.fromOffset(14,14)
-m.BackgroundTransparency=1
-m.BorderSizePixel=0
-m.Active=true
-m.ZIndex=20
-m.Parent=h
+local m=Instance.new"UIGridLayout"
+m.CellPadding=UDim2.fromOffset(0,0)
+m.CellSize=UDim2.new(1,0,1,0)
+m.FillDirectionMaxCells=1
+m.SortOrder=Enum.SortOrder.LayoutOrder
+m.Parent=l
 
 local n=Instance.new"Frame"
-n.AnchorPoint=Vector2.new(1,1)
-n.Position=UDim2.fromScale(1,1)
-n.Size=UDim2.fromOffset(14,4)
-n.BackgroundColor3=Color3.fromRGB(120,124,136)
-n.BackgroundTransparency=0.35
+n.Name="NotifLeft"
+n.Position=UDim2.fromOffset(0,60)
+n.Size=UDim2.new(0,280,1,-60)
+n.BackgroundTransparency=1
 n.BorderSizePixel=0
-n.Parent=m
+n.ClipsDescendants=false
+n.ZIndex=10
+n.Parent=i
 
 local o=Instance.new"Frame"
-o.AnchorPoint=Vector2.new(1,1)
-o.Position=UDim2.fromScale(1,1)
-o.Size=UDim2.fromOffset(4,14)
-o.BackgroundColor3=Color3.fromRGB(120,124,136)
-o.BackgroundTransparency=0.35
+o.Name="NotifRight"
+o.AnchorPoint=Vector2.new(1,0)
+o.Position=UDim2.new(1,0,0,60)
+o.Size=UDim2.new(0,280,1,-60)
+o.BackgroundTransparency=1
 o.BorderSizePixel=0
-o.Parent=m
+o.ClipsDescendants=false
+o.ZIndex=10
+o.Parent=i
 
-local function setResizeHover(p)
-local q=if p then 0.05 else 0.35
-local r=if p then Color3.fromRGB(180,184,196)else Color3.fromRGB(120,124,136)
-for s,t in ipairs{n,o}do
-e:Create(t,TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
-BackgroundColor3=r,
-BackgroundTransparency=q,
+local p=Instance.new"Frame"
+p.Name="ResizeHandle"
+p.AnchorPoint=Vector2.new(0.5,0.5)
+p.Position=UDim2.fromScale(1,1)
+p.Size=UDim2.fromOffset(14,14)
+p.BackgroundTransparency=1
+p.BorderSizePixel=0
+p.Active=true
+p.ZIndex=20
+p.Parent=i
+
+local q=Instance.new"Frame"
+q.AnchorPoint=Vector2.new(1,1)
+q.Position=UDim2.fromScale(1,1)
+q.Size=UDim2.fromOffset(14,4)
+q.BackgroundColor3=Color3.fromRGB(120,124,136)
+q.BackgroundTransparency=0.35
+q.BorderSizePixel=0
+q.Parent=p
+
+local r=Instance.new"Frame"
+r.AnchorPoint=Vector2.new(1,1)
+r.Position=UDim2.fromScale(1,1)
+r.Size=UDim2.fromOffset(4,14)
+r.BackgroundColor3=Color3.fromRGB(120,124,136)
+r.BackgroundTransparency=0.35
+r.BorderSizePixel=0
+r.Parent=p
+
+local function setResizeHover(s)
+local t=if s then 0.05 else 0.35
+local u=if s then Color3.fromRGB(180,184,196)else Color3.fromRGB(120,124,136)
+for v,w in ipairs{q,r}do
+f:Create(w,TweenInfo.new(0.16,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
+BackgroundColor3=u,
+BackgroundTransparency=t,
 }):Play()
 end
 end
 
-local p={}
-local q=false
-local r
-local s
-local t
-local u=h.Position
-local v=false
+local s={}
+local t=false
+local u
+local v
 local w
-local x
-local y
-local z=h.Size
+local x=i.Position
+local y=false
+local z
+local A
+local B
+local C=i.Size
 
-local function clampToScreen(A)
-local B=g.AbsoluteSize
-local C=h.AbsoluteSize
-local D=C.X*h.AnchorPoint.X
-local E=C.Y*h.AnchorPoint.Y
-local F=A.X.Offset+B.X*A.X.Scale
-local G=A.Y.Offset+B.Y*A.Y.Scale
-local H=if C.X>B.X
-then B.X/2
-else math.clamp(F,D,B.X-(C.X-D))
-local I=if C.Y>B.Y
-then B.Y/2
-else math.clamp(G,E,B.Y-(C.Y-E))
+local function clampToScreen(D)
+local E=h.AbsoluteSize
+local F=i.AbsoluteSize
+local G=F.X*i.AnchorPoint.X
+local H=F.Y*i.AnchorPoint.Y
+local I=D.X.Offset+E.X*D.X.Scale
+local J=D.Y.Offset+E.Y*D.Y.Scale
+local K=if F.X>E.X
+then E.X/2
+else math.clamp(I,G,E.X-(F.X-G))
+local L=if F.Y>E.Y
+then E.Y/2
+else math.clamp(J,H,E.Y-(F.Y-H))
 
 return UDim2.new(
-A.X.Scale,
-H-B.X*A.X.Scale,
-A.Y.Scale,
-I-B.Y*A.Y.Scale
+D.X.Scale,
+K-E.X*D.X.Scale,
+D.Y.Scale,
+L-E.Y*D.Y.Scale
 )
 end
 
-local function beginDrag(A)
-if A.UserInputType~=Enum.UserInputType.MouseButton1
-and A.UserInputType~=Enum.UserInputType.Touch
+local function beginDrag(D)
+if D.UserInputType~=Enum.UserInputType.MouseButton1
+and D.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
-if v then
+if y then
 return
 end
 
-q=true
-r=if A.UserInputType==Enum.UserInputType.Touch then A else nil
-s=A.Position
-t=h.Position
-u=t
+t=true
+u=if D.UserInputType==Enum.UserInputType.Touch then D else nil
+v=D.Position
+w=i.Position
+x=w
 end
 
-table.insert(p,i.InputBegan:Connect(beginDrag))
-table.insert(p,m.InputBegan:Connect(function(A)
-if A.UserInputType~=Enum.UserInputType.MouseButton1
-and A.UserInputType~=Enum.UserInputType.Touch
+table.insert(s,j.InputBegan:Connect(beginDrag))
+table.insert(s,p.InputBegan:Connect(function(D)
+if D.UserInputType~=Enum.UserInputType.MouseButton1
+and D.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
-if q then
+if t then
 return
 end
 
-v=true
-w=if A.UserInputType==Enum.UserInputType.Touch then A else nil
+y=true
+z=if D.UserInputType==Enum.UserInputType.Touch then D else nil
 setResizeHover(true)
-x=A.Position
-y=h.Size
-z=h.Size
+A=D.Position
+B=i.Size
+C=i.Size
 end))
 
-table.insert(p,c.InputEnded:Connect(function(A)
-if q
-and((r and A==r)
-or(not r and A.UserInputType==Enum.UserInputType.MouseButton1))
+table.insert(s,d.InputEnded:Connect(function(D)
+if t
+and((u and D==u)
+or(not u and D.UserInputType==Enum.UserInputType.MouseButton1))
 then
-q=false
-r=nil
-u=h.Position
+t=false
+u=nil
+x=i.Position
 end
-if v
-and((w and A==w)
-or(not w and A.UserInputType==Enum.UserInputType.MouseButton1))
+if y
+and((z and D==z)
+or(not z and D.UserInputType==Enum.UserInputType.MouseButton1))
 then
-v=false
-w=nil
+y=false
+z=nil
 setResizeHover(false)
 end
 end))
-table.insert(p,m.MouseEnter:Connect(function()
-if not v then
+table.insert(s,p.MouseEnter:Connect(function()
+if not y then
 setResizeHover(true)
 end
 end))
-table.insert(p,m.MouseLeave:Connect(function()
-if not v then
+table.insert(s,p.MouseLeave:Connect(function()
+if not y then
 setResizeHover(false)
 end
 end))
-table.insert(p,c.InputBegan:Connect(function(A)
-if A.KeyCode==Enum.KeyCode.RightShift and c:GetFocusedTextBox()==nil then
-h.Visible=not h.Visible
+table.insert(s,d.InputBegan:Connect(function(D)
+if D.KeyCode==Enum.KeyCode.RightShift and d:GetFocusedTextBox()==nil then
+i.Visible=not i.Visible
 end
 end))
 
-table.insert(p,c.InputChanged:Connect(function(A)
-if A.UserInputType~=Enum.UserInputType.MouseMovement
-and A.UserInputType~=Enum.UserInputType.Touch
+table.insert(s,d.InputChanged:Connect(function(D)
+if D.UserInputType~=Enum.UserInputType.MouseMovement
+and D.UserInputType~=Enum.UserInputType.Touch
 then
 return
 end
 
-if v then
-local B=A.Position-x
-local C=g.AbsoluteSize
-local D=math.max(560,C.X)
-local E=math.max(350,C.Y)
-z=UDim2.fromOffset(
-math.clamp(y.X.Offset+B.X*2,560,D),
-math.clamp(y.Y.Offset+B.Y*2,350,E)
+if y then
+local E=D.Position-A
+local F=h.AbsoluteSize
+local G=math.max(560,F.X)
+local H=math.max(350,F.Y)
+C=UDim2.fromOffset(
+math.clamp(B.X.Offset+E.X*2,560,G),
+math.clamp(B.Y.Offset+E.Y*2,350,H)
 )
 end
 
-if q
-and((r and A==r)
-or(not r and A.UserInputType==Enum.UserInputType.MouseMovement))
+if t
+and((u and D==u)
+or(not u and D.UserInputType==Enum.UserInputType.MouseMovement))
 then
-local B=A.Position-s
-u=clampToScreen(UDim2.new(
-t.X.Scale,
-t.X.Offset+B.X,
-t.Y.Scale,
-t.Y.Offset+B.Y
+local E=D.Position-v
+x=clampToScreen(UDim2.new(
+w.X.Scale,
+w.X.Offset+E.X,
+w.Y.Scale,
+w.Y.Offset+E.Y
 ))
 end
 end))
 
-table.insert(p,d.RenderStepped:Connect(function(A)
-local B=Vector2.new(
-z.X.Offset-h.Size.X.Offset,
-z.Y.Offset-h.Size.Y.Offset
+table.insert(s,e.RenderStepped:Connect(function(D)
+local E=Vector2.new(
+C.X.Offset-i.Size.X.Offset,
+C.Y.Offset-i.Size.Y.Offset
 )
-if B.Magnitude>1.5 then
-h.Size=h.Size:Lerp(z,1-math.exp(-10*A))
-u=clampToScreen(h.Position)
-elseif B.Magnitude>0 then
-h.Size=z
+if E.Magnitude>1.5 then
+i.Size=i.Size:Lerp(C,1-math.exp(-10*D))
+x=clampToScreen(i.Position)
+elseif E.Magnitude>0 then
+i.Size=C
 end
 
-if not q then
+if not t then
 return
 end
 
-u=clampToScreen(u)
-local C=u.X.Offset-h.Position.X.Offset
-local D=u.Y.Offset-h.Position.Y.Offset
-if C*C+D*D<0.25 then
-h.Position=u
+x=clampToScreen(x)
+local F=x.X.Offset-i.Position.X.Offset
+local G=x.Y.Offset-i.Position.Y.Offset
+if F*F+G*G<0.25 then
+i.Position=x
 return
 end
 
-h.Position=h.Position:Lerp(u,1-math.exp(-6*A))
+i.Position=i.Position:Lerp(x,1-math.exp(-6*D))
 end))
 
-g.Parent=getParent()
+h.Parent=getParent()
 
-local A=setmetatable({
-ScreenGui=g,
-Panel=h,
-TitleBar=i,
-Title=j,
-TabBar=k,
-ResizeHandle=m,
+local D=setmetatable({
+ScreenGui=h,
+Panel=i,
+TitleBar=j,
+Title=k,
+TabBar=l,
+ResizeHandle=p,
+NotifLeft=n,
+NotifRight=o,
+NotificationsLeft={},
+NotificationsRight={},
 Tabs={},
-Connections=p,
-},f)
+Connections=s,
+},g)
 
-b.new(A,{Name="Demo 1"})
-b.new(A,{Name="Demo 2"})
-A:UpdateTabLayout()
+b.new(D,{Name="Demo 1"})
+b.new(D,{Name="Demo 2"})
+D:UpdateTabLayout()
 
-local B=A.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left"}
-B:CreateToggle{Name="Demo Toggle"}
-B:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
-B:CreateSlider{Name="Demo Slider",Min=0,Max=100,Default=50}
-B:CreateSlider{Name="Centered Slider",Variant="Centered",Min=-100,Max=100}
-B:CreateSlider{Name="Range Slider",Variant="Range",Min=0,Max=100,Default={Min=25,Max=75}}
-B:CreateInput{Name="Demo Input",Placeholder="Text"}
-B:CreateDoubleButton{Left="Cancel",Right="Apply",Accent="Right"}
-B:CreateColorpicker{Name="Demo Color",Default=Color3.fromRGB(88,130,255)}
-B:CreateDropdown{Name="Demo Dropdown",Options={"One","Two","Three"},Default="One"}
-B:CreateDropdown{Name="Multi Dropdown",Options={"One","Two","Three"},Multi=true,Default={"One","Three"}}
+local E=D.Tabs[1]:CreateGroupbox{Name="Controls",Column="Left"}
+E:CreateToggle{Name="Demo Toggle"}
+E:CreateKeypicker{Toggle="Demo Toggle",Default="K"}
+E:CreateSlider{Name="Demo Slider",Min=0,Max=100,Default=50}
+E:CreateSlider{Name="Centered Slider",Variant="Centered",Min=-100,Max=100}
+E:CreateSlider{Name="Range Slider",Variant="Range",Min=0,Max=100,Default={Min=25,Max=75}}
+E:CreateInput{Name="Demo Input",Placeholder="Text"}
+E:CreateDoubleButton{
+Left="Left",
+Right="Right",
+Accent="Left",
+LeftCallback=function()
+D:NotifyLeft{Title="Left Notification",Message="This appears on the left side."}
+end,
+RightCallback=function()
+D:NotifyRight{Title="Right Notification",Message="This appears on the right side."}
+end,
+}
+E:CreateColorpicker{Name="Demo Color",Default=Color3.fromRGB(88,130,255)}
+E:CreateDropdown{Name="Demo Dropdown",Options={"One","Two","Three"},Default="One"}
+E:CreateDropdown{Name="Multi Dropdown",Options={"One","Two","Three"},Multi=true,Default={"One","Three"}}
 
-return A
+return D
 end
 
-function f.CreateTab(g,h)
-local i=b.new(g,h)
-g:UpdateTabLayout()
-return i
+function g.CreateTab(h,i)
+local j=b.new(h,i)
+h:UpdateTabLayout()
+return j
 end
 
-function f.UpdateTabLayout(g)
-local h=#g.Tabs
-g.TabBar.UIGridLayout.FillDirectionMaxCells=h
-g.TabBar.UIGridLayout.CellSize=UDim2.new(1/h,0,1,0)
+function g.UpdateTabLayout(h)
+local i=#h.Tabs
+h.TabBar.UIGridLayout.FillDirectionMaxCells=i
+h.TabBar.UIGridLayout.CellSize=UDim2.new(1/i,0,1,0)
 end
 
-function f.SelectTab(g,h)
-for i,j in ipairs(g.Tabs)do
-j:SetActive(j==h)
-end
-g.SelectedTab=h
-end
-
-function f.Destroy(g)
-for h,i in ipairs(g.Connections)do
-i:Disconnect()
-end
-table.clear(g.Connections)
-
-for h,i in ipairs(g.Tabs)do
-i:Destroy()
-end
-table.clear(g.Tabs)
-
-if g.ScreenGui then
-g.ScreenGui:Destroy()
-g.ScreenGui=nil
-g.Panel=nil
-g.TitleBar=nil
-g.Title=nil
-g.TabBar=nil
-g.ResizeHandle=nil
-g.SelectedTab=nil
+local function repositionStack(h)
+for i,j in ipairs(h)do
+j:SetY((i-1)*64)
 end
 end
 
-return f end function a.m():typeof(__modImpl())local b=a.cache.m if not b then b={c=__modImpl()}a.cache.m=b end return b.c end end do local function __modImpl()
+function g.NotifyLeft(h,i)
+i=i or{}
+i.Side="Left"
+local j=c.new(h.NotifLeft,i)
+table.insert(h.NotificationsLeft,j)
+
+j.DismissedConn=j.Frame.AncestryChanged:Connect(function()
+if not j.Frame or not j.Frame.Parent then
+local k=table.find(h.NotificationsLeft,j)
+if k then
+table.remove(h.NotificationsLeft,k)
+repositionStack(h.NotificationsLeft)
+end
+end
+end)
+
+repositionStack(h.NotificationsLeft)
+return j
+end
+
+function g.NotifyRight(h,i)
+i=i or{}
+i.Side="Right"
+local j=c.new(h.NotifRight,i)
+table.insert(h.NotificationsRight,j)
+
+j.DismissedConn=j.Frame.AncestryChanged:Connect(function()
+if not j.Frame or not j.Frame.Parent then
+local k=table.find(h.NotificationsRight,j)
+if k then
+table.remove(h.NotificationsRight,k)
+repositionStack(h.NotificationsRight)
+end
+end
+end)
+
+repositionStack(h.NotificationsRight)
+return j
+end
+
+function g.SelectTab(h,i)
+for j,k in ipairs(h.Tabs)do
+k:SetActive(k==i)
+end
+h.SelectedTab=i
+end
+
+function g.Destroy(h)
+for i,j in ipairs(h.Connections)do
+j:Disconnect()
+end
+table.clear(h.Connections)
+
+for i,j in ipairs(h.Tabs)do
+j:Destroy()
+end
+table.clear(h.Tabs)
+
+for i,j in ipairs(h.NotificationsLeft)do
+j:Destroy()
+end
+table.clear(h.NotificationsLeft)
+
+for i,j in ipairs(h.NotificationsRight)do
+j:Destroy()
+end
+table.clear(h.NotificationsRight)
+
+if h.ScreenGui then
+h.ScreenGui:Destroy()
+h.ScreenGui=nil
+h.Panel=nil
+h.TitleBar=nil
+h.Title=nil
+h.TabBar=nil
+h.ResizeHandle=nil
+h.SelectedTab=nil
+end
+end
+
+return g end function a.n():typeof(__modImpl())local b=a.cache.n if not b then b={c=__modImpl()}a.cache.n=b end return b.c end end do local function __modImpl()
 
 local b=game:GetService"HttpService"
 
@@ -2114,7 +2401,7 @@ delfile(d.Path)
 end)
 end
 
-return c end function a.n():typeof(__modImpl())local b=a.cache.n if not b then b={c=__modImpl()}a.cache.n=b end return b.c end end do local function __modImpl()
+return c end function a.o():typeof(__modImpl())local b=a.cache.o if not b then b={c=__modImpl()}a.cache.o=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -2187,12 +2474,12 @@ end)
 return h
 end
 
-return b end function a.o():typeof(__modImpl())local b=a.cache.o if not b then b={c=__modImpl()}a.cache.o=b end return b.c end end do local function __modImpl()
+return b end function a.p():typeof(__modImpl())local b=a.cache.p if not b then b={c=__modImpl()}a.cache.p=b end return b.c end end do local function __modImpl()
 
-local b=a.m()
-local c=a.n()
+local b=a.n()
+local c=a.o()
 local d=a.i()
-local e=a.o()
+local e=a.p()
 
 local f={}
 f.__index=f
@@ -2225,8 +2512,8 @@ end
 
 f.Icons=d.Icons
 
-return setmetatable({},f)end function a.p():typeof(__modImpl())local b=a.cache.p if not b then b={c=__modImpl()}a.cache.p=b end return b.c end end end
+return setmetatable({},f)end function a.q():typeof(__modImpl())local b=a.cache.q if not b then b={c=__modImpl()}a.cache.q=b end return b.c end end end
 
-local b=a.p()
+local b=a.q()
 
 return b
